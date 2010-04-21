@@ -53,7 +53,7 @@ public interface LuaElementTypes extends LuaTokenTypes {
     TokenSet BLOCK_SET = TokenSet.create(FUNCTION_BLOCK, ANON_FUNCTION_BLOCK, WHILE_BLOCK,
             GENERIC_FOR_BLOCK, IF_THEN_BLOCK, NUMERIC_FOR_BLOCK);
 
-    TokenSet STATEMENT_FIRST_TOKENS = TokenSet.create(IF, WHILE, DO, FOR, CONTINUE, LOCAL, FUNCTION);
+    TokenSet STATEMENT_FIRST_TOKENS = TokenSet.create(NAME, IF, WHILE, DO, FOR, CONTINUE, LOCAL, FUNCTION);
 
     TokenSet FOLDABLE_BLOCKS = TokenSet.create(FUNCTION_BLOCK, ANON_FUNCTION_BLOCK);
 
@@ -76,6 +76,7 @@ public interface LuaElementTypes extends LuaTokenTypes {
     IElementType ELSE_CLAUSE = new LuaElementType("else clause");
     IElementType EXPRESSION = new LuaElementType("expression");
     IElementType ASSIGNMENT_EXPRESSION = new LuaElementType("assignment expression");
+    IElementType ASSIGNMENT_STATEMENT = new LuaElementType("assignment statement");
     IElementType EQUALITY_EXPRESSION = new LuaElementType("equality expression");
     ;
     IElementType RELATIONAL_EXPRESSION = new LuaElementType("relational expression");

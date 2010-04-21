@@ -16,9 +16,7 @@
 
 package com.sylvanaar.idea.Lua.parser.parsing.calls;
 
-import com.intellij.lang.PsiBuilder;
 import com.intellij.psi.tree.IElementType;
-import com.sylvanaar.idea.Lua.lexer.LuaTokenTypes;
 import com.sylvanaar.idea.Lua.parser.LuaElementTypes;
 import com.sylvanaar.idea.Lua.parser.util.LuaPsiBuilder;
 
@@ -27,7 +25,7 @@ import com.sylvanaar.idea.Lua.parser.util.LuaPsiBuilder;
  * User: markov
  * Date: 05.11.2007
  */
-public class Variable implements LuaTokenTypes {
+public class Variable implements LuaElementTypes {
 
 	//	variable:
 	//		base_variable_with_function_calls ARROW object_property method_or_not variable_properties
@@ -43,20 +41,10 @@ public class Variable implements LuaTokenTypes {
 	//		ARROW object_property method_or_not
 	//	;
 	public static IElementType parse(LuaPsiBuilder builder) {
-		PsiBuilder.Marker reference = builder.mark();
-		IElementType result = parseBaseVariableOrFunctionCall(builder);
-		while (builder.compare(DOT)) {
-			reference.done(result);
-			reference = reference.precede();
-			builder.advanceLexer();
-			//result = parseObjectProperty(builder);
-			IElementType method = parseMethodOrNot(builder);
-			if (method != LuaElementTypes.EMPTY_INPUT) {
-				result = method;
-			}
-		}
-		reference.drop();
-		return result;
+		//PsiBuilder.Marker reference = builder.mark();
+        while(builder.compareAndEat(IDENTIFIER_SET))
+            ;
+		return IDENTIFIER_EXPR;
 	}
 
 	//	method_or_not:

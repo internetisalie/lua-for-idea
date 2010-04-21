@@ -21,6 +21,7 @@ import com.intellij.psi.tree.IElementType;
 import com.sylvanaar.idea.Lua.lexer.LuaTokenTypes;
 import com.sylvanaar.idea.Lua.parser.LuaElementTypes;
 import com.sylvanaar.idea.Lua.parser.parsing.calls.Variable;
+import com.sylvanaar.idea.Lua.parser.parsing.expressions.Expression;
 import com.sylvanaar.idea.Lua.parser.util.ListParsingHelper;
 import com.sylvanaar.idea.Lua.parser.util.LuaPsiBuilder;
 import com.sylvanaar.idea.Lua.parser.util.ParserPart;
@@ -30,30 +31,22 @@ import com.sylvanaar.idea.Lua.parser.util.ParserPart;
  * User: markov
  * Date: 04.11.2007
  */
-public class LocalStatement implements LuaTokenTypes {
+public class AssignmentStatement implements LuaTokenTypes {
 
-	//	kwGLOBAL global_var_list ';'
+	//	varlist1 '=' explist1
 	public static IElementType parse(LuaPsiBuilder builder) {
-		if (!builder.compare(LOCAL)) {
-			return LuaElementTypes.EMPTY_INPUT;
-		}
 		PsiBuilder.Marker statement = builder.mark();
-		parseLocallVarList(builder);
 
-		statement.done(LuaElementTypes.LOCAL);
-		return LuaElementTypes.LOCAL;
+        parseLocallVarList(builder);
+
+        builder.match(ASSIGN);
+
+        parseExprList(builder);
+
+		statement.done(LuaElementTypes.ASSIGNMENT_STATEMENT);
+		return LuaElementTypes.ASSIGNMENT_STATEMENT;
 	}
 
-	//	global_var_list:
-	//		global_var_list ',' global_var
-	//		| global_var
-	//	;
-	//
-	//	global_var:
-	//		VARIABLE
-	//		| '$' variable //read
-	//		| '$' '{' expr '}'
-	//	;
 	private static void parseLocallVarList(LuaPsiBuilder builder) {
 		ParserPart localVariable = new ParserPart() {
 			public IElementType parse(LuaPsiBuilder builder) {
@@ -62,6 +55,20 @@ public class LocalStatement implements LuaTokenTypes {
 				Variable.parse(builder);
 				variable.done(LuaElementTypes.IDENTIFIER_EXPR);
 				return LuaElementTypes.IDENTIFIER_EXPR;
+			}
+		};
+		ListParsingHelper.parseCommaDelimitedExpressionWithLeadExpr(builder,
+			localVariable.parse(builder),
+			localVariable,
+			false);
+	}
+
+
+    	private static void parseExprList(LuaPsiBuilder builder) {
+		ParserPart localVariable = new ParserPart() {
+			public IElementType parse(LuaPsiBuilder builder) {
+				Expression.parse(builder);
+				return LuaElementTypes.EXPRESSION;
 			}
 		};
 		ListParsingHelper.parseCommaDelimitedExpressionWithLeadExpr(builder,

@@ -72,8 +72,8 @@ stat :  varlist1 '=' explist1 |
 			return ForStatement.parse(builder);
 		if (builder.compare(CONTINUE))
 			return ContinueStatement.parse(builder);
-		if (builder.compare(LOCAL))
-			return LocalStatement.parse(builder);
+		if (builder.compare(NAME))
+			return AssignmentStatement.parse(builder);
         if (builder.compare(FUNCTION))
             return Function.parse(builder);
 
