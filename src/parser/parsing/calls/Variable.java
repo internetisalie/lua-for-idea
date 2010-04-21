@@ -16,6 +16,7 @@
 
 package com.sylvanaar.idea.Lua.parser.parsing.calls;
 
+import com.intellij.lang.PsiBuilder;
 import com.intellij.psi.tree.IElementType;
 import com.sylvanaar.idea.Lua.parser.LuaElementTypes;
 import com.sylvanaar.idea.Lua.parser.util.LuaPsiBuilder;
@@ -41,10 +42,11 @@ public class Variable implements LuaElementTypes {
 	//		ARROW object_property method_or_not
 	//	;
 	public static IElementType parse(LuaPsiBuilder builder) {
-		//PsiBuilder.Marker reference = builder.mark();
-        while(builder.compareAndEat(IDENTIFIER_SET))
+        PsiBuilder.Marker variable = builder.mark();
+        while (builder.compareAndEat(IDENTIFIER_SET))
             ;
-		return IDENTIFIER_EXPR;
+        variable.done(LuaElementTypes.IDENTIFIER_EXPR);
+        return IDENTIFIER_EXPR;
 	}
 
 	//	method_or_not:

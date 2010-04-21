@@ -19,7 +19,6 @@ package com.sylvanaar.idea.Lua.parser.parsing.expressions;
 import com.intellij.lang.PsiBuilder;
 import com.intellij.psi.tree.IElementType;
 import com.intellij.psi.tree.TokenSet;
-import com.sylvanaar.idea.Lua.lexer.LuaTokenTypes;
 import com.sylvanaar.idea.Lua.parser.LuaElementTypes;
 import com.sylvanaar.idea.Lua.parser.util.LuaPsiBuilder;
 
@@ -28,8 +27,8 @@ import com.sylvanaar.idea.Lua.parser.util.LuaPsiBuilder;
  * User: markov
  * Date: 29.10.2007
  */
-public class Expression implements LuaTokenTypes {
-    static TokenSet EXPR_SET = TokenSet.create(NIL, FALSE, TRUE, NUMBER, STRING, ELLIPSIS, FUNCTION); //todo
+public class Expression implements LuaElementTypes {
+    static TokenSet EXPR_SET = TokenSet.create(NIL, FALSE, TRUE, NUMBER, STRING, ELLIPSIS, NAME, EQ, NE, GT, LT, LE, GE, PLUS, MINUS, MULT, DIV); //todo
 
 
     //	 ('nil' | 'false' | 'true' | number | string | '...' | function | prefixexp | tableconstructor | unop exp) (binop exp)* ;
@@ -40,14 +39,10 @@ public class Expression implements LuaTokenTypes {
         
 		//IElementType result; = builder.getTokenType();// parseExpressionWithoutVariable(builder);
 
-        while (EXPR_SET.contains( builder.getTokenType())) {
-            builder.advanceLexer();
+        while ( builder.compareAndEat(EXPR_SET)) {
+            ;
         }
-
-
-
-        exp.done(LuaElementTypes.EXPRESSION);
-
+        exp.done(EXPRESSION);
   
 		return LuaElementTypes.EXPRESSION;
 	}

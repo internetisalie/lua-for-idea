@@ -83,4 +83,7 @@ public interface LuaElementTypes extends LuaTokenTypes {
     ;
     IElementType FUNCTION_CALL = new LuaElementType("function call");
     IElementType THEN_CLAUSE  =new LuaElementType("then clause")  ;
+    IElementType ADDITIVE_EXPRESSION =new LuaElementType("additivie expr");
+    IElementType MULTIPLICATIVE_EXPRESSION =new LuaElementType("mult expr");
+    IElementType UNARY_EXPRESSION =new LuaElementType("unary expr");
 }

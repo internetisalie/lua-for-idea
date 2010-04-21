@@ -43,6 +43,8 @@ public class IfStatement implements LuaTokenTypes {
 
         parseThenClause(builder);
 
+        builder.match(END);
+        
 		statement.done(LuaElementTypes.IF_THEN_BLOCK);
 		return LuaElementTypes.IF_THEN_BLOCK;
 	}
@@ -84,11 +86,6 @@ public class IfStatement implements LuaTokenTypes {
 			StatementList.parse(builder, END);
 			elseClause.done(LuaElementTypes.ELSE_CLAUSE);
 		}
-
-        if (builder.compareAndEat(END)) {
-
-            
-        }
 	}
 
 

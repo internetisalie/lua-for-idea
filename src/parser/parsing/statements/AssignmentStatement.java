@@ -50,11 +50,7 @@ public class AssignmentStatement implements LuaTokenTypes {
 	private static void parseLocallVarList(LuaPsiBuilder builder) {
 		ParserPart localVariable = new ParserPart() {
 			public IElementType parse(LuaPsiBuilder builder) {
-
-				PsiBuilder.Marker variable = builder.mark();
-				Variable.parse(builder);
-				variable.done(LuaElementTypes.IDENTIFIER_EXPR);
-				return LuaElementTypes.IDENTIFIER_EXPR;
+				return Variable.parse(builder);
 			}
 		};
 		ListParsingHelper.parseCommaDelimitedExpressionWithLeadExpr(builder,
@@ -66,9 +62,8 @@ public class AssignmentStatement implements LuaTokenTypes {
 
     	private static void parseExprList(LuaPsiBuilder builder) {
 		ParserPart localVariable = new ParserPart() {
-			public IElementType parse(LuaPsiBuilder builder) {
-				Expression.parse(builder);
-				return LuaElementTypes.EXPRESSION;
+			public IElementType parse(LuaPsiBuilder builder) {				
+				return Expression.parse(builder);
 			}
 		};
 		ListParsingHelper.parseCommaDelimitedExpressionWithLeadExpr(builder,

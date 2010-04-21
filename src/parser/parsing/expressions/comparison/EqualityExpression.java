@@ -14,13 +14,13 @@
  *   limitations under the License.
  */
 
-package com.sylvanaar.idea.Lua.parser.parsing.expressions.comparition;
+package com.sylvanaar.idea.Lua.parser.parsing.expressions.comparison;
 
 import com.sylvanaar.idea.Lua.lexer.LuaTokenTypes;
 import com.sylvanaar.idea.Lua.parser.util.LuaPsiBuilder;
 import com.sylvanaar.idea.Lua.parser.util.LuaParserErrors;
 import com.sylvanaar.idea.Lua.parser.LuaElementTypes;
-import com.sylvanaar.idea.Lua.parser.parsing.expressions.AssignmentExpression;
+
 import com.intellij.psi.tree.IElementType;
 import com.intellij.psi.tree.TokenSet;
 import com.intellij.lang.PsiBuilder;
@@ -40,10 +40,10 @@ public class EqualityExpression implements LuaTokenTypes {
 		PsiBuilder.Marker marker = builder.mark();
 		IElementType result = RelationalExpression.parse(builder);
 		if (result != LuaElementTypes.EMPTY_INPUT && builder.compareAndEat(EQUALITY_OPERATORS)) {
-			result = AssignmentExpression.parseWithoutPriority(builder);
-			if (result == LuaElementTypes.EMPTY_INPUT) {
+//			result = AssignmentExpression.parseWithoutPriority(builder);
+//			if (result == LuaElementTypes.EMPTY_INPUT) {
 				result = RelationalExpression.parse(builder);
-			}
+//			}
 			if (result == LuaElementTypes.EMPTY_INPUT) {
 				builder.error(LuaParserErrors.expected("expression"));
 			}

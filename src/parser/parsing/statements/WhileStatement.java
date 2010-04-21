@@ -45,8 +45,10 @@ public class WhileStatement implements LuaTokenTypes {
         builder.match(DO);
         
         StatementList.parse(builder, END);
-        
-		statement.done(LuaElementTypes.WHILE_BLOCK);
+
+        builder.match(END);
+
+        statement.done(LuaElementTypes.WHILE_BLOCK);
         
 		return LuaElementTypes.WHILE_BLOCK;
 	}
