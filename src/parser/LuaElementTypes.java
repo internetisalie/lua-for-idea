@@ -53,20 +53,33 @@ public interface LuaElementTypes extends LuaTokenTypes {
     TokenSet BLOCK_SET = TokenSet.create(FUNCTION_BLOCK, ANON_FUNCTION_BLOCK, WHILE_BLOCK,
             GENERIC_FOR_BLOCK, IF_THEN_BLOCK, NUMERIC_FOR_BLOCK);
 
+    TokenSet STATEMENT_FIRST_TOKENS = TokenSet.create(IF, WHILE, DO, FOR, CONTINUE, LOCAL, FUNCTION);
+
     TokenSet FOLDABLE_BLOCKS = TokenSet.create(FUNCTION_BLOCK, ANON_FUNCTION_BLOCK);
-   
+
 
     IElementType BLOCK_BEGIN = new LuaElementType("block begin");
     IElementType BLOCK_END = new LuaElementType("block end");
 
     IElementType LOCAL_FUNCTION = new LuaElementType("local function def");
-    
+
     TokenSet BLOCK_BEGIN_SET = TokenSet.create(WHILE, FOR, DO, FUNCTION, IF, REPEAT, LOCAL_FUNCTION);
     TokenSet BLOCK_BEGIN_SET_NODO = TokenSet.create(WHILE, FOR, FUNCTION, IF, REPEAT);
     TokenSet BLOCK_END_SET = TokenSet.create(END, UNTIL);
 
 
     IElementType PARAMETER = new LuaElementType("function parameters");
-    
+
     IElementType PARAMETER_LIST = new LuaElementType("function parameter");
+    IElementType STATEMENT_LIST = new LuaElementType("statement list");
+    IElementType ELSEIF_CLAUSE = new LuaElementType("elseif clause");
+    IElementType ELSE_CLAUSE = new LuaElementType("else clause");
+    IElementType EXPRESSION = new LuaElementType("expression");
+    IElementType ASSIGNMENT_EXPRESSION = new LuaElementType("assignment expression");
+    IElementType EQUALITY_EXPRESSION = new LuaElementType("equality expression");
+    ;
+    IElementType RELATIONAL_EXPRESSION = new LuaElementType("relational expression");
+    ;
+    IElementType FUNCTION_CALL = new LuaElementType("function call");
+    IElementType THEN_CLAUSE  =new LuaElementType("then clause")  ;
 }
