@@ -55,6 +55,10 @@ public interface LuaElementTypes extends LuaTokenTypes {
 
     TokenSet STATEMENT_FIRST_TOKENS = TokenSet.create(NAME, IF, WHILE, DO, FOR, CONTINUE, LOCAL, FUNCTION);
 
+
+    TokenSet GENERIC_CODE_BLOCKS = TokenSet.create(BLOCK, IF_THEN_BLOCK, WHILE_BLOCK, GENERIC_FOR_BLOCK, NUMERIC_FOR_BLOCK);
+
+
     TokenSet FOLDABLE_BLOCKS = TokenSet.create(FUNCTION_BLOCK, ANON_FUNCTION_BLOCK);
 
 

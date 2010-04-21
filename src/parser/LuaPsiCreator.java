@@ -22,8 +22,7 @@ import com.intellij.psi.tree.IElementType;
 import com.sylvanaar.idea.Lua.lexer.LuaElementType;
 import com.sylvanaar.idea.Lua.psi.impl.*;
 
-import static com.sylvanaar.idea.Lua.parser.LuaElementTypes.FUNCTION_DEFINITION;
-import static com.sylvanaar.idea.Lua.parser.LuaElementTypes.FUNCTION_IDENTIFIER;
+import static com.sylvanaar.idea.Lua.parser.LuaElementTypes.*;
 
 /**
  * Created by IntelliJ IDEA.
@@ -52,6 +51,9 @@ public class LuaPsiCreator {
 
         if (node.getElementType() == LuaElementTypes.PARAMETER)
             return new LuaParameterImpl(node);
+
+        if (GENERIC_CODE_BLOCKS.contains(node.getElementType()))
+            return new LuaCodeBlockImpl(node);
 
 	    return new LuaPsiElementImpl(node);
 

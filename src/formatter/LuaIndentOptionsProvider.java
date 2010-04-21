@@ -33,7 +33,7 @@ import com.sylvanaar.idea.Lua.LuaFileType;
 public class LuaIndentOptionsProvider implements FileTypeIndentOptionsProvider {
   public CodeStyleSettings.IndentOptions createIndentOptions() {
     final CodeStyleSettings.IndentOptions indentOptions = new CodeStyleSettings.IndentOptions();
-    indentOptions.INDENT_SIZE = 2;
+    indentOptions.INDENT_SIZE = 4;
     return indentOptions;
   }
 
