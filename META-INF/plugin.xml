@@ -26,6 +26,7 @@
 
         <p>Features:</p>
         <ol>
+            <li>Additional experimental features, running and formatting.</li>
             <li>Comes with an embedded Lua interpreter written in Java (LuaJ)</li>
             <li>Can also optionally do syntax checking when luac is in the path (experimental)</li>
             <li>Structure view (experimental)</li>
@@ -42,6 +43,8 @@
         <html>
         <body>
         <dl>
+            <dt>0.5.0</dt>
+            <dd>Enabled all features, working or not (formatting + running)</dd>
             <dt>0.4.1</dt>
             <dd>Added application level options for syntax check type</dd>
             <dt>0.4.0</dt>
@@ -55,15 +58,14 @@
             <dt>0.1.7</dt>
             <dd>Fix to make eg. ----[[ a single long comment instead of a short comment followed by a long comment</dd>
             <dt>0.1.6</dt>
-            <dd>Fix to ignore newline after extended string start token
-            </dd>
+            <dd>Fix to ignore newline after extended string start token</dd>
             <dt>0.1.5</dt>
             <dd>Customizable coloring</dd>
         </dl>
         </body>
         </html>
         ]]></change-notes>
-    <version>0.4.1</version>
+    <version>0.5.0</version>
     <vendor email="sylvanaar@mindspring.com">sylvanaar</vendor>
     <idea-version since-build="8000"/>
 

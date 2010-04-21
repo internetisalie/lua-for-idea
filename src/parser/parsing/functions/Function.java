@@ -18,10 +18,9 @@ package com.sylvanaar.idea.Lua.parser.parsing.functions;
 
 import com.intellij.lang.PsiBuilder;
 import com.intellij.psi.tree.IElementType;
-import com.sylvanaar.idea.Lua.lexer.LuaTokenTypes;
+import com.intellij.psi.tree.TokenSet;
 import com.sylvanaar.idea.Lua.parser.LuaElementTypes;
-import com.sylvanaar.idea.Lua.parser.parsing.Block;
-import com.sylvanaar.idea.Lua.parser.util.LuaParserErrors;
+import com.sylvanaar.idea.Lua.parser.parsing.StatementList;
 import com.sylvanaar.idea.Lua.parser.util.LuaPsiBuilder;
 
 /**
@@ -30,32 +29,57 @@ import com.sylvanaar.idea.Lua.parser.util.LuaPsiBuilder;
  * Date: 12.10.2007
  * Time: 11:44:29
  */
-public class Function implements LuaTokenTypes {
+public class Function implements LuaElementTypes {
 
-	//	function_declaration_statement:
-	//		kwFUNCTION is_reference IDENTIFIER '(' parameter_list ')'
-	//			'{' statement_list '}'
-	//	;
-	public static IElementType parse(LuaPsiBuilder builder) {
-		if (!builder.compare(FUNCTION)) {
-			return LuaElementTypes.EMPTY_INPUT;
-		}
-		PsiBuilder.Marker function = builder.mark();
-		builder.advanceLexer();
-		
-		if (!builder.compareAndEat(NAME)) {
-            // todo anonymous func
-			builder.error(LuaParserErrors.expected("function name"));
-		}
-		builder.match(LPAREN);
-		ParameterList.parse(builder);
-		builder.match(RPAREN);
 
-		Block.parse(builder);
+    public static IElementType parse(LuaPsiBuilder builder) {
+        PsiBuilder.Marker funcBlock = builder.mark();
 
-		builder.match(END);
+        PsiBuilder.Marker funcStmt = builder.mark();
+        builder.compareAndEat(FUNCTION);
 
-        function.done(LuaElementTypes.FUNCTION);
-		return LuaElementTypes.FUNCTION;
-	}
+
+        PsiBuilder.Marker funcName = builder.mark();
+
+        int pos = builder.getCurrentOffset();
+
+        while (builder.compareAndEat(FUNCTION_IDENTIFIER_SET))
+            ;
+
+        boolean anon = false;
+        if (builder.compare(LPAREN)) {
+            anon = builder.getCurrentOffset() <= pos;
+
+            if (anon) {
+                funcName.drop();
+            } else {
+                funcName.done(FUNCTION_IDENTIFIER);
+            }
+        }
+
+        builder.match(LPAREN, "expected (");
+
+        pos = builder.getCurrentOffset();
+        PsiBuilder.Marker mark = builder.mark();
+
+        while (builder.compareAndEat(TokenSet.create(NAME, COMMA, ELLIPSIS)))
+            ;
+
+        if (builder.getCurrentOffset() > pos)
+            mark.done(LuaElementTypes.PARAMETERS);
+        else
+            mark.drop();
+
+        builder.match(RPAREN, "expected )");
+
+        funcStmt.done(anon ? ANON_FUNCTION_DEFINITION : FUNCTION_DEFINITION);
+
+        StatementList.parse(builder, END);
+
+        builder.match(END);
+
+        funcBlock.done(anon?ANON_FUNCTION_BLOCK:FUNCTION_BLOCK);
+        return anon ? ANON_FUNCTION_BLOCK : FUNCTION_BLOCK;
+    }
 }
+

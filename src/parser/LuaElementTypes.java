@@ -53,7 +53,7 @@ public interface LuaElementTypes extends LuaTokenTypes {
     TokenSet BLOCK_SET = TokenSet.create(FUNCTION_BLOCK, ANON_FUNCTION_BLOCK, WHILE_BLOCK,
             GENERIC_FOR_BLOCK, IF_THEN_BLOCK, NUMERIC_FOR_BLOCK);
 
-    TokenSet STATEMENT_FIRST_TOKENS = TokenSet.create(NAME, IF, WHILE, DO, FOR, CONTINUE, LOCAL, FUNCTION);
+    TokenSet STATEMENT_FIRST_TOKENS = TokenSet.create(NAME, IF, WHILE, DO, FOR, CONTINUE, FUNCTION);
 
 
     TokenSet GENERIC_CODE_BLOCKS = TokenSet.create(BLOCK, IF_THEN_BLOCK, WHILE_BLOCK, GENERIC_FOR_BLOCK, NUMERIC_FOR_BLOCK);
@@ -90,4 +90,5 @@ public interface LuaElementTypes extends LuaTokenTypes {
     IElementType ADDITIVE_EXPRESSION =new LuaElementType("additivie expr");
     IElementType MULTIPLICATIVE_EXPRESSION =new LuaElementType("mult expr");
     IElementType UNARY_EXPRESSION =new LuaElementType("unary expr");
+    IElementType PARAMETERS=new LuaElementType("function parameters");;
 }
