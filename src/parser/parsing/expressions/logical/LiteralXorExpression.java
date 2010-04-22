@@ -1,7 +1,7 @@
 package com.sylvanaar.idea.Lua.parser.parsing.expressions.logical;//package com.sylvanaar.idea.Lua.parser.parsing.expressions.logical;
 //
 //import com.sylvanaar.idea.Lua.lexer.LuaTokenTypes;
-//import com.sylvanaar.idea.Lua.parser.util.LuaPsiBuilder;
+//import com.sylvanaar.idea.Lua.parser.LuaPsiBuilder;
 //import com.sylvanaar.idea.Lua.parser.util.LuaParserErrors;
 //import com.sylvanaar.idea.Lua.parser.LuaElementTypes;
 //import com.intellij.psi.tree.IElementType;

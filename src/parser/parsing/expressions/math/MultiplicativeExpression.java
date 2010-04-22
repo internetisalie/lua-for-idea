@@ -16,15 +16,14 @@
 
 package com.sylvanaar.idea.Lua.parser.parsing.expressions.math;//package com.sylvanaar.idea.Lua.parser.parsing.expressions.math;
 
-import com.sylvanaar.idea.Lua.lexer.LuaTokenTypes;
-import com.sylvanaar.idea.Lua.parser.util.LuaPsiBuilder;
-import com.sylvanaar.idea.Lua.parser.util.LuaParserErrors;
-import com.sylvanaar.idea.Lua.parser.LuaElementTypes;
-import com.sylvanaar.idea.Lua.parser.parsing.expressions.logical.LogicalNotExpression;
-
+import com.intellij.lang.PsiBuilder;
 import com.intellij.psi.tree.IElementType;
 import com.intellij.psi.tree.TokenSet;
-import com.intellij.lang.PsiBuilder;
+import com.sylvanaar.idea.Lua.lexer.LuaTokenTypes;
+import com.sylvanaar.idea.Lua.parser.LuaElementTypes;
+import com.sylvanaar.idea.Lua.parser.LuaPsiBuilder;
+import com.sylvanaar.idea.Lua.parser.parsing.expressions.logical.LogicalNotExpression;
+import com.sylvanaar.idea.Lua.parser.util.LuaParserErrors;
 
 /**
  * Created by IntelliJ IDEA.

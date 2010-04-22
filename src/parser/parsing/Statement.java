@@ -19,10 +19,10 @@ package com.sylvanaar.idea.Lua.parser.parsing;
 import com.intellij.psi.tree.IElementType;
 import com.sylvanaar.idea.Lua.lexer.LuaTokenTypes;
 import com.sylvanaar.idea.Lua.parser.LuaElementTypes;
+import com.sylvanaar.idea.Lua.parser.LuaPsiBuilder;
 import com.sylvanaar.idea.Lua.parser.parsing.expressions.Expression;
 import com.sylvanaar.idea.Lua.parser.parsing.functions.Function;
 import com.sylvanaar.idea.Lua.parser.parsing.statements.*;
-import com.sylvanaar.idea.Lua.parser.util.LuaPsiBuilder;
 
 /**
  * Created by IntelliJ IDEA.
@@ -72,7 +72,9 @@ stat :  varlist1 '=' explist1 |
 			return ForStatement.parse(builder);
 		if (builder.compare(CONTINUE))
 			return ContinueStatement.parse(builder);
-		if (builder.compare(NAME))
+        if (builder.compare(LOCAL))
+            return LocalScoped.parse(builder);
+        if (builder.compare(NAME))
 			return AssignmentStatement.parse(builder);
         if (builder.compare(FUNCTION))
             return Function.parse(builder);

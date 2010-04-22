@@ -21,7 +21,7 @@ import com.intellij.psi.tree.IElementType;
 import com.intellij.psi.tree.TokenSet;
 import com.sylvanaar.idea.Lua.lexer.LuaTokenTypes;
 import com.sylvanaar.idea.Lua.parser.LuaElementTypes;
-import com.sylvanaar.idea.Lua.parser.util.LuaPsiBuilder;
+import com.sylvanaar.idea.Lua.parser.LuaPsiBuilder;
 
 /**
  * Created by IntelliJ IDEA.

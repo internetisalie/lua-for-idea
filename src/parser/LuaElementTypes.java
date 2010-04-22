@@ -36,12 +36,16 @@ public interface LuaElementTypes extends LuaTokenTypes {
     TokenSet FUNCTION_IDENTIFIER_SET = TokenSet.create(NAME, DOT, COLON);
     TokenSet IDENTIFIER_SET = TokenSet.create(NAME, DOT);
 
+
+
     IElementType IDENTIFIER_EXPR = new LuaElementType("Identifier Expr");
 
     IElementType FUNCTION_IDENTIFIER = new LuaElementType("Function identifier");
 
     IElementType BLOCK = new LuaElementType("Block");
-
+    IElementType FIELD = new LuaElementType("field");
+    IElementType TABLE_CONSTRUCTOR = new LuaElementType("table constructor");
+    IElementType DO_BLOCK = new LuaElementType("Do Block");
     IElementType FUNCTION_BLOCK = new LuaElementType("Function Block");
     IElementType ANON_FUNCTION_BLOCK = new LuaElementType("Anonymous Function Block");
     IElementType WHILE_BLOCK = new LuaElementType("While Block");
@@ -56,7 +60,7 @@ public interface LuaElementTypes extends LuaTokenTypes {
     TokenSet STATEMENT_FIRST_TOKENS = TokenSet.create(NAME, IF, WHILE, DO, FOR, CONTINUE, FUNCTION);
 
 
-    TokenSet GENERIC_CODE_BLOCKS = TokenSet.create(BLOCK, IF_THEN_BLOCK, WHILE_BLOCK, GENERIC_FOR_BLOCK, NUMERIC_FOR_BLOCK);
+    TokenSet GENERIC_CODE_BLOCKS = TokenSet.create(DO_BLOCK, BLOCK, IF_THEN_BLOCK, WHILE_BLOCK, GENERIC_FOR_BLOCK, NUMERIC_FOR_BLOCK);
 
 
     TokenSet FOLDABLE_BLOCKS = TokenSet.create(FUNCTION_BLOCK, ANON_FUNCTION_BLOCK);
@@ -91,4 +95,5 @@ public interface LuaElementTypes extends LuaTokenTypes {
     IElementType MULTIPLICATIVE_EXPRESSION =new LuaElementType("mult expr");
     IElementType UNARY_EXPRESSION =new LuaElementType("unary expr");
     IElementType PARAMETERS=new LuaElementType("function parameters");;
+    IElementType LOCAL_SCOPED=new LuaElementType("local scoped");
 }

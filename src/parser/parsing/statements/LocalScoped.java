@@ -21,29 +21,31 @@ import com.intellij.psi.tree.IElementType;
 import com.sylvanaar.idea.Lua.lexer.LuaTokenTypes;
 import com.sylvanaar.idea.Lua.parser.LuaElementTypes;
 import com.sylvanaar.idea.Lua.parser.LuaPsiBuilder;
-import com.sylvanaar.idea.Lua.parser.parsing.Block;
+import com.sylvanaar.idea.Lua.parser.parsing.functions.Function;
 
 /**
  * Created by IntelliJ IDEA.
- * User: markov
- * Date: 01.11.2007
+ * User: Jon S Akhtar
+ * Date: Apr 21, 2010
+ * Time: 6:22:56 PM
  */
-public class DoBlockStatement implements LuaTokenTypes {
+public class LocalScoped implements LuaTokenTypes {
 
-	//		'do' block 'end'
-	public static IElementType parse(LuaPsiBuilder builder) {
-		PsiBuilder.Marker statement = builder.mark();
-		if (!builder.compareAndEat(DO)) {
+    public static IElementType parse(LuaPsiBuilder builder) {
+        PsiBuilder.Marker statement = builder.mark();
+		if (!builder.compareAndEat(LOCAL)) {
 			statement.drop();
 			return LuaElementTypes.EMPTY_INPUT;
 		}
 
-        Block.parse(builder);
+        if (builder.getTokenType() == FUNCTION)
+            Function.parse(builder);
+        else
+            AssignmentStatement.parse(builder);
 
-		builder.match(END);
-        
-		statement.done(LuaElementTypes.DO_BLOCK);
+        statement.done(LuaElementTypes.LOCAL_SCOPED);
 
-        return LuaElementTypes.DO_BLOCK;
-	}
+        return LuaElementTypes.LOCAL_SCOPED;
+    }
+    
 }

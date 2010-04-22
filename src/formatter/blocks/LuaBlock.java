@@ -110,8 +110,6 @@ public class LuaBlock implements Block {
 
     @NotNull
     public ChildAttributes getChildAttributes(int newChildIndex) {
-
-
         if (getNode().getPsi() instanceof LuaCodeBlockImpl) {
             return new ChildAttributes(Indent.getNormalIndent(), null);
         }

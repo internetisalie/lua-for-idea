@@ -20,9 +20,9 @@ import com.intellij.lang.PsiBuilder;
 import com.intellij.psi.tree.IElementType;
 import com.sylvanaar.idea.Lua.lexer.LuaTokenTypes;
 import com.sylvanaar.idea.Lua.parser.LuaElementTypes;
-import com.sylvanaar.idea.Lua.parser.parsing.StatementList;
+import com.sylvanaar.idea.Lua.parser.LuaPsiBuilder;
+import com.sylvanaar.idea.Lua.parser.parsing.Block;
 import com.sylvanaar.idea.Lua.parser.parsing.expressions.Expression;
-import com.sylvanaar.idea.Lua.parser.util.LuaPsiBuilder;
 
 /**
  * Created by IntelliJ IDEA.
@@ -57,7 +57,7 @@ public class IfStatement implements LuaTokenTypes {
 			return;
 		}
 
-        StatementList.parse(builder, ELSEIF, ELSE, END);
+        Block.parse(builder);
 
         statement.done(LuaElementTypes.THEN_CLAUSE);
         
@@ -83,7 +83,8 @@ public class IfStatement implements LuaTokenTypes {
 			PsiBuilder.Marker elseClause = builder.mark();
 			builder.advanceLexer();
 
-			StatementList.parse(builder, END);
+			Block.parse(builder);
+            
 			elseClause.done(LuaElementTypes.ELSE_CLAUSE);
 		}
 	}

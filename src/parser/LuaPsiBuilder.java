@@ -20,6 +20,7 @@ import com.intellij.lang.ASTNode;
 import com.intellij.lang.PsiBuilder;
 import com.intellij.psi.tree.IElementType;
 import com.intellij.psi.tree.TokenSet;
+import com.sylvanaar.idea.Lua.parser.util.LuaParserErrors;
 import org.jetbrains.annotations.NotNull;
 
 /**
@@ -61,9 +62,9 @@ private PsiBuilder psiBuilder;
 		return found;
 	}
 
-//	public void match(final IElementType token) {
-//		match(token, LuaParserErrors.expected(token));
-//	}
+	public void match(final IElementType token) {
+		match(token, LuaParserErrors.expected(token));
+	}
 
 	public void match(final IElementType token, final String errorMessage) {
 		if (!compareAndEat(token)) {
@@ -71,9 +72,9 @@ private PsiBuilder psiBuilder;
 		}
 	}
 
-//	public void match(final TokenSet tokens) {
-//		match(tokens, LuaParserErrors.expected(tokens));
-//	}
+	public void match(final TokenSet tokens) {
+		match(tokens, LuaParserErrors.expected(tokens));
+	}
 
 	public void match(final TokenSet tokens, final String errorMessage) {
 		if (!compareAndEat(tokens)) {

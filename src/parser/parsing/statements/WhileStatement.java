@@ -20,9 +20,9 @@ import com.intellij.lang.PsiBuilder;
 import com.intellij.psi.tree.IElementType;
 import com.sylvanaar.idea.Lua.lexer.LuaTokenTypes;
 import com.sylvanaar.idea.Lua.parser.LuaElementTypes;
+import com.sylvanaar.idea.Lua.parser.LuaPsiBuilder;
 import com.sylvanaar.idea.Lua.parser.parsing.StatementList;
 import com.sylvanaar.idea.Lua.parser.parsing.expressions.Expression;
-import com.sylvanaar.idea.Lua.parser.util.LuaPsiBuilder;
 
 /**
  * Created by IntelliJ IDEA.

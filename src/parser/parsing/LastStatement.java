@@ -16,7 +16,7 @@
 
 package com.sylvanaar.idea.Lua.parser.parsing;
 
-import com.sylvanaar.idea.Lua.parser.util.LuaPsiBuilder;
+import com.sylvanaar.idea.Lua.parser.LuaPsiBuilder;
 
 /**
  * Created by IntelliJ IDEA.

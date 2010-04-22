@@ -20,8 +20,8 @@ import com.intellij.lang.PsiBuilder;
 import com.intellij.psi.tree.IElementType;
 import com.sylvanaar.idea.Lua.lexer.LuaTokenTypes;
 import com.sylvanaar.idea.Lua.parser.LuaElementTypes;
+import com.sylvanaar.idea.Lua.parser.LuaPsiBuilder;
 import com.sylvanaar.idea.Lua.parser.util.ListParsingHelper;
-import com.sylvanaar.idea.Lua.parser.util.LuaPsiBuilder;
 import com.sylvanaar.idea.Lua.parser.util.ParserPart;
 
 /**
@@ -29,12 +29,6 @@ import com.sylvanaar.idea.Lua.parser.util.ParserPart;
  * @date 14.10.2007
  */
 public class ParameterList implements LuaTokenTypes {
-
-	//	parameter_list:
-	//		non_empty_parameter_list
-	//		| /* empty */
-	//	;
-	//
 
 	public static IElementType parse(LuaPsiBuilder builder) {
 		PsiBuilder.Marker parameterList = builder.mark();
@@ -44,32 +38,7 @@ public class ParameterList implements LuaTokenTypes {
 		return (result > 0) ? LuaElementTypes.PARAMETER_LIST : LuaElementTypes.EMPTY_INPUT;
 	}
 
-	//	non_empty_parameter_list:
-	//		optional_class_type VARIABLE
-	//		| optional_class_type '&' VARIABLE
-	//		| optional_class_type '&' VARIABLE '=' static_scalar
-	//		| optional_class_type VARIABLE '=' static_scalar
-	//		| non_empty_parameter_list ',' optional_class_type VARIABLE
-	//		| non_empty_parameter_list ',' optional_class_type '&' VARIABLE
-	//		| non_empty_parameter_list ',' optional_class_type '&' VARIABLE '=' static_scalar
-	//		| non_empty_parameter_list ',' optional_class_type VARIABLE '=' static_scalar
-	//	;
-	//
-	//	optional_class_type:
-	//		/* empty */
-	//		| IDENTIFIER
-	//		| kwARRAY
-	//	;
 
-	/*
-		non_empty_parameter_list:
-			parameter | non_empty_parameter_list ',' parameter
-		;
-
-		parameter:
-			NAME
-		;
-	 */
 	private static class Parameter implements ParserPart {
 
 		public IElementType parse(LuaPsiBuilder builder) {

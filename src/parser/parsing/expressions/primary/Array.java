@@ -17,7 +17,7 @@
 package com.sylvanaar.idea.Lua.parser.parsing.expressions.primary;//package com.sylvanaar.idea.Lua.parser.parsing.expressions.primary;
 //
 //import com.sylvanaar.idea.Lua.lexer.LuaTokenTypes;
-//import com.sylvanaar.idea.Lua.parser.util.LuaPsiBuilder;
+//import com.sylvanaar.idea.Lua.parser.LuaPsiBuilder;
 //import com.sylvanaar.idea.Lua.parser.util.ParserPart;
 //import com.sylvanaar.idea.Lua.parser.util.LuaParserErrors;
 //import com.sylvanaar.idea.Lua.parser.util.ListParsingHelper;

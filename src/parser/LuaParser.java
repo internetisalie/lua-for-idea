@@ -22,7 +22,6 @@ import com.intellij.lang.PsiParser;
 import com.intellij.openapi.project.Project;
 import com.intellij.psi.tree.IElementType;
 import com.sylvanaar.idea.Lua.parser.parsing.Chunk;
-import com.sylvanaar.idea.Lua.parser.util.LuaPsiBuilder;
 import org.apache.log4j.Logger;
 import org.jetbrains.annotations.NotNull;
 
@@ -45,7 +44,7 @@ public class LuaParser implements PsiParser {
  	@NotNull
 	public ASTNode parse(IElementType root, PsiBuilder builder) {
 		builder.setDebugMode(true);
-		com.sylvanaar.idea.Lua.parser.util.LuaPsiBuilder psiBuilder = new LuaPsiBuilder(builder);
+		LuaPsiBuilder psiBuilder = new LuaPsiBuilder(builder);
 
 		PsiBuilder.Marker marker = psiBuilder.mark();
 		Chunk.parse(psiBuilder);

@@ -1,6 +1,6 @@
 package com.sylvanaar.idea.Lua.parser.parsing.expressions;//package com.sylvanaar.idea.Lua.parser.parsing.expressions;
 //
-//import com.sylvanaar.idea.Lua.parser.util.LuaPsiBuilder;
+//import com.sylvanaar.idea.Lua.parser.LuaPsiBuilder;
 //import com.sylvanaar.idea.Lua.parser.util.ParserPart;
 //import com.sylvanaar.idea.Lua.parser.util.LuaParserErrors;
 //import com.sylvanaar.idea.Lua.parser.util.ListParsingHelper;

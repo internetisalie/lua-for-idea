@@ -20,8 +20,8 @@ import com.intellij.lang.PsiBuilder;
 import com.intellij.psi.tree.IElementType;
 import com.intellij.psi.tree.TokenSet;
 import com.sylvanaar.idea.Lua.parser.LuaElementTypes;
+import com.sylvanaar.idea.Lua.parser.LuaPsiBuilder;
 import com.sylvanaar.idea.Lua.parser.util.LuaParserErrors;
-import com.sylvanaar.idea.Lua.parser.util.LuaPsiBuilder;
 
 /**
  * Created by IntelliJ IDEA.

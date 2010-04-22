@@ -17,6 +17,7 @@
 package com.sylvanaar.idea.Lua.parser.util;
 
 import com.intellij.psi.tree.IElementType;
+import com.sylvanaar.idea.Lua.parser.LuaPsiBuilder;
 
 /**
  * @author jay

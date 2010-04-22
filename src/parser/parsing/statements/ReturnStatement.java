@@ -20,7 +20,10 @@ import com.intellij.lang.PsiBuilder;
 import com.intellij.psi.tree.IElementType;
 import com.sylvanaar.idea.Lua.lexer.LuaTokenTypes;
 import com.sylvanaar.idea.Lua.parser.LuaElementTypes;
-import com.sylvanaar.idea.Lua.parser.util.LuaPsiBuilder;
+import com.sylvanaar.idea.Lua.parser.LuaPsiBuilder;
+import com.sylvanaar.idea.Lua.parser.parsing.calls.Variable;
+import com.sylvanaar.idea.Lua.parser.util.ListParsingHelper;
+import com.sylvanaar.idea.Lua.parser.util.ParserPart;
 
 /**
  * Created by IntelliJ IDEA.
@@ -29,16 +32,29 @@ import com.sylvanaar.idea.Lua.parser.util.LuaPsiBuilder;
  */
 public class ReturnStatement implements LuaTokenTypes {
 
-	//	kwRETURN ';'
-	//	| kwRETURN expr ';'
+    // laststat : 'return' (explist1)? 
 	public static IElementType parse(LuaPsiBuilder builder) {
 		if (!builder.compare(RETURN)) {
 			return LuaElementTypes.EMPTY_INPUT;
 		}
 		PsiBuilder.Marker statement = builder.mark();
-		builder.advanceLexer();
+
+
+	    parseReturnValues(builder);
 
 		statement.done(LuaElementTypes.RETURN);
 		return LuaElementTypes.RETURN;
 	}
+
+	private static void parseReturnValues(LuaPsiBuilder builder) {
+		ParserPart localVariable = new ParserPart() {
+			public IElementType parse(LuaPsiBuilder builder) {
+				return Variable.parse(builder);
+			}
+		};
+		ListParsingHelper.parseCommaDelimitedExpressionWithLeadExpr(builder,
+			localVariable.parse(builder),
+			localVariable,
+			false);
+    }
 }

@@ -20,10 +20,11 @@ import com.intellij.lang.PsiBuilder;
 import com.intellij.psi.tree.IElementType;
 import com.sylvanaar.idea.Lua.lexer.LuaTokenTypes;
 import com.sylvanaar.idea.Lua.parser.LuaElementTypes;
+import com.sylvanaar.idea.Lua.parser.LuaPsiBuilder;
+import com.sylvanaar.idea.Lua.parser.parsing.calls.Function;
 import com.sylvanaar.idea.Lua.parser.parsing.calls.Variable;
 import com.sylvanaar.idea.Lua.parser.parsing.expressions.Expression;
 import com.sylvanaar.idea.Lua.parser.util.ListParsingHelper;
-import com.sylvanaar.idea.Lua.parser.util.LuaPsiBuilder;
 import com.sylvanaar.idea.Lua.parser.util.ParserPart;
 
 /**
@@ -39,7 +40,13 @@ public class AssignmentStatement implements LuaTokenTypes {
 
         parseLocallVarList(builder);
 
-        builder.match(ASSIGN);
+        if (!builder.compare(LPAREN)) {
+            statement.drop();
+
+            return Function.parse(builder);
+        }
+
+        builder.match(LuaElementTypes.ASSIGN);
 
         parseExprList(builder);
 

@@ -20,8 +20,8 @@ import com.intellij.lang.PsiBuilder;
 import com.intellij.psi.tree.IElementType;
 import com.intellij.psi.tree.TokenSet;
 import com.sylvanaar.idea.Lua.parser.LuaElementTypes;
-import com.sylvanaar.idea.Lua.parser.parsing.StatementList;
-import com.sylvanaar.idea.Lua.parser.util.LuaPsiBuilder;
+import com.sylvanaar.idea.Lua.parser.LuaPsiBuilder;
+import com.sylvanaar.idea.Lua.parser.parsing.Block;
 
 /**
  * Created by IntelliJ IDEA.
@@ -74,7 +74,7 @@ public class Function implements LuaElementTypes {
 
         funcStmt.done(anon ? ANON_FUNCTION_DEFINITION : FUNCTION_DEFINITION);
 
-        StatementList.parse(builder, END);
+        Block.parse(builder);
 
         builder.match(END);
 

@@ -20,10 +20,10 @@ import com.intellij.lang.PsiBuilder;
 import com.intellij.psi.tree.IElementType;
 import com.sylvanaar.idea.Lua.lexer.LuaTokenTypes;
 import com.sylvanaar.idea.Lua.parser.LuaElementTypes;
+import com.sylvanaar.idea.Lua.parser.LuaPsiBuilder;
 import com.sylvanaar.idea.Lua.parser.parsing.StatementList;
 import com.sylvanaar.idea.Lua.parser.parsing.calls.Variable;
 import com.sylvanaar.idea.Lua.parser.util.ListParsingHelper;
-import com.sylvanaar.idea.Lua.parser.util.LuaPsiBuilder;
 import com.sylvanaar.idea.Lua.parser.util.ParserPart;
 
 import static com.sylvanaar.idea.Lua.parser.LuaElementTypes.GENERIC_FOR_BLOCK;
@@ -72,30 +72,7 @@ public class ForStatement implements LuaTokenTypes {
 		statement.done(forType);
 		return forType;
 	}
-//
-//	//	for_statement:
-//	//		statement
-//	//		| ':' statement_list kwENDFOR ';'
-//	//	;
-//	private static void parseForStatement(LuaPsiBuilder builder) {
-//		if (builder.compareAndEat(opCOLON)) {
-//			StatementList.parse(builder, kwENDFOR);
-//			builder.match(kwENDFOR);
-//			builder.match(opSEMICOLON);
-//		} else {
-//			Statement.parse(builder);
-//		}
-//	}
 
-	//	for_expr:
-	//		/* empty */
-	//		| non_empty_for_expr
-	//	;
-	//
-	//	non_empty_for_expr:
-	//		non_empty_for_expr ',' expr
-	//		| expr
-//	//	;
 	private static void parseForExpression(LuaPsiBuilder builder) {
 		ParserPart parserPart = new ParserPart() {
 			public IElementType parse(LuaPsiBuilder builder) {
