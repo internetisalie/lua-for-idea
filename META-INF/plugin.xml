@@ -1,0 +1,176 @@
+<!--
+  ~ Copyright 2010 Jon S Akhtar (Sylvanaar)
+  ~
+  ~   Licensed under the Apache License, Version 2.0 (the "License");
+  ~   you may not use this file except in compliance with the License.
+  ~   You may obtain a copy of the License at
+  ~
+  ~   http://www.apache.org/licenses/LICENSE-2.0
+  ~
+  ~   Unless required by applicable law or agreed to in writing, software
+  ~   distributed under the License is distributed on an "AS IS" BASIS,
+  ~   WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+  ~   See the License for the specific language governing permissions and
+  ~   limitations under the License.
+  -->
+
+<idea-plugin url="http://bitbucket.org/sylvanaar2/lua-for-idea/" version="2">
+    <name>Lua</name>
+    <description><![CDATA[
+        <html>
+        <head>
+            <title>Lua language integration.</title>
+        </head>
+        <body>
+        <h3>Lua language integration</h3>
+
+        <p>Features:</p>
+        <ol>
+            <li>Hilighing global vs local variables</li>            
+            <li>Script execution and run configurations</li>
+            <li>Kahlua interpreter window for interactive script execution (repl)</li>
+            <li>Comes with an embedded Lua compiler written in Java (Kahlua)</li>
+            <li>Can also optionally do syntax checking when luac is in the path (experimental)</li>
+            <li>Structure view (experimental)</li>
+            <li>Syntax highlighting - including proper handling of extended syntax comments and quotes</li>
+            <li>Customizable highlighting colors</li>
+            <li>Code folding for code blocks and comments</li>
+            <li>Brace Matching for do blocks, long strings and comments, and (, { , [</li>
+            <li>Minor feature: comment in/out.</li>
+        </ol>
+        </body>
+        </html>
+        ]]></description>
+    <change-notes><![CDATA[
+        <html>
+        <body>
+        <dl>
+            <dt>0.7-0.7.1</dt>
+            <dd>Using internal parser, instead of external annotator.</dd>
+            <dt>0.6.5</dt>
+            <dd>display key commands for Kahlua shell</dd>
+            <dt>0.6.3 - 0.6.4</dt>
+            <dd>Improve annotation when using Kahlua - now it annotates semi-instantly</dd>
+            <dt>0.6.2</dt>
+            <dd>Fix unresponsive annotator for syntax errors</dd>
+            <dt>0.6.1</dt>
+            <dd>Bug fixes, and disabling of some unimplemented features</dd>
+            <dt>0.6</dt>
+            <dd>Now using Kahlua as the built in interpreter tool, and the compiler</dd>    
+            <dt>0.5.1</dt>
+            <dd>Improved the script execution interface, coded mostly from the bash plugin's implementation</dd>            
+            <dt>0.5.0</dt>
+            <dd>Very basic script execution support. The lua interpreter needs to be on your path for this to work. Borrowed lots of code from the bash plugin</dd>            
+            <dt>0.4.3</dt>
+            <dd>Removed some java specific code</dd>
+            <dt>0.4.2</dt>
+            <dd>Enabled some more experimental features, run configs, and formatting. Neither really work well at the moment</dd>
+            <dt>0.4.1</dt>
+            <dd>Added application level options for syntax check type</dd>
+            <dt>0.4.0</dt>
+            <dd>Using luaj to syntax check the current file. Optional luac in next release</dd>
+            <dt>0.3.0</dt>
+            <dd>Using luac to syntax check the current file when luac is on the path.</dd>
+            <dt>0.2.1</dt>
+            <dd>Improved parser offering better code folding for functions</dd>
+            <dt>0.2.0</dt>
+            <dd>Simple block parser based code folding</dd>
+            <dt>0.1.7</dt>
+            <dd>Fix to make eg. ----[[ a single long comment instead of a short comment followed by a long comment</dd>
+            <dt>0.1.6</dt>
+            <dd>Fix to ignore newline after extended string start token
+            </dd>
+            <dt>0.1.5</dt>
+            <dd>Customizable coloring</dd>
+        </dl>
+        </body>
+        </html>
+        ]]></change-notes>
+    <version>0.7.1</version>
+    <vendor url="https://www.ohloh.net/accounts/sylvanaar" email="sylvanaar@mindspring.com">sylvanaar</vendor>
+    <category>Custom Languages</category>
+    <idea-version since-build="8000"/>
+
+    <depends>com.intellij.modules.lang</depends>
+    <depends>com.intellij.modules.platform</depends>
+
+    <application-components>
+        <!-- Add your application components here -->
+        <component>            
+            <implementation-class>com.sylvanaar.idea.Lua.LuaSupportLoader</implementation-class>
+        </component>
+        <component>
+            <implementation-class>com.sylvanaar.idea.Lua.configurable.ui.LuaOptionsPanel</implementation-class>
+        </component>
+        <component>
+            <implementation-class>com.sylvanaar.idea.Lua.settings.facet.LuaFacetLoader</implementation-class>
+        </component>
+
+
+    </application-components>
+
+    <project-components>
+        <component>
+            <implementation-class>com.sylvanaar.idea.Lua.settings.LuaProjectSettingsComponent</implementation-class>
+        </component>
+    </project-components>
+
+    <actions>
+        <action id="Lua.NewLuaScript" class="com.sylvanaar.idea.Lua.actions.NewLuaFileAction"
+                text="Lua Script" description="Create new Lua script file">
+            <add-to-group group-id="NewGroup" relative-to-action="NewFile" anchor="after"/>
+        </action>
+    </actions>
+
+    <!--<extensionPoints>-->
+         <!--<extensionPoint name="scriptType" interface="com.sylvanaar.idea.Lua.extensions.LuaScriptExtensionPoint"/>-->
+    <!--</extensionPoints>-->
+
+    <extensions defaultExtensionNs="com.intellij">
+        <toolWindow id="Kahlua" anchor="right" icon="/icons/Lua.png"
+                    factoryClass="com.sylvanaar.idea.Lua.KahLuaInterpreterWindowFactory"/>
+
+        <projectConfigurable implementation="com.sylvanaar.idea.Lua.settings.LuaProjectSettingsConfigurable" />
+
+        <projectService serviceImplementation="com.sylvanaar.idea.Lua.settings.LuaProjectSettings" serviceInterface="com.sylvanaar.idea.Lua.settings.LuaProjectSettings" />
+        
+        <fileTypeFactory implementation="com.sylvanaar.idea.Lua.LuaFileTypeLoader"/>
+
+        <configurationType id="Lua" implementation="com.sylvanaar.idea.Lua.run.LuaConfigurationType"/>
+
+        <configurationProducer id="Lua" implementation="com.sylvanaar.idea.Lua.run.LuaRunConfigurationProducer" />
+        
+        <programRunner  implementation="com.sylvanaar.idea.Lua.run.LuaRunner"/>
+
+
+        
+        <!--<lang.formatter language="Lua" implementationClass="com.sylvanaar.idea.Lua.formatter.LuaFormattingModelBuilder"/>-->
+
+        <syntaxHighlighter key="Lua" implementationClass="com.sylvanaar.idea.Lua.hilighter.LuaSyntaxHighlighter"/>
+
+        <lang.braceMatcher language="Lua"
+                           implementationClass="com.sylvanaar.idea.Lua.LuaBraceMatcher"/>
+
+<!--        <externalAnnotator language="Lua"
+                           implementationClass="com.sylvanaar.idea.Lua.annotator.LuaExternalDelegatingAnnotator"/>-->
+
+        <annotator language="Lua" implementationClass="com.sylvanaar.idea.Lua.annotator.LuaAnnotator" />
+        <lang.parserDefinition language="Lua" implementationClass="com.sylvanaar.idea.Lua.parser.LuaParserDefinition"/>
+
+        <colorSettingsPage implementation="com.sylvanaar.idea.Lua.hilighter.LuaColorsPage"/>
+
+        <lang.commenter language="Lua" implementationClass="com.sylvanaar.idea.Lua.LuaCommenter"/>
+
+        <lang.foldingBuilder language="Lua" implementationClass="com.sylvanaar.idea.Lua.LuaFoldingBuilder"/>
+
+        <fileTypeIndentOptionsProvider id="Lua" implementation="com.sylvanaar.idea.Lua.formatter.LuaIndentOptionsProvider"/>
+
+        <!--<completion.contributor language="Lua" implementationClass="com.sylvanaar.idea.Lua.LuaCompletionContributer" />-->
+
+        <lang.psiStructureViewFactory language="Lua"
+                                      implementationClass="com.sylvanaar.idea.Lua.structure.LuaStructureViewFactory"/>
+
+        <!--<lang.findUsagesProvider language="Lua" implementationClass="com.sylvanaar.idea.Lua.LuaFindUsagesProvider" />-->
+
+    </extensions>
+</idea-plugin>
