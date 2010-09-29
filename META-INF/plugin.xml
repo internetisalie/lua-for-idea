@@ -1,0 +1,306 @@
+<!--
+  ~ Copyright 2010 Jon S Akhtar (Sylvanaar)
+  ~
+  ~   Licensed under the Apache License, Version 2.0 (the "License");
+  ~   you may not use this file except in compliance with the License.
+  ~   You may obtain a copy of the License at
+  ~
+  ~   http://www.apache.org/licenses/LICENSE-2.0
+  ~
+  ~   Unless required by applicable law or agreed to in writing, software
+  ~   distributed under the License is distributed on an "AS IS" BASIS,
+  ~   WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+  ~   See the License for the specific language governing permissions and
+  ~   limitations under the License.
+  -->
+
+<idea-plugin url="http://bitbucket.org/sylvanaar2/lua-for-idea/" version="2">
+    <name>Lua</name>
+    <id>Lua</id>
+    <version>0.8.18</version>
+    <idea-version since-build="80.8000" until-build="95.9999" />
+    <category>Custom Languages</category>
+    <vendor url="https://www.ohloh.net/accounts/sylvanaar" email="sylvanaar@mindspring.com">sylvanaar</vendor>
+    
+    <description><![CDATA[
+        <html>
+        <head>
+            <title>Lua language integration.</title>
+        </head>
+        <body>
+        <h3>Lua language integration</h3>
+
+        <p>Features:</p>
+        <ol>
+            <li>JavaHelp For Lua 5.1</li>
+            <li>Execution in the Kahlua interpreter (<b>experimental</b>)</li>
+            <li>Identifier Highlighter (<b>experimental</b>)</li>
+            <li>Go to definition (<b>experimental</b>)</li>
+            <li>find usages (<b>experimental</b>)</li>
+            <li>Code formatting (<b>experimental</b>)</li>
+            <li>Keyword completion</li>
+            <li>5 code intentions(s)</li>
+            <li>2 code inspection(s)</li>
+            <li>Highlighting global vs local variables</li>
+            <li>Script execution and run configurations</li>
+            <li>Kahlua interpreter window for interactive script execution (repl)</li>
+            <li>Comes with an embedded Lua compiler written in Java (Kahlua)</li>
+            <li>Structure view</li>
+            <li>Syntax checking</li>
+            <li>Syntax highlighting - including proper handling of extended syntax comments and quotes</li>
+            <li>Customizable highlighting colors</li>
+            <li>Code folding for code blocks and comments</li>
+            <li>Brace Matching for do blocks, long strings and comments, and (, { , [</li>
+            <li>Minor feature: comment in/out.</li>
+        </ol>
+        </body>
+        </html>
+        ]]></description>
+    <change-notes><![CDATA[
+        <html>
+        <body>
+        <dl>
+            <dt>0.8.17</dt>
+            <dd>Long string literal fix</dd>
+            <dt>0.8.16</dt>
+            <dd>Long string literal fix</dd>  
+            <dt>0.8.15</dt>
+            <dd>Much improved code formatting, and editor auto-indention</dd>  
+            <dt>0.8.14</dt>
+            <dd>fixes for intentions, tail call marker, improved parser error recovery</dd>  
+            <dt>0.8.13</dt>
+            <dd>automated error submissions</dd>  
+            <dt>0.8.10-12</dt>
+            <dd>Many improvements to the code formatter (still considered experimental)</dd>                 
+            <dt>0.8.9</dt>
+            <dd>Identifier hilighter, javahelp topic for lua 5.1, Kahlua execution</dd>            
+            <dt>0.8.1-0.8.4</dt>
+            <dd>Identifier resolution fixes</dd>
+            <dt>0.8</dt>
+            <dd>Experimental reference resolution for go to declaration and find usages. Does not work for alot of cases. Kahlua SDK also not working</dd>
+            <dt>0.7.13-16</dt>
+            <dd>Fix the unbalanced assignment inspection for the single function call case, automatically select the interpreter from the SDK, fix structure view</dd>
+            <dt>0.7.12</dt>
+            <dd>Support for Lua SDK specification</dd>
+            <dt>0.7.11</dt>
+            <dd>Support for Lua Module Projects</dd>
+            <dt>0.7.10</dt>
+            <dd>Fixed tail call highlighting, minor bugfixes</dd>
+            <dt>0.7.9</dt>
+            <dd>Restore operation in Rubymine (tested) and other jetbrains products</dd>
+            <dt>0.7.6-0.7.8</dt>
+            <dd>Bug fixes</dd>
+            <dt>0.7.5</dt>
+            <dd>First inspection, global self usage</dd>
+            <dt>0.7-0.7.4</dt>
+            <dd>Using internal parser, instead of external annotator.</dd>
+            <dt>0.6.5</dt>
+            <dd>display key commands for Kahlua shell</dd>
+            <dt>0.6.3 - 0.6.4</dt>
+            <dd>Improve annotation when using Kahlua - now it annotates semi-instantly</dd>
+            <dt>0.6.2</dt>
+            <dd>Fix unresponsive annotator for syntax errors</dd>
+            <dt>0.6.1</dt>
+            <dd>Bug fixes, and disabling of some unimplemented features</dd>
+            <dt>0.6</dt>
+            <dd>Now using Kahlua as the built in interpreter tool, and the compiler</dd>    
+            <dt>0.5.1</dt>
+            <dd>Improved the script execution interface, coded mostly from the bash plugin's implementation</dd>            
+            <dt>0.5.0</dt>
+            <dd>Very basic script execution support. The lua interpreter needs to be on your path for this to work. Borrowed lots of code from the bash plugin</dd>            
+            <dt>0.4.3</dt>
+            <dd>Removed some java specific code</dd>
+            <dt>0.4.2</dt>
+            <dd>Enabled some more experimental features, run configs, and formatting. Neither really work well at the moment</dd>
+            <dt>0.4.1</dt>
+            <dd>Added application level options for syntax check type</dd>
+            <dt>0.4.0</dt>
+            <dd>Using luaj to syntax check the current file. Optional luac in next release</dd>
+            <dt>0.3.0</dt>
+            <dd>Using luac to syntax check the current file when luac is on the path.</dd>
+            <dt>0.2.1</dt>
+            <dd>Improved parser offering better code folding for functions</dd>
+            <dt>0.2.0</dt>
+            <dd>Simple block parser based code folding</dd>
+            <dt>0.1.7</dt>
+            <dd>Fix to make eg. ----[[ a single long comment instead of a short comment followed by a long comment</dd>
+            <dt>0.1.6</dt>
+            <dd>Fix to ignore newline after extended string start token
+            </dd>
+            <dt>0.1.5</dt>
+            <dd>Customizable coloring</dd>
+        </dl>
+        </body>
+        </html>
+        ]]></change-notes>
+
+
+    <depends>com.intellij.modules.lang</depends>
+    <!--<depends>com.intellij.modules.platform</depends>-->
+
+    <application-components>
+        <!-- Add your application components here -->
+        <component>            
+            <implementation-class>com.sylvanaar.idea.Lua.LuaSupportLoader</implementation-class>
+        </component>
+        <component>
+            <implementation-class>com.sylvanaar.idea.Lua.sdk.KahluaSdk</implementation-class>
+            <interface-class>com.intellij.openapi.projectRoots.Sdk</interface-class>
+        </component>
+        <component>
+            <implementation-class>com.sylvanaar.idea.Lua.editor.highlighter.LuaIdentifierHighlighterAppComponent
+            </implementation-class>
+        </component>
+        <component>
+            <implementation-class>com.sylvanaar.idea.Lua.options.LuaOptionsPanel</implementation-class>
+        </component>
+        <component>
+            <implementation-class>com.sylvanaar.idea.Lua.options.LuaOptionsComponent</implementation-class>
+        </component>        
+        <!--<component>-->
+            <!--<implementation-class>com.sylvanaar.idea.Lua.settings.facet.LuaFacetLoader</implementation-class>-->
+        <!--</component>-->
+
+
+    </application-components>
+
+    <project-components>
+        <component>
+            <implementation-class>com.sylvanaar.idea.Lua.settings.LuaProjectSettingsComponent</implementation-class>
+        </component>
+    </project-components>
+
+    <actions>
+        <action id="Lua.NewLuaScript" class="com.sylvanaar.idea.Lua.actions.NewLuaFileAction"
+                text="Lua Script" description="Create new Lua script file">
+            <add-to-group group-id="NewGroup" relative-to-action="NewFile" anchor="after"/>
+        </action>
+        <!--<action id="trigger.exception" class="com.sylvanaar.idea.errorreporting.TriggerExceptionAction" >-->
+            <!--<add-to-group group-id="NewGroup" relative-to-action="NewFile" anchor="after"/>-->
+        <!--</action>-->
+    </actions>
+
+    <!--<helpset file="IDLuaHelp.jar" path="/Lua.hs" />-->
+
+    <extensions defaultExtensionNs="com.intellij">
+        <!-- Error reporter-->
+        <errorHandler implementation="com.sylvanaar.idea.errorreporting.BugzReport"/>
+
+        <!--<facetType id="Lua" implementation="com.sylvanaar.idea.Lua.settings.facet.LuaFacetType" />-->
+        <!--<frameworkSupport id="Lua" implementation="com.sylvanaar.idea.Lua.settings.facet.LuaFacetTypeFrameworkSupportProvider"/>-->
+
+
+       
+        <!-- Repl Window -->
+        <toolWindow id="Kahlua" anchor="right" icon="/icons/Lua.png"
+                    factoryClass="com.sylvanaar.idea.Lua.KahLuaInterpreterWindowFactory"/>
+
+        <!-- Project Configuration -->
+        <!--<projectConfigurable implementation="com.sylvanaar.idea.Lua.settings.LuaProjectSettingsConfigurable" />-->
+
+        <projectService serviceImplementation="com.sylvanaar.idea.Lua.settings.LuaProjectSettings"
+                        serviceInterface="com.sylvanaar.idea.Lua.settings.LuaProjectSettings" />
+
+        <fileTypeFactory implementation="com.sylvanaar.idea.Lua.LuaFileTypeLoader"/>
+
+
+        <!-- Script Running -->
+        <configurationType id="Lua" implementation="com.sylvanaar.idea.Lua.run.LuaConfigurationType"/>
+
+        <configurationProducer id="Lua" implementation="com.sylvanaar.idea.Lua.run.LuaRunConfigurationProducer" />
+
+        <programRunner  implementation="com.sylvanaar.idea.Lua.run.LuaRunner"/>
+
+        <!-- Editor -->
+
+
+        <!-- Syntax Hilighting extensions -->
+        <syntaxHighlighter key="Lua" implementationClass="com.sylvanaar.idea.Lua.editor.highlighter.LuaSyntaxHighlighter"/>
+
+        <colorSettingsPage implementation="com.sylvanaar.idea.Lua.editor.highlighter.LuaColorsPage"/>
+
+        <!--<quoteHandler fileType="Lua" className="com.sylvanaar.idea.Lua.editor.highlighter.LuaQuoteHandler" />-->
+        
+        <!-- Annotator extensions -->
+        <annotator language="Lua" implementationClass="com.sylvanaar.idea.Lua.editor.annotator.LuaAnnotator" />
+
+        <inspectionToolProvider id="Lua" implementation="com.sylvanaar.idea.Lua.editor.inspections.InspectionProvider"/>
+
+        <!--        <externalAnnotator language="Lua"
+                                   implementationClass="com.sylvanaar.idea.Lua.editor.annotator.LuaExternalDelegatingAnnotator"/>-->
+
+        <projectService serviceInterface="com.sylvanaar.idea.Lua.lang.psi.LuaPsiElementFactory"
+                    serviceImplementation="com.sylvanaar.idea.Lua.lang.psi.impl.LuaPsiElementFactoryImpl"/>
+
+        <completion.contributor language="Lua" implementationClass="com.sylvanaar.idea.Lua.editor.completion.LuaCompletionContributor" />
+
+        <!-- Lang extensions -->
+        <lang.formatter language="Lua" implementationClass="com.sylvanaar.idea.Lua.lang.formatter.LuaFormattingModelBuilder"/>
+        <fileTypeIndentOptionsProvider id="Lua" implementation="com.sylvanaar.idea.Lua.lang.formatter.LuaIndentOptionsProvider"/>
+
+        <lang.braceMatcher language="Lua"
+                           implementationClass="com.sylvanaar.idea.Lua.lang.LuaBraceMatcher"/>
+
+        <lang.namesValidator language="Lua" implementationClass="com.sylvanaar.idea.Lua.lang.LuaNamesValidation" />
+
+        <lang.parserDefinition language="Lua" implementationClass="com.sylvanaar.idea.Lua.lang.parser.LuaParserDefinition"/>
+
+        <lang.commenter language="Lua" implementationClass="com.sylvanaar.idea.Lua.lang.LuaCommenter"/>
+
+        <lang.foldingBuilder language="Lua" implementationClass="com.sylvanaar.idea.Lua.lang.LuaFoldingBuilder"/>
+
+        <!--<lang.documentationProvider language="Lua" implementationClass="com.sylvanaar.idea.Lua.lang.documentor.LuaDocumentationProvider" />-->
+
+        <lang.psiStructureViewFactory language="Lua"
+                                      implementationClass="com.sylvanaar.idea.Lua.lang.structure.LuaStructureViewFactory"/>
+
+        <!--<lang.refactoringSupport language="Lua" implementationClass="com.sylvanaar.idea.Lua.lang.LuaRefactoringSupport" />-->
+
+        <lang.findUsagesProvider language="Lua" implementationClass="com.sylvanaar.idea.Lua.findUsages.LuaFindUsagesProvider" />
+
+
+        <codeInsight.lineMarkerProvider language="Lua" implementationClass="com.sylvanaar.idea.Lua.codeInsight.LuaLineMarkerProvider" />            
+
+
+        <moduleType id="LUA_MODULE" implementationClass="com.sylvanaar.idea.Lua.module.LuaModuleType"/>
+        <moduleConfigurationEditorProvider implementation="com.sylvanaar.idea.Lua.module.LuaModuleConfigurationEditorProvider" />
+        
+        <sdkType implementation="com.sylvanaar.idea.Lua.sdk.LuaSdkType"/>
+
+    <!-- control -->
+    <intentionAction>
+      <bundleName>com.sylvanaar.idea.Lua.intentions.LuaIntentionsBundle</bundleName>
+      <categoryKey>intention.category.lua/intention.category.control.flow</categoryKey>
+      <className>com.sylvanaar.idea.Lua.intentions.control.FlipComparisonIntention</className>
+    </intentionAction>
+    <intentionAction>
+      <bundleName>com.sylvanaar.idea.Lua.intentions.LuaIntentionsBundle</bundleName>
+      <categoryKey>intention.category.lua/intention.category.control.flow</categoryKey>
+      <className>com.sylvanaar.idea.Lua.intentions.control.FlipConjunctionIntention</className>
+    </intentionAction>
+    <intentionAction>
+      <bundleName>com.sylvanaar.idea.Lua.intentions.LuaIntentionsBundle</bundleName>
+      <categoryKey>intention.category.lua/intention.category.control.flow</categoryKey>
+      <className>com.sylvanaar.idea.Lua.intentions.control.ExpandBooleanIntention</className>
+    </intentionAction>
+    <intentionAction>
+      <bundleName>com.sylvanaar.idea.Lua.intentions.LuaIntentionsBundle</bundleName>
+      <categoryKey>intention.category.lua/intention.category.control.flow</categoryKey>
+      <className>com.sylvanaar.idea.Lua.intentions.control.NegateComparisonIntention</className>
+    </intentionAction>
+    <!-- comments -->
+    <intentionAction>
+      <bundleName>com.sylvanaar.idea.Lua.intentions.LuaIntentionsBundle</bundleName>
+      <categoryKey>intention.category.lua/intention.category.comments</categoryKey>
+      <className>com.sylvanaar.idea.Lua.intentions.comments.ChangeToCStyleCommentIntention</className>
+    </intentionAction>
+    <intentionAction>
+      <bundleName>com.sylvanaar.idea.Lua.intentions.LuaIntentionsBundle</bundleName>
+      <categoryKey>intention.category.lua/intention.category.comments</categoryKey>
+      <className>com.sylvanaar.idea.Lua.intentions.comments.ChangeToEndOfLineCommentIntention</className>
+    </intentionAction>
+
+
+
+    </extensions>
+</idea-plugin>
