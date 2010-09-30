@@ -32,10 +32,7 @@ import com.sylvanaar.idea.Lua.lang.formatter.processors.LuaIndentProcessor;
 import com.sylvanaar.idea.Lua.lang.lexer.LuaTokenTypes;
 import com.sylvanaar.idea.Lua.lang.parser.LuaElementTypes;
 import com.sylvanaar.idea.Lua.lang.psi.LuaPsiFileBase;
-import com.sylvanaar.idea.Lua.lang.psi.expressions.LuaBinaryExpression;
-import com.sylvanaar.idea.Lua.lang.psi.expressions.LuaExpressionList;
-import com.sylvanaar.idea.Lua.lang.psi.expressions.LuaIdentifierList;
-import com.sylvanaar.idea.Lua.lang.psi.expressions.LuaParameterList;
+import com.sylvanaar.idea.Lua.lang.psi.expressions.*;
 import com.sylvanaar.idea.Lua.lang.psi.statements.LuaBlock;
 
 import java.util.ArrayList;
@@ -193,7 +190,8 @@ public class LuaBlockGenerator implements LuaElementTypes {
         return blockPsi instanceof LuaParameterList ||
                 blockPsi instanceof LuaIdentifierList ||
                 blockPsi instanceof LuaExpressionList ||
-                blockPsi instanceof LuaBlock;
+                blockPsi instanceof LuaBlock ||
+                blockPsi instanceof LuaTableConstructor;
     }
 //
 
