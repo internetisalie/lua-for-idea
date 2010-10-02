@@ -17,6 +17,7 @@
 package com.sylvanaar.idea.Lua.lang.psi.statements;
 
 import com.sylvanaar.idea.Lua.lang.psi.LuaPsiElement;
+import com.sylvanaar.idea.Lua.lang.psi.controlFlow.Instruction;
 
 /**
  * Created by IntelliJ IDEA.
@@ -26,4 +27,5 @@ import com.sylvanaar.idea.Lua.lang.psi.LuaPsiElement;
  */
 public interface LuaBlock extends LuaPsiElement {
      public LuaStatementElement[] getStatements();
+     public Instruction[] getControlFlow();
 }

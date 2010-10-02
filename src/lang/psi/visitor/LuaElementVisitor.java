@@ -20,8 +20,7 @@ import com.intellij.openapi.progress.ProgressManager;
 import com.intellij.psi.PsiElementVisitor;
 import com.sylvanaar.idea.Lua.lang.psi.LuaPsiElement;
 import com.sylvanaar.idea.Lua.lang.psi.LuaPsiFile;
-import com.sylvanaar.idea.Lua.lang.psi.expressions.LuaIdentifier;
-import com.sylvanaar.idea.Lua.lang.psi.expressions.LuaReferenceExpression;
+import com.sylvanaar.idea.Lua.lang.psi.expressions.*;
 import com.sylvanaar.idea.Lua.lang.psi.impl.LuaPsiKeywordImpl;
 import com.sylvanaar.idea.Lua.lang.psi.impl.LuaPsiTokenImpl;
 import com.sylvanaar.idea.Lua.lang.psi.statements.*;
@@ -44,6 +43,27 @@ public class LuaElementVisitor extends PsiElementVisitor {
         visitElement(e);
     }
 
+    public void visitClosure(LuaFunctionDefinitionStatement closure) {
+        visitStatement(closure);
+    }
+    public void visitExpression(LuaExpression e) {
+        visitElement(e);
+    }
+    public void visitBreakStatement(LuaBreakStatement e) {
+        visitStatement(e);
+    }
+    public void visitVariable(LuaVariable e) {
+        visitExpression(e);
+    }
+
+  public void visitParenthesizedExpression(LuaParenthesizedExpression expression) {
+      visitExpression(expression);
+  }
+
+  public void visitUnaryExpression(LuaUnaryExpression expression) {
+      visitExpression(expression);
+  }
+
     public void visitFunctionDef(LuaFunctionDefinitionStatement e) {
         visitElement(e);
     }
@@ -64,6 +84,10 @@ public class LuaElementVisitor extends PsiElementVisitor {
         visitElement(e);
     }
 
+    public void viditBreakStatement(LuaBreakStatement statement) {
+        visitStatement(statement);
+    }
+       
     public void visitGenericForStatement(LuaGenericForStatement e) {
         visitElement(e);
     }

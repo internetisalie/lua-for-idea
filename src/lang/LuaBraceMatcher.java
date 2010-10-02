@@ -36,7 +36,7 @@ public class LuaBraceMatcher implements PairedBraceMatcher {
     public static final BracePair[] BRACES =
             { new BracePair(LPAREN, RPAREN, false),
            // new BracePair(LBRACK, RBRACK, false),
-            new BracePair(LCURLY, RCURLY, true),
+            new BracePair(LCURLY, RCURLY, false),
             new BracePair(REPEAT, UNTIL, true),
             new BracePair(DO, END, true),
             new BracePair(IF, END, true),
@@ -59,7 +59,7 @@ public class LuaBraceMatcher implements PairedBraceMatcher {
         || WS == lbraceType
         || COMMENT_SET.contains(lbraceType)
         || lbraceType == SEMI
-        || lbraceType == COMMA
+//        || lbraceType == COMMA
         || lbraceType == RPAREN
         || lbraceType == RBRACK
         || lbraceType == RCURLY

@@ -25,7 +25,7 @@ import com.sylvanaar.idea.Lua.lang.psi.LuaPsiElement;
  * Date: Apr 14, 2010
  * Time: 6:41:07 PM
  */
-public interface LuaParameterList extends  LuaPsiElement {
+public interface LuaParameterList extends  LuaPsiElement, LuaTuple {
     PsiElement getLeftParen();
 
     PsiElement getRightParen();

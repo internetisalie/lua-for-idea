@@ -20,6 +20,8 @@ import com.intellij.lang.ASTNode;
 import com.intellij.psi.PsiElement;
 import com.intellij.psi.ResolveState;
 import com.intellij.psi.scope.PsiScopeProcessor;
+import com.sylvanaar.idea.Lua.lang.psi.LuaPsiType;
+import com.sylvanaar.idea.Lua.lang.psi.expressions.LuaExpression;
 import com.sylvanaar.idea.Lua.lang.psi.expressions.LuaIdentifierList;
 import com.sylvanaar.idea.Lua.lang.psi.expressions.LuaReferenceExpression;
 import com.sylvanaar.idea.Lua.lang.psi.statements.LuaDeclaration;
@@ -69,4 +71,13 @@ public class LuaIdentifierListImpl extends LuaExpressionImpl implements LuaIdent
         return true;
     }
 
+    @Override
+    public LuaExpression[] getComponents() {
+        return new LuaExpression[0];  //To change body of implemented methods use File | Settings | File Templates.
+    }
+
+    @Override
+    public LuaPsiType[] getComponentTypes() {
+        return new LuaPsiType[0];  //To change body of implemented methods use File | Settings | File Templates.
+    }
 }

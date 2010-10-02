@@ -16,6 +16,7 @@
 
 package com.sylvanaar.idea.Lua.lang.psi;
 
+import com.intellij.psi.PsiElement;
 import com.sylvanaar.idea.Lua.lang.psi.expressions.LuaParameterList;
 import com.sylvanaar.idea.Lua.lang.psi.statements.LuaBlock;
 
@@ -30,4 +31,6 @@ public interface LuaFunctionDefinition extends LuaPsiElement {
     LuaParameterList getParameters();
 
     LuaBlock getBlock();
+
+    PsiElement getEndElement();
 }

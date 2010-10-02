@@ -31,4 +31,10 @@ public class LuaPsiType {
     private LuaPsiType(int i) {
         type = i;
     }
+
+    public boolean isAssignableFrom(LuaPsiType i) { return true; }
+
+    public String getCanonicalText() {
+            return null;  //To change body of created methods use File | Settings | File Templates.
+    }
 }

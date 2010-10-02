@@ -1,3 +1,9 @@
+function a (...)
+    return ...
+end
+
+for k,v in pairs(c) do end
+
 local foo
 
 local foo = foo
@@ -63,5 +69,6 @@ String]]
 
 
 
-
+a = { a, b, c
+}
         

@@ -29,7 +29,7 @@ import com.sylvanaar.idea.Lua.lang.psi.LuaPsiType;
 public interface LuaExpression extends LuaPsiElement {
     PsiElement replaceWithExpression(LuaExpression newCall, boolean b);
 
-    LuaPsiType getType();
+    LuaPsiType getLuaType();
 
 
 }

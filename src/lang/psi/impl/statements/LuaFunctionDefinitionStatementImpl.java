@@ -21,6 +21,7 @@ import com.intellij.psi.PsiElement;
 import com.intellij.psi.PsiElementVisitor;
 import com.intellij.psi.ResolveState;
 import com.intellij.psi.scope.PsiScopeProcessor;
+import com.sylvanaar.idea.Lua.lang.lexer.LuaTokenTypes;
 import com.sylvanaar.idea.Lua.lang.parser.LuaElementTypes;
 import com.sylvanaar.idea.Lua.lang.psi.LuaFunctionIdentifier;
 import com.sylvanaar.idea.Lua.lang.psi.expressions.LuaParameter;
@@ -32,6 +33,8 @@ import com.sylvanaar.idea.Lua.lang.psi.visitor.LuaElementVisitor;
 import org.jetbrains.annotations.NonNls;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
+
+import java.util.List;
 
 /**
  * Created by IntelliJ IDEA.
@@ -130,6 +133,12 @@ public class LuaFunctionDefinitionStatementImpl extends LuaStatementElementImpl 
                 block = (LuaBlock) e;
         }
         return block;
+    }
+
+    @Override
+    public PsiElement getEndElement() {
+        List<PsiElement> ends =findChildrenByType(LuaTokenTypes.END);
+        return ends.get(ends.size()-1);
     }
 
 

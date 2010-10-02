@@ -18,6 +18,7 @@ package com.sylvanaar.idea.Lua.lang.psi.impl.expressions;
 
 import com.intellij.lang.ASTNode;
 import com.sylvanaar.idea.Lua.lang.psi.expressions.LuaConditionalExpression;
+import com.sylvanaar.idea.Lua.lang.psi.expressions.LuaIdentifier;
 
 /**
  * Created by IntelliJ IDEA.
@@ -32,5 +33,15 @@ public class LuaConditionalExpressionImpl extends LuaExpressionImpl implements L
 
     public String toString() {
         return "Conditional: " + super.toString();
+    }
+
+    @Override
+    public boolean isConstant() {
+        return !(findChildrenByClass(LuaIdentifier.class).length>0);
+    }
+
+    @Override
+    public boolean isTrue() {
+        return false;  //To change body of implemented methods use File | Settings | File Templates.
     }
 }

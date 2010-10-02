@@ -3,7 +3,13 @@ package com.sylvanaar.idea.Lua.lang.psi.impl.expressions;
 import com.intellij.lang.ASTNode;
 import com.intellij.openapi.util.Comparing;
 import com.intellij.openapi.util.TextRange;
-import com.intellij.psi.*;
+import com.intellij.psi.PsiElement;
+import com.intellij.psi.PsiElementVisitor;
+import com.intellij.psi.PsiNamedElement;
+import com.intellij.psi.PsiReference;
+import com.intellij.psi.search.LocalSearchScope;
+import com.intellij.psi.search.SearchScope;
+import com.intellij.psi.util.PsiTreeUtil;
 import com.intellij.util.IncorrectOperationException;
 import com.sylvanaar.idea.Lua.lang.parser.LuaElementTypes;
 import com.sylvanaar.idea.Lua.lang.psi.LuaPsiType;
@@ -68,9 +74,30 @@ public class LuaReferenceExpressionImpl extends LuaExpressionImpl implements Lua
             return null; // TODO?
         }
 
-        return ResolveUtil.treeWalkUp(new ResolveUtil.ResolveProcessor(referencedName), this, this, this);
+        //return ResolveUtil.treeWalkUp(new ResolveUtil.ResolveProcessor(referencedName), this, this, this);
+         return ResolveUtil.treeWalkUp(new ResolveUtil.ResolveProcessor(referencedName), this, this, this);
     }
 
+    
+//     private static void resolveImpl(LuaReferenceExpressionImpl refExpr, PsiScopeProcessor processor) {
+//      LuaExpression qualifier = refExpr.getQualifierExpression();
+//      if (qualifier == null) {
+//        ResolveUtil.treeWalkUp(refExpr, processor, true);
+//        if (!processor.hasCandidates()) {
+//          qualifier = PsiImplUtil.getRuntimeQualifier(refExpr);
+//          if (qualifier != null) {
+//            processQualifier(refExpr, processor, qualifier);
+//          }
+//        }
+//      } else {
+//        if (refExpr.getDo() != LuaTokenTypes.ELLIPSIS) {
+//          processQualifier(refExpr, processor, qualifier);
+//        } else {
+//          processQualifierForSpreadDot(refExpr, processor, qualifier);
+//        }
+//      }
+//    }
+    
     public String getCanonicalText() {
         return null;
     }
@@ -134,7 +161,7 @@ public class LuaReferenceExpressionImpl extends LuaExpressionImpl implements Lua
     }
 
     @Override
-    public LuaPsiType getType() {
+    public LuaPsiType getLuaType() {
         return null;  //To change body of implemented methods use File | Settings | File Templates.
     }
 
@@ -143,9 +170,19 @@ public class LuaReferenceExpressionImpl extends LuaExpressionImpl implements Lua
         return null;  //To change body of implemented methods use File | Settings | File Templates.
     }
 
-    @NotNull
-    @Override
-    public ResolveResult[] multiResolve(boolean incompleteCode) {
-        return new ResolveResult[0];  //To change body of implemented methods use File | Settings | File Templates.
-    }
+  @NotNull
+  public SearchScope getUseScope() {
+    final LuaExpression owner = PsiTreeUtil.getParentOfType(this, LuaExpression.class);
+    if (owner != null) return new LocalSearchScope(owner);
+    return super.getUseScope();
+  }
+
+
+  public LuaExpression getQualifierExpression() {
+    return findChildByClass(LuaExpression.class);
+  }
+
+  public boolean isQualified() {
+    return getQualifierExpression() != null;
+  }
 }

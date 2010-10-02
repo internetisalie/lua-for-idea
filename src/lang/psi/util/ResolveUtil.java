@@ -16,11 +16,10 @@
 package com.sylvanaar.idea.Lua.lang.psi.util;
 
 import com.intellij.openapi.diagnostic.Logger;
+import com.intellij.openapi.project.Project;
 import com.intellij.openapi.util.Key;
-import com.intellij.psi.PsiElement;
-import com.intellij.psi.PsiFile;
-import com.intellij.psi.PsiNamedElement;
-import com.intellij.psi.ResolveState;
+import com.intellij.psi.*;
+import com.intellij.psi.scope.JavaScopeProcessorEvent;
 import com.intellij.psi.scope.PsiScopeProcessor;
 import com.sylvanaar.idea.Lua.lang.psi.LuaPsiElement;
 import org.jetbrains.annotations.NotNull;
@@ -66,15 +65,13 @@ public class ResolveUtil {
 
         return true;
     }
-
-
     @Nullable
     public static PsiElement treeWalkUp(PsiScopeProcessor processor, PsiElement elt, PsiElement lastParent, PsiElement place) {
         if (elt == null) return null;
 
         PsiElement cur = elt;
         do {
-            // Walking Local Declaration With Assignment Statement last parent Expression List place LuaReferenceExpression (a) 
+            // Walking Local Declaration With Assignment Statement last parent Expression List place LuaReferenceExpression (a)
 
 //            log.info("Walking elt <" + elt + "> curr <" + cur + "> last parent <" + lastParent + "> place " + place);
 
@@ -97,6 +94,34 @@ public class ResolveUtil {
 //         log.info("Recursing Up elt <" + elt + "> context <" + elt.getContext() + ">  place " + place);
         return treeWalkUp(processor, elt.getContext(), elt, place);
     }
+
+  public static boolean treeWalkUp(PsiElement place, PsiScopeProcessor processor, boolean processNonCodeMethods) {
+    PsiElement lastParent = null;
+    PsiElement run = place;
+
+    final Project project = place.getProject();
+    PsiElementFactory factory = JavaPsiFacade.getElementFactory(project);
+
+    while (run != null) {
+      if (!run.processDeclarations(processor, ResolveState.initial(), lastParent, place)) return false;
+//      if (processNonCodeMethods) {
+//        if (run instanceof GrTypeDefinition) {
+//          processNonCodeMethods(factory.createType(((GrTypeDefinition)run)), processor, project, place, false);
+//        }
+//        else if ((run instanceof GroovyFileBase) && ((GroovyFileBase)run).isScript()) {
+//          final PsiClass psiClass = ((GroovyFileBase)run).getScriptClass();
+//          if (psiClass != null) {
+//            processNonCodeMethods(factory.createType(psiClass), processor, project, place, false);
+//          }
+//        }
+//      }
+      lastParent = run;
+      run = run.getContext();
+      processor.handleEvent(JavaScopeProcessorEvent.CHANGE_LEVEL, null);
+    }
+
+    return true;
+  }
 
   public static boolean processChildren(PsiElement element,
                                         PsiScopeProcessor processor,

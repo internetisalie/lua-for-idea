@@ -18,7 +18,7 @@ package com.sylvanaar.idea.Lua.lang.psi.impl.statements;
 
 import com.intellij.lang.ASTNode;
 import com.sylvanaar.idea.Lua.lang.psi.PsiLuaToken;
-import com.sylvanaar.idea.Lua.lang.psi.expressions.LuaExpression;
+import com.sylvanaar.idea.Lua.lang.psi.expressions.LuaConditionalExpression;
 import com.sylvanaar.idea.Lua.lang.psi.statements.LuaStatementElement;
 import com.sylvanaar.idea.Lua.lang.psi.statements.LuaWhileStatement;
 import com.sylvanaar.idea.Lua.lang.psi.visitor.LuaElementVisitor;
@@ -40,7 +40,7 @@ public class LuaWhileStatementImpl extends LuaStatementElementImpl implements Lu
     }
 
     @Override
-    public LuaExpression getCondition() {
+    public LuaConditionalExpression getCondition() {
         return null;
     }
 

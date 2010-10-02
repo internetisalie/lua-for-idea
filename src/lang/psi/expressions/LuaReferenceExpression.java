@@ -16,20 +16,20 @@
 
 package com.sylvanaar.idea.Lua.lang.psi.expressions;
 
-import com.intellij.psi.PsiPolyVariantReference;
 import com.sylvanaar.idea.Lua.lang.psi.LuaNamedElement;
 import com.sylvanaar.idea.Lua.lang.psi.LuaReferenceElement;
+import org.jetbrains.annotations.Nullable;
 
 
 /**
  * @author ilyas
  */
-public interface LuaReferenceExpression extends LuaExpression, LuaReferenceElement, LuaNamedElement, PsiPolyVariantReference {
+public interface LuaReferenceExpression extends LuaExpression, LuaReferenceElement, LuaNamedElement {
 
-//  @Nullable
-//  LuaExpression getQualifierExpression();
-//
-//  boolean isQualified();
+  @Nullable
+  LuaExpression getQualifierExpression();
+
+  boolean isQualified();
 //
 //  @Nullable
 //  IElementType getDotTokenType();

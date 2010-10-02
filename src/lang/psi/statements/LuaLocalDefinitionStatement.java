@@ -32,4 +32,6 @@ public interface LuaLocalDefinitionStatement extends LuaStatementElement {
     @Nullable
     LuaReferenceExpression[] getReferenceExprs();
 
+    LuaReferenceExpression getInitializer(int idx);
+
 }

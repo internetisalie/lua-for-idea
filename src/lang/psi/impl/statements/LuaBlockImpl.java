@@ -21,6 +21,8 @@ import com.intellij.psi.PsiElement;
 import com.intellij.psi.ResolveState;
 import com.intellij.psi.scope.PsiScopeProcessor;
 import com.sylvanaar.idea.Lua.lang.psi.LuaPsiElement;
+import com.sylvanaar.idea.Lua.lang.psi.controlFlow.Instruction;
+import com.sylvanaar.idea.Lua.lang.psi.controlFlow.impl.ControlFlowBuilder;
 import com.sylvanaar.idea.Lua.lang.psi.impl.LuaPsiElementImpl;
 import com.sylvanaar.idea.Lua.lang.psi.statements.LuaBlock;
 import com.sylvanaar.idea.Lua.lang.psi.statements.LuaStatementElement;
@@ -34,42 +36,52 @@ import org.jetbrains.annotations.NotNull;
  * Time: 10:17:49 PM
  */
 public class LuaBlockImpl extends LuaPsiElementImpl implements LuaBlock {
+    private Instruction[] myControlFlow = new Instruction[0];
+
     public LuaBlockImpl(ASTNode node) {
         super(node);
     }
-    
-    public void acceptChildren(LuaElementVisitor visitor) {
-      PsiElement child = getFirstChild();
-      while (child != null) {
-        if (child instanceof LuaStatementElement) {
-          ((LuaPsiElement) child).accept(visitor);
-        }
 
-        child = child.getNextSibling();
-      }
+    public void acceptChildren(LuaElementVisitor visitor) {
+        PsiElement child = getFirstChild();
+        while (child != null) {
+            if (child instanceof LuaStatementElement) {
+                ((LuaPsiElement) child).accept(visitor);
+            }
+
+            child = child.getNextSibling();
+        }
     }
 
     public LuaStatementElement[] getStatements() {
+
+
         return findChildrenByClass(LuaStatementElement.class);
     }
 
+    public Instruction[] getControlFlow() {
+        if (myControlFlow == null) {
+            myControlFlow = new ControlFlowBuilder(getProject()).buildControlFlow(this, null, null);
+        }
 
+        return myControlFlow;
+    }
 
 
     public boolean processDeclarations(@NotNull PsiScopeProcessor processor,
-                                   @NotNull ResolveState resolveState,
-                                   PsiElement lastParent,
-                                   @NotNull PsiElement place) {
+                                       @NotNull ResolveState resolveState,
+                                       PsiElement lastParent,
+                                       @NotNull PsiElement place) {
 
-       if (lastParent != null && lastParent.getParent() == this) {
-        final PsiElement[] children = getChildren();
-        for (PsiElement child : children) {
-            if (child == lastParent) break;
-            if (!child.processDeclarations(processor, resolveState, lastParent, place)) return false;
-        }        
-       }
+        if (lastParent != null && lastParent.getParent() == this) {
+            final PsiElement[] children = getChildren();
+            for (PsiElement child : children) {
+                if (child == lastParent) break;
+                if (!child.processDeclarations(processor, resolveState, lastParent, place)) return false;
+            }
+        }
 
-       return true;
+        return true;
     }
 
 //    public boolean processDeclarations(@NotNull PsiScopeProcessor processor, @NotNull ResolveState state, PsiElement lastParent, @NotNull PsiElement place) {
@@ -78,5 +90,5 @@ public class LuaBlockImpl extends LuaPsiElementImpl implements LuaBlock {
 //        }
 ////        return ResolveUtil.processChildren(this, processor, state, lastParent, place);
 //    }
- 
+
 }

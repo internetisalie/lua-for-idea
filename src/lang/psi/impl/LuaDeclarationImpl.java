@@ -55,8 +55,8 @@ public class LuaDeclarationImpl extends LuaIdentifierImpl implements LuaDeclarat
     }
 
     @Override
-    public LuaPsiType getType() {
-        return null;
+    public LuaPsiType getLuaType() {
+        return LuaPsiType.VOID;
     }
 
     @Override

@@ -51,7 +51,7 @@ class ExpandBooleanPredicate implements PsiElementPredicate {
     if (returnValue instanceof LuaLiteralExpression) {
       return false;
     }
-    final LuaPsiType returnType = returnValue.getType();
+    final LuaPsiType returnType = returnValue.getLuaType();
     if (returnType == null) {
       return false;
     }
@@ -72,7 +72,7 @@ class ExpandBooleanPredicate implements PsiElementPredicate {
     if (rhs instanceof LuaLiteralExpression) {
       return false;
     }
-    final LuaPsiType assignmentType = rhs.getType();
+    final LuaPsiType assignmentType = rhs.getLuaType();
     if (assignmentType == null) {
       return false;
     }

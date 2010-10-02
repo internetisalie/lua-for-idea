@@ -24,7 +24,7 @@ import com.sylvanaar.idea.Lua.lang.psi.statements.LuaDeclaration;
  * Date: Jun 10, 2010
  * Time: 10:30:03 AM
  */
-public interface LuaIdentifierList extends LuaExpression {
+public interface LuaIdentifierList extends LuaExpression, LuaTuple {
     public int count();
 
     public String getText();

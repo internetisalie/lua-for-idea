@@ -334,7 +334,7 @@ public class LuaBlockGenerator implements LuaElementTypes {
                                                      List<Block> list, Alignment myAlignment, Wrap myWrap, CodeStyleSettings mySettings) {
         ASTNode[] children = elem.getNode().getChildren(null);
         // For path expressions
-        if (children.length > 0 && false /*NESTED.contains(children[0].getElementType())*/) {
+        if (children.length > 0 ) {
             addNestedChildrenRecursively(children[0].getPsi(), list, myAlignment, myWrap, mySettings);
         } else if (canBeCorrectBlock(children[0])) {
             list.add(new LuaFormattingBlock(children[0], myAlignment, Indent.getContinuationWithoutFirstIndent(), myWrap, mySettings));
@@ -343,8 +343,7 @@ public class LuaBlockGenerator implements LuaElementTypes {
             for (ASTNode childNode : children) {
                 if (canBeCorrectBlock(childNode) &&
                         children[0] != childNode) {
-                    if (elem.getNode() != null && false /*
-              NESTED.contains(elem.getNode().getElementType())*/) {
+                    if (elem.getNode() != null ) {
                         list.add(new LuaFormattingBlock(childNode, myAlignment, Indent.getContinuationWithoutFirstIndent(), myWrap, mySettings));
                     } else {
                         list.add(new LuaFormattingBlock(childNode, myAlignment, Indent.getNoneIndent(), myWrap, mySettings));

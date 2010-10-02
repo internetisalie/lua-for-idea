@@ -32,6 +32,7 @@ import com.sylvanaar.idea.Lua.lang.psi.LuaPsiFile;
 import com.sylvanaar.idea.Lua.lang.psi.expressions.LuaBinaryExpression;
 import com.sylvanaar.idea.Lua.lang.psi.expressions.LuaIdentifierList;
 import com.sylvanaar.idea.Lua.lang.psi.expressions.LuaParameterList;
+import com.sylvanaar.idea.Lua.lang.psi.expressions.LuaTableConstructor;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 
@@ -143,10 +144,17 @@ public class LuaFormattingBlock implements Block {
     ASTNode astNode = getNode();
     final PsiElement psiParent = astNode.getPsi();
     if (psiParent instanceof LuaPsiFile) {
+
       return new ChildAttributes(Indent.getNoneIndent(), null);
     }
+
+      if (psiParent instanceof LuaTableConstructor) {
+        return new ChildAttributes(Indent.getNormalIndent(), null);
+      }
+
     if (LuaElementTypes.BLOCK_SET.contains(astNode.getElementType())) {
-      return new ChildAttributes(Indent.getNormalIndent(), null);
+      final Alignment align = Alignment.createAlignment();
+      return new ChildAttributes(Indent.getNormalIndent(), align);
     }
 
     if (psiParent instanceof LuaBinaryExpression ) {
@@ -158,6 +166,6 @@ public class LuaFormattingBlock implements Block {
     if (psiParent instanceof LuaIdentifierList) {
       return new ChildAttributes(Indent.getContinuationIndent(), null);
     }
-    return new ChildAttributes(Indent.getNoneIndent(), null);
+    return new ChildAttributes(Indent.getNoneIndent(), this.getAlignment());
   }
 }

@@ -24,8 +24,6 @@ import com.sylvanaar.idea.Lua.lang.psi.expressions.LuaIdentifier;
 import com.sylvanaar.idea.Lua.lang.psi.expressions.LuaReferenceExpression;
 import com.sylvanaar.idea.Lua.lang.psi.expressions.LuaVariable;
 
-import org.jetbrains.annotations.NotNull;
-
 /**
 * Created by IntelliJ IDEA.
 * User: Jon S Akhtar
@@ -42,10 +40,6 @@ public class LuaVariableImpl extends LuaReferenceExpressionImpl implements LuaVa
         return "Variable (" + getText() + ")";
     }
 
-    @Override
-    public PsiElement resolve() {
-        return null;
-    }
 
 
 
@@ -54,16 +48,8 @@ public class LuaVariableImpl extends LuaReferenceExpressionImpl implements LuaVa
         return null;
     }
 
-    @Override
-    public boolean isReferenceTo(PsiElement element) {
-        return false;
-    }
 
-    @NotNull
-    @Override
-    public Object[] getVariants() {
-        return new Object[0];
-    }
+
 
     @Override
     public boolean isSoft() {
@@ -71,7 +57,7 @@ public class LuaVariableImpl extends LuaReferenceExpressionImpl implements LuaVa
     }
 
     @Override
-    public LuaPsiType getType() {
+    public LuaPsiType getLuaType() {
         return null;
     }
 
@@ -119,4 +105,10 @@ public class LuaVariableImpl extends LuaReferenceExpressionImpl implements LuaVa
     public LuaReferenceExpression getPrimaryIdentifier() {
         return findChildByClass(LuaReferenceExpression.class);
     }
+
+    @Override
+    public LuaExpression getInitializer() {
+        return null;  //To change body of implemented methods use File | Settings | File Templates.
+    }
+
 }

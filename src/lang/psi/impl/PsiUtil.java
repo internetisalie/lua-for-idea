@@ -21,6 +21,9 @@ import com.intellij.psi.PsiElement;
 import com.intellij.psi.PsiWhiteSpace;
 import com.sylvanaar.idea.Lua.lang.lexer.LuaLexer;
 import com.sylvanaar.idea.Lua.lang.lexer.LuaTokenTypes;
+import com.sylvanaar.idea.Lua.lang.psi.LuaPsiElement;
+import com.sylvanaar.idea.Lua.lang.psi.expressions.LuaExpression;
+import com.sylvanaar.idea.Lua.lang.psi.statements.LuaAssignmentStatement;
 import org.jetbrains.annotations.Nullable;
 
 /**
@@ -56,16 +59,16 @@ public class PsiUtil {
 ////    return true;
 ////  }
 ////
-////  public static boolean isLValue(GroovyPsiElement element) {
-////    if (element instanceof GrExpression) {
-////      PsiElement parent = element.getParent();
-////      if (parent instanceof GrListOrMap && !((GrListOrMap)parent).isMap()) {
-////        return isLValue((GroovyPsiElement)parent);
-////      }
-////      return parent instanceof GrAssignmentExpression && element.equals(((GrAssignmentExpression)parent).getLValue());
-////    }
-////    return false;
-////  }
+  public static boolean isLValue(LuaPsiElement element) {
+    if (element instanceof LuaExpression) {
+      PsiElement parent = element.getParent();
+//      if (parent instanceof GrListOrMap && !((GrListOrMap)parent).isMap()) {
+//        return isLValue((GroovyPsiElement)parent);
+//      }
+      return parent instanceof LuaAssignmentStatement && element.equals(((LuaAssignmentStatement)parent).getLeftExprs().textMatches(element));
+    }
+    return false;
+  }
 //
 ////  public static boolean isApplicable(@Nullable PsiType[] argumentTypes,
 ////                                     PsiMethod method,

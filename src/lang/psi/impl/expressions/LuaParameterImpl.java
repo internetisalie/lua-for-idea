@@ -17,16 +17,19 @@
 package com.sylvanaar.idea.Lua.lang.psi.impl.expressions;
 
 import com.intellij.lang.ASTNode;
+import com.intellij.openapi.util.TextRange;
 import com.intellij.psi.PsiElement;
-import com.intellij.psi.PsiFile;
 import com.intellij.psi.search.LocalSearchScope;
 import com.intellij.psi.search.SearchScope;
+import com.intellij.util.IncorrectOperationException;
 import com.sylvanaar.idea.Lua.lang.parser.LuaElementTypes;
 import com.sylvanaar.idea.Lua.lang.psi.LuaFunctionDefinition;
 import com.sylvanaar.idea.Lua.lang.psi.LuaPsiElement;
 import com.sylvanaar.idea.Lua.lang.psi.LuaPsiType;
+import com.sylvanaar.idea.Lua.lang.psi.expressions.LuaExpression;
 import com.sylvanaar.idea.Lua.lang.psi.expressions.LuaIdentifier;
 import com.sylvanaar.idea.Lua.lang.psi.expressions.LuaParameter;
+import com.sylvanaar.idea.Lua.lang.psi.expressions.LuaReferenceExpression;
 import com.sylvanaar.idea.Lua.lang.psi.impl.LuaDeclarationImpl;
 import org.jetbrains.annotations.NotNull;
 
@@ -55,19 +58,19 @@ public class LuaParameterImpl extends LuaDeclarationImpl implements LuaPsiElemen
 
     @NotNull
     @Override
-    public LuaPsiType getType() {
+    public LuaPsiType getLuaType() {
         return VOID;
     }
 
 
     @NotNull
     public SearchScope getUseScope() {
-        if (!isPhysical()) {
-            final PsiFile file = getContainingFile();
-            final PsiElement context = file.getContext();
-            if (context != null) return new LocalSearchScope(context);
-            return super.getUseScope();
-        }
+//        if (!isPhysical()) {
+//            final PsiFile file = getContainingFile();
+//            final PsiElement context = file.getContext();
+//            if (context != null) return new LocalSearchScope(context);
+//            return super.getUseScope();
+//        }
 
         final PsiElement scope = getDeclarationScope();
 
@@ -93,5 +96,61 @@ public class LuaParameterImpl extends LuaDeclarationImpl implements LuaPsiElemen
     @Override
     public String getDefinedName() {
         return getName();
+    }
+
+    @Override
+    public LuaReferenceExpression getPrimaryIdentifier() {
+        return null;  //To change body of implemented methods use File | Settings | File Templates.
+    }
+
+    @Override
+    public LuaExpression getInitializer() {
+        return null;  //To change body of implemented methods use File | Settings | File Templates.
+    }
+
+    @Override
+    public PsiElement getElement() {
+        return null;  //To change body of implemented methods use File | Settings | File Templates.
+    }
+
+    @Override
+    public TextRange getRangeInElement() {
+        return null;  //To change body of implemented methods use File | Settings | File Templates.
+    }
+
+    @Override
+    public PsiElement resolve() {
+        return null;  //To change body of implemented methods use File | Settings | File Templates.
+    }
+
+    @Override
+    public String getCanonicalText() {
+        return null;  //To change body of implemented methods use File | Settings | File Templates.
+    }
+
+    @Override
+    public PsiElement handleElementRename(String newElementName) throws IncorrectOperationException {
+        return null;  //To change body of implemented methods use File | Settings | File Templates.
+    }
+
+    @Override
+    public PsiElement bindToElement(@NotNull PsiElement element) throws IncorrectOperationException {
+        return null;  //To change body of implemented methods use File | Settings | File Templates.
+    }
+
+    @Override
+    public boolean isReferenceTo(PsiElement element) {
+        return false;  //To change body of implemented methods use File | Settings | File Templates.
+    }
+
+    @NotNull
+    @Override
+    public Object[] getVariants() {
+        return new Object[0];  //To change body of implemented methods use File | Settings | File Templates.
+    }
+
+    @Override
+    public boolean isSoft() {
+        return false;  //To change body of implemented methods use File | Settings | File Templates.
     }
 }

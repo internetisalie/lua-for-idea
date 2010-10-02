@@ -19,11 +19,12 @@ package com.sylvanaar.idea.Lua.lang.psi.impl;
 import com.intellij.extapi.psi.PsiFileBase;
 import com.intellij.lang.Language;
 import com.intellij.psi.FileViewProvider;
-import com.sylvanaar.idea.Lua.lang.psi.visitor.LuaPsiElementVisitor;
 import com.sylvanaar.idea.Lua.lang.psi.LuaPsiFileBase;
-import com.sylvanaar.idea.Lua.lang.psi.visitor.LuaRecursiveElementVisitor;
+import com.sylvanaar.idea.Lua.lang.psi.expressions.LuaIdentifier;
 import com.sylvanaar.idea.Lua.lang.psi.statements.LuaFunctionDefinitionStatement;
 import com.sylvanaar.idea.Lua.lang.psi.statements.LuaStatementElement;
+import com.sylvanaar.idea.Lua.lang.psi.visitor.LuaPsiElementVisitor;
+import com.sylvanaar.idea.Lua.lang.psi.visitor.LuaRecursiveElementVisitor;
 import org.jetbrains.annotations.NotNull;
 
 import java.util.ArrayList;
@@ -63,6 +64,25 @@ public abstract class LuaPsiFileBaseImpl extends PsiFileBase implements LuaPsiFi
         v.visitElement(this);
 
         return funcs.toArray(new LuaFunctionDefinitionStatement[0]);
+    }
+
+    public LuaIdentifier[] getGlobalIdentifiers() {
+        final List<LuaIdentifier> ids =
+                new ArrayList<LuaIdentifier>();
+
+        LuaRecursiveElementVisitor v = new LuaRecursiveElementVisitor() {
+            public void visitIdentifier(LuaIdentifier e) {
+                super.visitIdentifier(e);
+                if (e.isGlobal())
+                    ids.add(e);
+            }
+        };
+
+        LuaPsiElementVisitor ev = new LuaPsiElementVisitor(v);
+        v.visitElement(this);
+
+        return ids.toArray(new LuaIdentifier[0]);
+
     }
 
 }

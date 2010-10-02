@@ -21,6 +21,8 @@ import com.intellij.psi.PsiElement;
 import com.intellij.psi.codeStyle.CodeStyleManager;
 import com.intellij.util.IncorrectOperationException;
 import com.sylvanaar.idea.Lua.lang.parser.LuaElementTypes;
+import com.sylvanaar.idea.Lua.lang.psi.LuaPsiType;
+import com.sylvanaar.idea.Lua.lang.psi.expressions.LuaExpression;
 import com.sylvanaar.idea.Lua.lang.psi.expressions.LuaParameter;
 import com.sylvanaar.idea.Lua.lang.psi.expressions.LuaParameterList;
 import com.sylvanaar.idea.Lua.lang.psi.impl.LuaPsiElementImpl;
@@ -150,4 +152,13 @@ public class LuaParameterListImpl extends LuaPsiElementImpl implements LuaParame
         return element;
     }
 
+    @Override
+    public LuaExpression[] getComponents() {
+        return new LuaExpression[0];  //To change body of implemented methods use File | Settings | File Templates.
+    }
+
+    @Override
+    public LuaPsiType[] getComponentTypes() {
+        return new LuaPsiType[0];  //To change body of implemented methods use File | Settings | File Templates.
+    }
 }

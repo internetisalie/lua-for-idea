@@ -53,7 +53,7 @@ public class LuaExpressionImpl extends LuaPsiElementImpl implements LuaExpressio
     }
 
     @Override
-    public LuaPsiType getType() {
-        return null;
+    public LuaPsiType getLuaType() {
+        return LuaPsiType.VOID;
     }
 }

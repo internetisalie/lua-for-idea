@@ -50,6 +50,17 @@ public class LuaLocalDefinitionStatementImpl extends LuaPsiElementImpl implement
     }
 
     @Override
+    public LuaReferenceExpression getInitializer(int idx) {
+       LuaReferenceExpression[] r = getReferenceExprs();
+       if (r == null) return null;
+
+       if (getDeclarations().length <= r.length)
+           return r[idx];
+
+        return null;
+    }
+
+    @Override
     public LuaStatementElement replaceWithStatement(LuaStatementElement newCall) {
        return null;
     }

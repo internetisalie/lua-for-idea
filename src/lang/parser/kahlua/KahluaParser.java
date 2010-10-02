@@ -883,7 +883,7 @@ public class KahluaParser implements PsiParser, LuaElementTypes {
             }
             this.next();
 
-            mark.done(LITERAL_EXPRESSION);
+            mark.done(this.t == ELLIPSIS ? VARIABLE : LITERAL_EXPRESSION);
             mark = null;
         }
         finally {
