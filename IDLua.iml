@@ -51,8 +51,8 @@
         <SOURCES />
       </library>
     </orderEntry>
-    <orderEntry type="module" module-name="IDLuaErrors" exported="" />
-    <orderEntry type="module" module-name="IDLuaHelp" exported="" />
+    <orderEntry type="module" module-name="IDLuaErrors" exported="" scope="RUNTIME" />
+    <orderEntry type="module" module-name="IDLuaHelp" exported="" scope="RUNTIME" />
   </component>
   <component name="PluginUploader.PluginUploadConfigurable">
     <option name="ARCHIVE_PATH" />
