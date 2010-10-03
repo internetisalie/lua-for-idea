@@ -1,0 +1,11 @@
+<component name="libraryTable">
+  <library name="Kahlua">
+    <CLASSES>
+      <root url="jar://$PROJECT_DIR$/lib/kahlua-core.jar!/" />
+      <root url="jar://$PROJECT_DIR$/lib/jsyntaxpane-0.9.5.jar!/" />
+      <root url="jar://$PROJECT_DIR$/lib/kahlua-j2se.jar!/" />
+    </CLASSES>
+    <JAVADOC />
+    <SOURCES />
+  </library>
+</component>

@@ -14,45 +14,9 @@
     </content>
     <orderEntry type="jdk" jdkName="IDEA SDK" jdkType="IDEA JDK" />
     <orderEntry type="sourceFolder" forTests="false" />
-    <orderEntry type="module-library" exported="">
-      <library>
-        <CLASSES>
-          <root url="jar://$MODULE_DIR$/lib/kahlua-core.jar!/" />
-        </CLASSES>
-        <JAVADOC />
-        <SOURCES>
-          <root url="file://$MODULE_DIR$/../Kahlua/j2se/src" />
-          <root url="file://$MODULE_DIR$/../Kahlua/j2se/test" />
-          <root url="file://$MODULE_DIR$/../Kahlua/core/src" />
-          <root url="file://$MODULE_DIR$/../Kahlua/cldc11/src" />
-        </SOURCES>
-      </library>
-    </orderEntry>
-    <orderEntry type="module-library" exported="">
-      <library>
-        <CLASSES>
-          <root url="jar://$MODULE_DIR$/lib/kahlua-j2se.jar!/" />
-        </CLASSES>
-        <JAVADOC />
-        <SOURCES>
-          <root url="file://$MODULE_DIR$/../Kahlua/core/src" />
-          <root url="file://$MODULE_DIR$/../Kahlua/j2se/test" />
-          <root url="file://$MODULE_DIR$/../Kahlua/j2se/src" />
-          <root url="file://$MODULE_DIR$/../Kahlua/cldc11/src" />
-        </SOURCES>
-      </library>
-    </orderEntry>
-    <orderEntry type="module-library" exported="">
-      <library>
-        <CLASSES>
-          <root url="jar://$MODULE_DIR$/lib/jsyntaxpane-0.9.5.jar!/" />
-        </CLASSES>
-        <JAVADOC />
-        <SOURCES />
-      </library>
-    </orderEntry>
     <orderEntry type="module" module-name="IDLuaErrors" exported="" scope="RUNTIME" />
     <orderEntry type="module" module-name="IDLuaHelp" exported="" scope="RUNTIME" />
+    <orderEntry type="library" name="Kahlua" level="project" />
   </component>
   <component name="PluginUploader.PluginUploadConfigurable">
     <option name="ARCHIVE_PATH" />
