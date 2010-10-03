@@ -585,20 +585,27 @@ public class KahluaParser implements PsiParser, LuaElementTypes {
 
             do {
                 PsiBuilder.Marker parm = builder.mark();
+
+                    PsiBuilder.Marker mark = builder.mark();
                 if (this.t == NAME) {
                     /* param . NAME */
-                    PsiBuilder.Marker mark = builder.mark();
+
                     String name = this.str_checkname();
                     mark.done(LOCAL_NAME_DECL);
                     this.new_localvar(name, nparams++);
+
                     parm.done(PARAMETER);
                     // break;
                 } else if (this.t == ELLIPSIS) {  /* param . `...' */
+                    mark.done(LOCAL_NAME_DECL);
                     this.next();
+
                     parm.done(PARAMETER);
                     fs.isVararg |= FuncState.VARARG_ISVARARG;
                     //   break;
                 } else {
+                    mark.drop();
+
                     parm.drop();
                     this.syntaxerror("<name> or " + LUA_QL("...") + " expected");
                 }
@@ -1090,7 +1097,9 @@ public class KahluaParser implements PsiParser, LuaElementTypes {
         if (this.testnext(COMMA)) {  /* assignment -> `,' primaryexp assignment */
             LHS_assign nv = new LHS_assign();
             nv.prev = lh;
+            PsiBuilder.Marker mark = builder.mark();
             this.primaryexp(nv.v);
+            mark.done(VARIABLE);
             if (nv.v.k == VLOCAL)
                 this.check_conflict(lh, nv.v);
             this.assignment(nv, nvars + 1, expr);
@@ -1374,7 +1383,7 @@ public class KahluaParser implements PsiParser, LuaElementTypes {
         PsiBuilder.Marker funcName = builder.mark();
         PsiBuilder.Marker mark = builder.mark();
         String name = this.str_checkname();
-        mark.done(LOCAL_NAME);
+        mark.done(LOCAL_NAME_DECL);
         funcName.done(FUNCTION_IDENTIFIER);
         
         this.new_localvar(name, 0);
@@ -1436,7 +1445,7 @@ public class KahluaParser implements PsiParser, LuaElementTypes {
         while (this.t == DOT) {
             this.field(v);
             ref = ref.precede();
-            tmp.done(REFERENCE);
+            tmp.done(GETTABLE);
             tmp = ref;
         }
         if (this.t == COLON) {
@@ -1444,7 +1453,7 @@ public class KahluaParser implements PsiParser, LuaElementTypes {
             this.field(v);
 
            // ref = ref.precede();
-            tmp.done(REFERENCE);
+            tmp.done(GETSELF);
             tmp = null;
         }
         if (tmp != null)
@@ -1677,6 +1686,7 @@ public class KahluaParser implements PsiParser, LuaElementTypes {
 
             lexstate.builder = psiBuilder;
             lexstate.t = psiBuilder.getTokenType();
+            lexstate.builder.debug();
             if (lexstate.t == null) // Try to kludge in handling of partial parses
                 lexstate.next(); /* read first token */
             lexstate.chunk();

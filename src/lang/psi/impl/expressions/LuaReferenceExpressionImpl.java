@@ -170,7 +170,12 @@ public class LuaReferenceExpressionImpl extends LuaExpressionImpl implements Lua
         return null;  //To change body of implemented methods use File | Settings | File Templates.
     }
 
-  @NotNull
+    @Override
+    public PsiElement getNameIdentifierLua() {
+        return null;  //To change body of implemented methods use File | Settings | File Templates.
+    }
+
+    @NotNull
   public SearchScope getUseScope() {
     final LuaExpression owner = PsiTreeUtil.getParentOfType(this, LuaExpression.class);
     if (owner != null) return new LocalSearchScope(owner);

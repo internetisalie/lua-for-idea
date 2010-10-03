@@ -67,33 +67,35 @@ public class LuaFunctionDefinitionStatementImpl extends LuaStatementElementImpl 
     }
 
 
-    
-
     public boolean processDeclarations(@NotNull PsiScopeProcessor processor,
                                        @NotNull ResolveState resolveState,
                                        PsiElement lastParent,
                                        @NotNull PsiElement place) {
+        if (getIdentifier() != null && getIdentifier().isLocal())
+            return processor.execute(getIdentifier().getReference().getElement().getFirstChild(), resolveState);
+        if (lastParent != null && lastParent.getParent() == this) {
+            return true;
+        }
 
-       if (lastParent != null && lastParent.getParent() == this) {
-         final LuaParameter[] params = getParameters().getParameters();
-         for (LuaParameter param : params) {
-           if (!processor.execute(param, resolveState)) return false;
-         }
 
-         LuaParameter self = findChildByClass(LuaImpliedSelfParameterImpl.class);
+        if (lastParent != null && lastParent.getParent() == this) {
+            final LuaParameter[] params = getParameters().getParameters();
+            for (LuaParameter param : params) {
+                if (!processor.execute(param, resolveState)) return false;
+            }
 
-         if (self != null) {
-             if (!processor.execute(self, resolveState)) return false;
-         }
-       }
+            LuaParameter self = findChildByClass(LuaImpliedSelfParameterImpl.class);
+
+            if (self != null) {
+                if (!processor.execute(self, resolveState)) return false;
+            }
+        }
 
         if (!getBlock().processDeclarations(processor, resolveState, lastParent, place))
-                return false;
+            return false;
 
-       if (!getIdentifier().isLocal())
+
         return true;
-        
-       return processor.execute(getIdentifier(), resolveState);
     }
 
 
@@ -137,8 +139,8 @@ public class LuaFunctionDefinitionStatementImpl extends LuaStatementElementImpl 
 
     @Override
     public PsiElement getEndElement() {
-        List<PsiElement> ends =findChildrenByType(LuaTokenTypes.END);
-        return ends.get(ends.size()-1);
+        List<PsiElement> ends = findChildrenByType(LuaTokenTypes.END);
+        return ends.get(ends.size() - 1);
     }
 
 

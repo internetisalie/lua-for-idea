@@ -27,6 +27,7 @@ import com.intellij.util.IncorrectOperationException;
 import com.sylvanaar.idea.Lua.LuaFileType;
 import com.sylvanaar.idea.Lua.lang.psi.LuaPsiElement;
 import com.sylvanaar.idea.Lua.lang.psi.LuaPsiFile;
+import com.sylvanaar.idea.Lua.lang.psi.controlFlow.Instruction;
 import com.sylvanaar.idea.Lua.lang.psi.expressions.LuaIdentifier;
 import com.sylvanaar.idea.Lua.lang.psi.statements.LuaDeclaration;
 import com.sylvanaar.idea.Lua.lang.psi.statements.LuaStatementElement;
@@ -110,4 +111,9 @@ public class LuaPsiFileImpl extends LuaPsiFileBaseImpl implements LuaPsiFile {
       child = child.getNextSibling();
     }
   }
+
+    @Override
+    public Instruction[] getControlFlow() {
+        return new Instruction[0];  //To change body of implemented methods use File | Settings | File Templates.
+    }
 }

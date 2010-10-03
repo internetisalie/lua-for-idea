@@ -29,7 +29,7 @@ import com.sylvanaar.idea.Lua.lang.psi.util.LuaVariableDeclarationOwner;
  * Date: Jun 13, 2010
  * Time: 7:28:26 PM
  */
-public interface LuaPsiFileBase extends PsiFile, LuaVariableDeclarationOwner, LuaStatementOwner, LuaDeclarationHolder {
+public interface LuaPsiFileBase extends PsiFile, LuaVariableDeclarationOwner, LuaStatementOwner, LuaDeclarationHolder, LuaControlFlowOwner {
 
   LuaStatementElement[] getStatements();
 

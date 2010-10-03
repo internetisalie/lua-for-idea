@@ -85,4 +85,9 @@ public class LuaDeclarationImpl extends LuaIdentifierImpl implements LuaDeclarat
     public PsiElement setName(String s) {
         return null;  //To change body of implemented methods use File | Settings | File Templates.
     }
+
+    @Override
+    public PsiElement getNameIdentifierLua() {
+        return null;  //To change body of implemented methods use File | Settings | File Templates.
+    }
 }

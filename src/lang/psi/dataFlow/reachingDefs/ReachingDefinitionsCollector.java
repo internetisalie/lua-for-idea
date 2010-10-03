@@ -29,7 +29,6 @@ import com.sylvanaar.idea.Lua.lang.psi.dataFlow.DFAEngine;
 import com.sylvanaar.idea.Lua.lang.psi.expressions.LuaIdentifier;
 import com.sylvanaar.idea.Lua.lang.psi.expressions.LuaReferenceExpression;
 import com.sylvanaar.idea.Lua.lang.psi.expressions.LuaVariable;
-import com.sylvanaar.idea.Lua.lang.psi.impl.TypesUtil;
 import com.sylvanaar.idea.Lua.lang.psi.statements.LuaBlock;
 import com.sylvanaar.idea.Lua.lang.psi.statements.LuaFunctionDefinitionStatement;
 import com.sylvanaar.idea.Lua.lang.psi.statements.LuaStatementElement;

@@ -37,6 +37,8 @@ public interface LuaElementTypes extends LuaTokenTypes {
 
     IElementType GLOBAL_NAME = new LuaElementType("global name");
     IElementType FIELD_NAME = new LuaElementType("field name");
+    IElementType GETSELF = new LuaElementType("get self");
+    IElementType GETTABLE = new LuaElementType("get table");
 
     IElementType TABLE_INDEX = new LuaElementType("table index");
     IElementType KEY_ASSIGNMENT = new LuaElementType("keyed field initializer");

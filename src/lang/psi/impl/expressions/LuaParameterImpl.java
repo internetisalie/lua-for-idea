@@ -42,7 +42,7 @@ public class LuaParameterImpl extends LuaDeclarationImpl implements LuaPsiElemen
     }
 
     public String toString() {
-        return "Parameter (" + getName() + ")";
+        return "Parameter: " + getText();
     }
 
     @Override
@@ -152,5 +152,10 @@ public class LuaParameterImpl extends LuaDeclarationImpl implements LuaPsiElemen
     @Override
     public boolean isSoft() {
         return false;  //To change body of implemented methods use File | Settings | File Templates.
+    }
+
+    @Override
+    public PsiElement getNameIdentifierLua() {
+        return null;  //To change body of implemented methods use File | Settings | File Templates.
     }
 }

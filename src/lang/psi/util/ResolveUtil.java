@@ -22,6 +22,8 @@ import com.intellij.psi.*;
 import com.intellij.psi.scope.JavaScopeProcessorEvent;
 import com.intellij.psi.scope.PsiScopeProcessor;
 import com.sylvanaar.idea.Lua.lang.psi.LuaPsiElement;
+import com.sylvanaar.idea.Lua.lang.psi.LuaResolveResult;
+import com.sylvanaar.idea.Lua.util.ResolverProcessor;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 
@@ -123,19 +125,7 @@ public class ResolveUtil {
     return true;
   }
 
-  public static boolean processChildren(PsiElement element,
-                                        PsiScopeProcessor processor,
-                                        ResolveState substitutor,
-                                        PsiElement lastParent,
-                                        PsiElement place) {
-    PsiElement run = lastParent == null ? element.getLastChild() : lastParent.getPrevSibling();
-    while (run != null) {
-      if (!run.processDeclarations(processor, substitutor, null, place)) return false;
-      run = run.getPrevSibling();
-    }
 
-    return true;
-  }
 
     
     
@@ -237,6 +227,41 @@ public class ResolveUtil {
         public void handleEvent(Event event, Object associated) {
         }
     }
+//
+//    public static LuaPsiElement resolveProperty(LuaPsiElement place, String name) {
+//      ResolverProcessor processor = new ResolverProcessor(name, place,  new PsiType[0]);
+//      return resolveExistingElement(place, processor, LuaVariable.class, LuaReferenceExpression.class);
+//    }
+
+
+  public static boolean processChildren(PsiElement element,
+                                        PsiScopeProcessor processor,
+                                        ResolveState substitutor,
+                                        PsiElement lastParent,
+                                        PsiElement place) {
+    PsiElement run = lastParent == null ? element.getLastChild() : lastParent.getPrevSibling();
+    while (run != null) {
+      if (!run.processDeclarations(processor, substitutor, null, place)) return false;
+      run = run.getPrevSibling();
+    }
+
+    return true;
+  }
+
+  @Nullable
+  public static <T> T resolveExistingElement(LuaPsiElement place, ResolverProcessor processor, Class<? extends T>... classes) {
+    treeWalkUp(place, processor, true);
+    final LuaResolveResult[] candidates = processor.getCandidates();
+    for (LuaResolveResult candidate : candidates) {
+      final PsiElement element = candidate.getElement();
+      if (element == place) continue;
+      for (Class<? extends T> clazz : classes) {
+        if (clazz.isInstance(element)) return (T)element;
+      }
+    }
+
+    return null;
+  }
 }
 
 

@@ -19,11 +19,14 @@ package com.sylvanaar.idea.Lua.lang.psi.impl;
 import com.intellij.openapi.diagnostic.Logger;
 import com.intellij.psi.PsiElement;
 import com.intellij.psi.PsiWhiteSpace;
+import com.intellij.psi.util.PsiTreeUtil;
 import com.sylvanaar.idea.Lua.lang.lexer.LuaLexer;
 import com.sylvanaar.idea.Lua.lang.lexer.LuaTokenTypes;
+import com.sylvanaar.idea.Lua.lang.psi.LuaControlFlowOwner;
 import com.sylvanaar.idea.Lua.lang.psi.LuaPsiElement;
 import com.sylvanaar.idea.Lua.lang.psi.expressions.LuaExpression;
 import com.sylvanaar.idea.Lua.lang.psi.statements.LuaAssignmentStatement;
+import com.sylvanaar.idea.Lua.lang.psi.statements.LuaStatementElement;
 import org.jetbrains.annotations.Nullable;
 
 /**
@@ -68,6 +71,20 @@ public class PsiUtil {
       return parent instanceof LuaAssignmentStatement && element.equals(((LuaAssignmentStatement)parent).getLeftExprs().textMatches(element));
     }
     return false;
+  }
+
+
+
+  @Nullable
+  public static PsiElement findEnclosingStatement(@Nullable PsiElement context) {
+    if (context == null) return null;
+    context = PsiTreeUtil.getParentOfType(context, LuaStatementElement.class, false);
+    while (context != null) {
+      final PsiElement parent = context.getParent();
+      if (parent instanceof LuaControlFlowOwner) return context;
+      context = parent;
+    }
+    return null;
   }
 //
 ////  public static boolean isApplicable(@Nullable PsiType[] argumentTypes,

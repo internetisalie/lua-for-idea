@@ -18,9 +18,10 @@ package com.sylvanaar.idea.Lua.lang.psi.util;
 
 import com.intellij.psi.PsiElement;
 import com.intellij.psi.ResolveState;
-import com.intellij.psi.scope.PsiScopeProcessor;
-import org.jetbrains.annotations.NotNull;
-import org.jetbrains.annotations.Nullable;
+import com.sun.istack.internal.NotNull;
+import com.sun.istack.internal.Nullable;
+import com.sylvanaar.idea.Lua.lang.psi.LuaPsiElement;
+
 
 /**
  * Helper methods to work with the psi tree.
@@ -30,10 +31,10 @@ import org.jetbrains.annotations.Nullable;
  * Time: 1:36:42 PM
  */
 public class LuaPsiTreeUtils {
-    public static boolean treeWalkDown(@NotNull final PsiScopeProcessor processor, @NotNull final PsiElement entrance,
-                                       @Nullable final PsiElement maxScope,
+    public static boolean treeWalkDown(@NotNull final com.intellij.psi.scope.PsiScopeProcessor processor, @NotNull final LuaPsiElement entrance,
+                                       @Nullable final LuaPsiElement maxScope,
                                        @NotNull final ResolveState state) {
-        //first walk down all childs of the entrance
+        //first walk down all children of the entrance
         if (!entrance.processDeclarations(processor, state, entrance, entrance)) return false;
 
         PsiElement prevParent = entrance;
@@ -42,7 +43,7 @@ public class LuaPsiTreeUtils {
             scope = LuaPsiUtils.elementAfter(entrance);
         }
 
-        //if not yet found, walkd down all elements after the current psi elemen in the tree
+        //if not yet found, walkd down all elements after the current psi element in the tree
         while (scope != null) {
             if (!scope.processDeclarations(processor, state, prevParent, entrance)) return false;
 

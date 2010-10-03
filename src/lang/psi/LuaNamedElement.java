@@ -25,4 +25,5 @@ public interface LuaNamedElement extends LuaPsiElement, PsiNamedElement {
 
     public PsiElement setName(String s);
 
+    public PsiElement getNameIdentifierLua();
 }
