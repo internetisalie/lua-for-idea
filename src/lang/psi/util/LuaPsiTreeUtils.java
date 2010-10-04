@@ -18,9 +18,9 @@ package com.sylvanaar.idea.Lua.lang.psi.util;
 
 import com.intellij.psi.PsiElement;
 import com.intellij.psi.ResolveState;
-import com.sun.istack.internal.NotNull;
-import com.sun.istack.internal.Nullable;
 import com.sylvanaar.idea.Lua.lang.psi.LuaPsiElement;
+import org.jetbrains.annotations.NotNull;
+import org.jetbrains.annotations.Nullable;
 
 
 /**
