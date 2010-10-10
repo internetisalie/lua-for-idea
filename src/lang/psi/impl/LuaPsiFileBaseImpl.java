@@ -23,7 +23,8 @@ import com.sylvanaar.idea.Lua.lang.psi.LuaPsiFileBase;
 import com.sylvanaar.idea.Lua.lang.psi.expressions.LuaIdentifier;
 import com.sylvanaar.idea.Lua.lang.psi.statements.LuaFunctionDefinitionStatement;
 import com.sylvanaar.idea.Lua.lang.psi.statements.LuaStatementElement;
-import com.sylvanaar.idea.Lua.lang.psi.visitor.LuaPsiElementVisitor;
+import com.sylvanaar.idea.Lua.lang.psi.visitor.LuaElementVisitor;
+
 import com.sylvanaar.idea.Lua.lang.psi.visitor.LuaRecursiveElementVisitor;
 import org.jetbrains.annotations.NotNull;
 
@@ -60,7 +61,7 @@ public abstract class LuaPsiFileBaseImpl extends PsiFileBase implements LuaPsiFi
             }
         };
 
-        LuaPsiElementVisitor ev = new LuaPsiElementVisitor(v);
+        LuaElementVisitor ev = new LuaElementVisitor(v);
         v.visitElement(this);
 
         return funcs.toArray(new LuaFunctionDefinitionStatement[0]);
@@ -78,7 +79,7 @@ public abstract class LuaPsiFileBaseImpl extends PsiFileBase implements LuaPsiFi
             }
         };
 
-        LuaPsiElementVisitor ev = new LuaPsiElementVisitor(v);
+        LuaElementVisitor ev = new LuaElementVisitor(v);
         v.visitElement(this);
 
         return ids.toArray(new LuaIdentifier[0]);

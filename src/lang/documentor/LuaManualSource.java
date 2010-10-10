@@ -29,11 +29,11 @@ public class LuaManualSource implements DocumentationSource {
 
     @Override
     public String documentation(PsiElement element, PsiElement originalElement) {
-        return null;
+        return "Documentation for: " +element.getText();
     }
 
     @Override
     public String documentationUrl(PsiElement element, PsiElement originalElement) {
-        return null;
+        return "http://docs/lua-manual/#pdf-"+ element.getText();
     }
 }

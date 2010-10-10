@@ -37,7 +37,12 @@ public abstract class BaseInspectionVisitor extends LuaRecursiveElementVisitor {
   private boolean onTheFly = false;
   private final List<ProblemDescriptor> errors = null;
 
-  public void setInspection(BaseInspection inspection) {
+    public BaseInspectionVisitor(ProblemsHolder holder, boolean onTheFly) {
+        this.problemsHolder = holder;
+        this.onTheFly = onTheFly;
+    }
+
+    public void setInspection(BaseInspection inspection) {
     this.inspection = inspection;
   }
 

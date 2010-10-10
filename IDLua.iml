@@ -10,6 +10,8 @@
       <sourceFolder url="file://$MODULE_DIR$/src" isTestSource="false" packagePrefix="com.sylvanaar.idea.Lua" />
       <sourceFolder url="file://$MODULE_DIR$/test" isTestSource="true" />
       <sourceFolder url="file://$MODULE_DIR$/resources" isTestSource="false" />
+      <excludeFolder url="file://$MODULE_DIR$/src/lang/smartEnter/fixers" />
+      <excludeFolder url="file://$MODULE_DIR$/src/lang/surroundWith" />
     </content>
     <orderEntry type="jdk" jdkName="IDEA SDK" jdkType="IDEA JDK" />
     <orderEntry type="sourceFolder" forTests="false" />

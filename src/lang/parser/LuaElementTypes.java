@@ -51,10 +51,15 @@ public interface LuaElementTypes extends LuaTokenTypes {
     IElementType VARIABLE = new LuaElementType("Variable");
     IElementType IDENTIFIER_LIST = new LuaElementType("Identifier List");
 
+    IElementType STATEMENT = new LuaElementType("Statment");
+    IElementType LAST_STATEMENT = new LuaElementType("LastStatement");
+
+
     IElementType EXPR = new LuaElementType("Expression");
     IElementType EXPR_LIST = new LuaElementType("Expression List");
 
     IElementType LITERAL_EXPRESSION = new LuaElementType("Literal Expression");
+    IElementType PARENTHEICAL_EXPRESSION = new LuaElementType("Parentheical Expression");
 
     IElementType TABLE_CONSTUCTOR = new LuaElementType("Table Constructor");
     IElementType FUNCTION_CALL_ARGS = new LuaElementType("Function Call Args");
@@ -79,6 +84,7 @@ public interface LuaElementTypes extends LuaTokenTypes {
     IElementType BINARY_EXP = new LuaElementType("BinExp");
     IElementType UNARY_OP = new LuaElementType("UnOp");
     IElementType BINARY_OP = new LuaElementType("BinOp");
+
 
     IElementType DO_BLOCK = new LuaElementType("Do Block");
 

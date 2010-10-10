@@ -21,7 +21,9 @@ import com.sylvanaar.idea.Lua.lang.psi.LuaPsiElement;
  * @author ven
  */
 public abstract class LuaRecursiveElementVisitor extends LuaElementVisitor {
-  public void visitElement(LuaPsiElement element) {
+    
+
+    public void visitElement(LuaPsiElement element) {
     super.visitElement(element);
     element.acceptChildren(this);
   }

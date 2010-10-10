@@ -21,6 +21,7 @@ import com.intellij.lang.ASTNode;
 import com.intellij.lang.Language;
 import com.intellij.openapi.diagnostic.Logger;
 import com.intellij.psi.PsiElement;
+import com.intellij.psi.PsiElementVisitor;
 import com.intellij.psi.ResolveState;
 import com.intellij.psi.scope.PsiScopeProcessor;
 import com.intellij.psi.search.LocalSearchScope;
@@ -50,13 +51,13 @@ public class LuaPsiElementImpl extends ASTWrapperPsiElement implements LuaPsiEle
     public void accept(LuaElementVisitor visitor) {
       visitor.visitElement(this);
     }
-//    public void accept(@NotNull PsiElementVisitor visitor) {
-//        if (visitor instanceof LuaElementVisitor) {
-//            ((LuaElementVisitor) visitor).visitElement(this);
-//        } else {
-//            visitor.visitElement(this);
-//        }
-//    }
+    public void accept(@NotNull PsiElementVisitor visitor) {
+        if (visitor instanceof LuaElementVisitor) {
+            ((LuaElementVisitor) visitor).visitElement(this);
+        } else {
+            visitor.visitElement(this);
+        }
+    }
 
 
      public SearchScope getUseScope() {

@@ -7,6 +7,16 @@
   <!-- 
   <property name="skip.tests" value="true"/>
    -->
+  <property name="javac2.home" value="${idea.home}/lib"/>
+  <path id="javac2.classpath">
+    <pathelement location="${javac2.home}/javac2.jar"/>
+    <pathelement location="${javac2.home}/jdom.jar"/>
+    <pathelement location="${javac2.home}/asm.jar"/>
+    <pathelement location="${javac2.home}/asm-commons.jar"/>
+    <pathelement location="${javac2.home}/jgoodies-forms.jar"/>
+  </path>
+  <taskdef name="javac2" classname="com.intellij.ant.Javac2" classpathref="javac2.classpath"/>
+  <taskdef name="instrumentIdeaExtensions" classname="com.intellij.ant.InstrumentIdeaExtensions" classpathref="javac2.classpath"/>
   
   <!-- Compiler options -->
   
@@ -57,9 +67,9 @@
   
   <!-- JDK definitions -->
   
-  <property name="jdk.bin.idea_sdk_-_debug" value="E:/Java/jdk1.6.0_19/bin"/>
-  <path id="jdk.classpath.idea_sdk_-_debug">
-    <fileset dir="${jdk.home.idea_sdk_-_debug}">
+  <property name="jdk.bin.idea_sdk" value="E:/Java/jdk1.6.0_19/bin"/>
+  <path id="jdk.classpath.idea_sdk">
+    <fileset dir="${jdk.home.idea_sdk}">
       <include name="lib/alloy.jar"/>
       <include name="lib/annotations.jar"/>
       <include name="lib/asm-commons.jar"/>
@@ -141,6 +151,12 @@
   
   <!-- Project Libraries -->
   
+  <path id="library.kahlua.classpath">
+    <pathelement location="${basedir}/lib/jsyntaxpane-0.9.5.jar"/>
+    <pathelement location="${basedir}/lib/kahlua-core.jar"/>
+    <pathelement location="${basedir}/lib/kahlua-j2se.jar"/>
+  </path>
+  
   
   <!-- Global Libraries -->
   
@@ -152,9 +168,9 @@
   <dirname property="module.idluaerrors.basedir" file="${ant.file}"/>
   
   
-  <property name="module.jdk.home.idluaerrors" value="${jdk.home.idea_sdk_-_debug}"/>
-  <property name="module.jdk.bin.idluaerrors" value="${jdk.bin.idea_sdk_-_debug}"/>
-  <property name="module.jdk.classpath.idluaerrors" value="jdk.classpath.idea_sdk_-_debug"/>
+  <property name="module.jdk.home.idluaerrors" value="${jdk.home.idea_sdk}"/>
+  <property name="module.jdk.bin.idluaerrors" value="${jdk.bin.idea_sdk}"/>
+  <property name="module.jdk.classpath.idluaerrors" value="jdk.classpath.idea_sdk"/>
   
   <property name="compiler.args.idluaerrors" value="${compiler.args}"/>
   
@@ -203,13 +219,13 @@
   
   <target name="compile.module.idluaerrors.production" description="Compile module IDLuaErrors; production classes">
     <mkdir dir="${idluaerrors.output.dir}"/>
-    <javac destdir="${idluaerrors.output.dir}" debug="${compiler.debug}" nowarn="${compiler.generate.no.warnings}" memorymaximumsize="${compiler.max.memory}" fork="true" executable="${module.jdk.bin.idluaerrors}/javac">
+    <javac2 destdir="${idluaerrors.output.dir}" debug="${compiler.debug}" nowarn="${compiler.generate.no.warnings}" memorymaximumsize="${compiler.max.memory}" fork="true" executable="${module.jdk.bin.idluaerrors}/javac">
       <compilerarg line="${compiler.args.idluaerrors}"/>
       <bootclasspath refid="idluaerrors.module.bootclasspath"/>
       <classpath refid="idluaerrors.module.production.classpath"/>
       <src refid="idluaerrors.module.sourcepath"/>
       <patternset refid="excluded.from.compilation.idluaerrors"/>
-    </javac>
+    </javac2>
     
     <copy todir="${idluaerrors.output.dir}">
       <fileset dir="${module.idluaerrors.basedir}/err">
@@ -232,9 +248,9 @@
   <dirname property="module.idluahelp.basedir" file="${ant.file}"/>
   
   
-  <property name="module.jdk.home.idluahelp" value="${jdk.home.idea_sdk_-_debug}"/>
-  <property name="module.jdk.bin.idluahelp" value="${jdk.bin.idea_sdk_-_debug}"/>
-  <property name="module.jdk.classpath.idluahelp" value="jdk.classpath.idea_sdk_-_debug"/>
+  <property name="module.jdk.home.idluahelp" value="${jdk.home.idea_sdk}"/>
+  <property name="module.jdk.bin.idluahelp" value="${jdk.bin.idea_sdk}"/>
+  <property name="module.jdk.classpath.idluahelp" value="jdk.classpath.idea_sdk"/>
   
   <property name="compiler.args.idluahelp" value="${compiler.args}"/>
   
@@ -283,13 +299,13 @@
   
   <target name="compile.module.idluahelp.production" description="Compile module IDLuaHelp; production classes">
     <mkdir dir="${idluahelp.output.dir}"/>
-    <javac destdir="${idluahelp.output.dir}" debug="${compiler.debug}" nowarn="${compiler.generate.no.warnings}" memorymaximumsize="${compiler.max.memory}" fork="true" executable="${module.jdk.bin.idluahelp}/javac">
+    <javac2 destdir="${idluahelp.output.dir}" debug="${compiler.debug}" nowarn="${compiler.generate.no.warnings}" memorymaximumsize="${compiler.max.memory}" fork="true" executable="${module.jdk.bin.idluahelp}/javac">
       <compilerarg line="${compiler.args.idluahelp}"/>
       <bootclasspath refid="idluahelp.module.bootclasspath"/>
       <classpath refid="idluahelp.module.production.classpath"/>
       <src refid="idluahelp.module.sourcepath"/>
       <patternset refid="excluded.from.compilation.idluahelp"/>
-    </javac>
+    </javac2>
     
     <copy todir="${idluahelp.output.dir}">
       <fileset dir="${module.idluahelp.basedir}/help">
@@ -312,9 +328,9 @@
   <dirname property="module.idlua.basedir" file="${ant.file}"/>
   
   
-  <property name="module.jdk.home.idlua" value="${jdk.home.idea_sdk_-_debug}"/>
-  <property name="module.jdk.bin.idlua" value="${jdk.bin.idea_sdk_-_debug}"/>
-  <property name="module.jdk.classpath.idlua" value="jdk.classpath.idea_sdk_-_debug"/>
+  <property name="module.jdk.home.idlua" value="${jdk.home.idea_sdk}"/>
+  <property name="module.jdk.bin.idlua" value="${jdk.bin.idea_sdk}"/>
+  <property name="module.jdk.classpath.idlua" value="jdk.classpath.idea_sdk"/>
   
   <property name="compiler.args.idlua" value="${compiler.args}"/>
   
@@ -327,42 +343,33 @@
   
   <path id="idlua.module.production.classpath">
     <path refid="${module.jdk.classpath.idlua}"/>
-    <pathelement location="${basedir}/lib/kahlua-core.jar"/>
-    <pathelement location="${basedir}/lib/kahlua-j2se.jar"/>
-    <pathelement location="${basedir}/lib/jsyntaxpane-0.9.5.jar"/>
+    <path refid="library.kahlua.classpath"/>
   </path>
   
   <path id="idlua.runtime.production.module.classpath">
     <pathelement location="${idlua.output.dir}"/>
-    <pathelement location="${basedir}/lib/kahlua-core.jar"/>
-    <pathelement location="${basedir}/lib/kahlua-j2se.jar"/>
-    <pathelement location="${basedir}/lib/jsyntaxpane-0.9.5.jar"/>
     <path refid="idluaerrors.runtime.production.module.classpath"/>
     <path refid="idluahelp.runtime.production.module.classpath"/>
+    <path refid="library.kahlua.classpath"/>
   </path>
   
   <path id="idlua.module.classpath">
     <path refid="${module.jdk.classpath.idlua}"/>
     <pathelement location="${idlua.output.dir}"/>
-    <pathelement location="${basedir}/lib/kahlua-core.jar"/>
-    <pathelement location="${basedir}/lib/kahlua-j2se.jar"/>
-    <pathelement location="${basedir}/lib/jsyntaxpane-0.9.5.jar"/>
+    <path refid="library.kahlua.classpath"/>
   </path>
   
   <path id="idlua.runtime.module.classpath">
     <pathelement location="${idlua.output.dir}"/>
     <pathelement location="${idlua.testoutput.dir}"/>
-    <pathelement location="${basedir}/lib/kahlua-core.jar"/>
-    <pathelement location="${basedir}/lib/kahlua-j2se.jar"/>
-    <pathelement location="${basedir}/lib/jsyntaxpane-0.9.5.jar"/>
     <path refid="idluaerrors.runtime.module.classpath"/>
     <path refid="idluahelp.runtime.module.classpath"/>
+    <path refid="library.kahlua.classpath"/>
   </path>
   
   
   <patternset id="excluded.from.module.idlua">
     <patternset refid="ignored.files"/>
-    <exclude name="editor/inspections/inspections/control/**"/>
   </patternset>
   
   <patternset id="excluded.from.compilation.idlua">
@@ -387,13 +394,13 @@
   
   <target name="compile.module.idlua.production" depends="compile.module.idluaerrors,compile.module.idluahelp" description="Compile module IDLua; production classes">
     <mkdir dir="${idlua.output.dir}"/>
-    <javac destdir="${idlua.output.dir}" debug="${compiler.debug}" nowarn="${compiler.generate.no.warnings}" memorymaximumsize="${compiler.max.memory}" fork="true" executable="${module.jdk.bin.idlua}/javac">
+    <javac2 destdir="${idlua.output.dir}" debug="${compiler.debug}" nowarn="${compiler.generate.no.warnings}" memorymaximumsize="${compiler.max.memory}" fork="true" executable="${module.jdk.bin.idlua}/javac">
       <compilerarg line="${compiler.args.idlua}"/>
       <bootclasspath refid="idlua.module.bootclasspath"/>
       <classpath refid="idlua.module.production.classpath"/>
       <src refid="idlua.module.sourcepath"/>
       <patternset refid="excluded.from.compilation.idlua"/>
-    </javac>
+    </javac2>
     
     <copy todir="${idlua.output.dir}/com/sylvanaar/idea/Lua">
       <fileset dir="${module.idlua.basedir}/src">
@@ -411,13 +418,13 @@
   
   <target name="compile.module.idlua.tests" depends="compile.module.idlua.production" description="compile module IDLua; test classes" unless="skip.tests">
     <mkdir dir="${idlua.testoutput.dir}"/>
-    <javac destdir="${idlua.testoutput.dir}" debug="${compiler.debug}" nowarn="${compiler.generate.no.warnings}" memorymaximumsize="${compiler.max.memory}" fork="true" executable="${module.jdk.bin.idlua}/javac">
+    <javac2 destdir="${idlua.testoutput.dir}" debug="${compiler.debug}" nowarn="${compiler.generate.no.warnings}" memorymaximumsize="${compiler.max.memory}" fork="true" executable="${module.jdk.bin.idlua}/javac">
       <compilerarg line="${compiler.args.idlua}"/>
       <bootclasspath refid="idlua.module.bootclasspath"/>
       <classpath refid="idlua.module.classpath"/>
       <src refid="idlua.module.test.sourcepath"/>
       <patternset refid="excluded.from.compilation.idlua"/>
-    </javac>
+    </javac2>
     
     <copy todir="${idlua.testoutput.dir}">
       <fileset dir="${module.idlua.basedir}/test">
@@ -439,6 +446,7 @@
     <property name="tmp.dir.idlua" value="${module.idlua.basedir}/../temp"/>
     <mkdir dir="${tmp.dir.idlua}"/>
     <mkdir dir="${tmp.dir.idlua}/lib"/>
+    <mkdir dir="${tmp.dir.idlua}/help"/>      
     <jar destfile="${tmp.dir.idlua}/lib/IDLua.jar" duplicate="preserve">
       <zipfileset dir="${module.idlua.basedir}/out/production/IDLua"/>
       <zipfileset file="${module.idlua.basedir}/META-INF/plugin.xml" prefix="META-INF"/>
@@ -447,9 +455,16 @@
         <attribute name="Manifest-Version" value="1.0"/>
       </manifest>
     </jar>
-    <copy file="${module.idlua.basedir}/lib/kahlua-j2se.jar" tofile="${tmp.dir.idlua}/lib/kahlua-j2se.jar"/>
-    <copy file="${module.idlua.basedir}/lib/jsyntaxpane-0.9.5.jar" tofile="${tmp.dir.idlua}/lib/jsyntaxpane-0.9.5.jar"/>
+  <jar destfile="${tmp.dir.idlua}/help/IDLuaHelp.jar" duplicate="preserve">
+    <zipfileset dir="${module.idluahelp.basedir}/out/production/IDLuaHelp"/>
+    <manifest>
+      <attribute name="Created-By" value="IntelliJ IDEA"/>
+      <attribute name="Manifest-Version" value="1.0"/>
+    </manifest>
+  </jar>
     <copy file="${module.idlua.basedir}/lib/kahlua-core.jar" tofile="${tmp.dir.idlua}/lib/kahlua-core.jar"/>
+    <copy file="${module.idlua.basedir}/lib/jsyntaxpane-0.9.5.jar" tofile="${tmp.dir.idlua}/lib/jsyntaxpane-0.9.5.jar"/>
+    <copy file="${module.idlua.basedir}/lib/kahlua-j2se.jar" tofile="${tmp.dir.idlua}/lib/kahlua-j2se.jar"/>
     <zip destfile="${idlua.plugin.path.jar}">
       <fileset dir="${module.idlua.basedir}/../temp"/>
     </zip>
@@ -475,7 +490,7 @@
     <property name="artifact.temp.output.idluahelp" value="${artifacts.temp.dir}/IDLuaHelp"/>
     <mkdir dir="${artifact.temp.output.idluahelp}"/>
     <jar destfile="${temp.jar.path.IDLuaHelp.jar}" duplicate="preserve" filesetmanifest="mergewithoutmain">
-      <zipfileset dir="${idluahelp.output.dir}"/>
+      <zipfileset dir="idluahelp.module.sourcepath"/>
     </jar>
     <copy file="${temp.jar.path.IDLuaHelp.jar}" tofile="${artifact.temp.output.idluahelp}/IDLuaHelp.jar"/>
   </target>

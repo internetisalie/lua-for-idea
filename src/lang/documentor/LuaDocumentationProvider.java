@@ -38,7 +38,7 @@ public class LuaDocumentationProvider extends QuickDocumentationProvider {
 
     static {
         sourceList.add(new LuaManualSource());
-        sourceList.add(new StandardFunctionDocumentation());
+//        sourceList.add(new StandardFunctionDocumentation());
 //        sourceList.add(new InternalCommandDocumentation());
 //        sourceList.add(new CachingDocumentationSource(new SystemInfopageDocSource()));
 //        sourceList.add(new ManpageDocSource());

@@ -27,4 +27,7 @@ import com.sylvanaar.idea.Lua.lang.psi.LuaPsiElement;
  */
 public interface LuaBlock extends LuaPsiElement, LuaControlFlowOwner {
      public LuaStatementElement[] getStatements();
+     public LuaLastStatementElement getLastStatement();
+
+    void addStatementBefore(LuaStatementElement statement, Object o);
 }

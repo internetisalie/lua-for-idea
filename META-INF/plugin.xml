@@ -184,7 +184,7 @@
 
     </actions>
 
-    <!--<helpset file="IDLuaHelp.jar" path="/Lua.hs" />-->
+    <helpset file="IDLuaHelp.jar" path="/Lua.hs" />
 
     <extensions defaultExtensionNs="com.intellij">
         <!-- Error reporter-->
@@ -255,14 +255,20 @@
 
         <lang.foldingBuilder language="Lua" implementationClass="com.sylvanaar.idea.Lua.lang.LuaFoldingBuilder"/>
 
-        <!--<lang.documentationProvider language="Lua" implementationClass="com.sylvanaar.idea.Lua.lang.documentor.LuaDocumentationProvider" />-->
+        <lang.documentationProvider language="Lua" implementationClass="com.sylvanaar.idea.Lua.lang.documentor.LuaDocumentationProvider" />
 
         <lang.psiStructureViewFactory language="Lua"
                                       implementationClass="com.sylvanaar.idea.Lua.lang.structure.LuaStructureViewFactory"/>
 
-        <!--<lang.refactoringSupport language="Lua" implementationClass="com.sylvanaar.idea.Lua.lang.LuaRefactoringSupport" />-->
+        <lang.refactoringSupport language="Lua" implementationClass="com.sylvanaar.idea.Lua.editor.Refactoring.LuaRefactoringSupport" />
 
         <lang.findUsagesProvider language="Lua" implementationClass="com.sylvanaar.idea.Lua.findUsages.LuaFindUsagesProvider" />
+
+        <lang.surroundDescriptor language="Lua"
+                             implementationClass="com.sylvanaar.idea.Lua.lang.surroundWith.descriptors.LuaSurroundDescriptor"/>
+
+
+        <lang.smartEnterProcessor language="Lua" implementationClass="com.sylvanaar.idea.Lua.lang.smartEnter.LuaSmartEnterProcessor" />
 
 
         <codeInsight.lineMarkerProvider language="Lua" implementationClass="com.sylvanaar.idea.Lua.codeInsight.LuaLineMarkerProvider" />            

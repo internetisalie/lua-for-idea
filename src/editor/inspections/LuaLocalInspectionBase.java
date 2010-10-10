@@ -22,7 +22,7 @@ import com.sylvanaar.idea.Lua.lang.psi.LuaPsiFileBase;
 import com.sylvanaar.idea.Lua.lang.psi.statements.LuaBlock;
 import com.sylvanaar.idea.Lua.lang.psi.statements.LuaFunctionDefinitionStatement;
 import com.sylvanaar.idea.Lua.lang.psi.visitor.LuaElementVisitor;
-import com.sylvanaar.idea.Lua.lang.psi.visitor.LuaPsiElementVisitor;
+ 
 import org.jetbrains.annotations.NotNull;
 
 
@@ -39,7 +39,7 @@ public abstract class LuaLocalInspectionBase extends LuaSuppressableInspectionTo
 
   @NotNull
   public PsiElementVisitor buildVisitor(@NotNull final ProblemsHolder problemsHolder, boolean isOnTheFly) {
-    return new LuaPsiElementVisitor(new LuaElementVisitor() {
+   return new LuaElementVisitor() {
 
       public void visitFunctionDef(LuaFunctionDefinitionStatement method) {
         final LuaBlock block = method.getBlock();
@@ -51,7 +51,7 @@ public abstract class LuaLocalInspectionBase extends LuaSuppressableInspectionTo
       public void visitFile(LuaPsiFileBase file) {
         check(file, problemsHolder);
       }
-    });
+    };
   }
 
   protected abstract void check(LuaControlFlowOwner owner, ProblemsHolder problemsHolder);

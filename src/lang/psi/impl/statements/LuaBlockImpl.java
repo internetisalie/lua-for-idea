@@ -20,13 +20,13 @@ import com.intellij.lang.ASTNode;
 import com.intellij.psi.PsiElement;
 import com.intellij.psi.ResolveState;
 import com.intellij.psi.scope.PsiScopeProcessor;
-import com.sylvanaar.idea.Lua.lang.psi.LuaPsiElement;
+import com.sylvanaar.idea.Lua.lang.parser.LuaElementTypes;
 import com.sylvanaar.idea.Lua.lang.psi.controlFlow.Instruction;
 import com.sylvanaar.idea.Lua.lang.psi.controlFlow.impl.ControlFlowBuilder;
 import com.sylvanaar.idea.Lua.lang.psi.impl.LuaPsiElementImpl;
 import com.sylvanaar.idea.Lua.lang.psi.statements.LuaBlock;
+import com.sylvanaar.idea.Lua.lang.psi.statements.LuaLastStatementElement;
 import com.sylvanaar.idea.Lua.lang.psi.statements.LuaStatementElement;
-import com.sylvanaar.idea.Lua.lang.psi.visitor.LuaElementVisitor;
 import org.jetbrains.annotations.NotNull;
 
 /**
@@ -42,21 +42,21 @@ public class LuaBlockImpl extends LuaPsiElementImpl implements LuaBlock {
         super(node);
     }
 
-    public void acceptChildren(LuaElementVisitor visitor) {
-        PsiElement child = getFirstChild();
-        while (child != null) {
-            if (child instanceof LuaStatementElement) {
-                ((LuaPsiElement) child).accept(visitor);
-            }
-
-            child = child.getNextSibling();
-        }
-    }
 
     public LuaStatementElement[] getStatements() {
 
 
         return findChildrenByClass(LuaStatementElement.class);
+    }
+
+    @Override
+    public LuaLastStatementElement getLastStatement() {
+        return (LuaLastStatementElement) findChildByType(LuaElementTypes.LAST_STATEMENT);
+    }
+
+    @Override
+    public void addStatementBefore(LuaStatementElement statement, Object o) {
+        // TODO
     }
 
     public Instruction[] getControlFlow() {

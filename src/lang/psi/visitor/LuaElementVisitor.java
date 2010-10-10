@@ -34,6 +34,9 @@ import org.jetbrains.annotations.NotNull;
  */
 
 public class LuaElementVisitor extends PsiElementVisitor {
+    public LuaElementVisitor(LuaElementVisitor e) {}
+    public LuaElementVisitor() {}
+
     public void visitElement(LuaPsiElement element)
     {
         ProgressManager.checkCanceled();
@@ -45,6 +48,9 @@ public class LuaElementVisitor extends PsiElementVisitor {
 
     public void visitClosure(LuaFunctionDefinitionStatement closure) {
         visitStatement(closure);
+    }
+    public void visitBlock(LuaBlock e) {
+        visitBlock(e);
     }
     public void visitExpression(LuaExpression e) {
         visitElement(e);
@@ -81,23 +87,21 @@ public class LuaElementVisitor extends PsiElementVisitor {
     }
 
     public void visitNumericForStatement(LuaNumericForStatement e) {
-        visitElement(e);
+        visitStatement(e);
     }
 
-    public void viditBreakStatement(LuaBreakStatement statement) {
-        visitStatement(statement);
-    }
+
        
     public void visitGenericForStatement(LuaGenericForStatement e) {
-        visitElement(e);
+        visitStatement(e);
     }
 
      public void visitIfThenStatement(@NotNull LuaIfThenStatement e) {
-        visitElement(e);
+        visitStatement(e);
     }
 
     public void visitWhileStatement(LuaWhileStatement e) {
-        visitElement(e);
+        visitStatement(e);
     }
     //
 //    public void visitReferenceExpression(LuaReferenceExpressionImpl e) {

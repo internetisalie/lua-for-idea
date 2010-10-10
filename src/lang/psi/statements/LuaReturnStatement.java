@@ -24,7 +24,7 @@ import com.sylvanaar.idea.Lua.lang.psi.expressions.LuaExpression;
  * Date: Jun 12, 2010
  * Time: 10:42:51 PM
  */
-public interface LuaReturnStatement extends LuaStatementElement {
+public interface LuaReturnStatement extends LuaStatementElement, LuaLastStatementElement {
     LuaExpression getReturnValue();
 
     boolean isTailCall();

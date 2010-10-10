@@ -45,4 +45,6 @@ public abstract class LuaPsiElementFactory {
     public abstract PsiComment createCommentFromText(String s, PsiElement parent);
 
     public abstract PsiElement createWhiteSpaceFromText(String text);
+
+    
 }

@@ -597,8 +597,8 @@ public class KahluaParser implements PsiParser, LuaElementTypes {
                     parm.done(PARAMETER);
                     // break;
                 } else if (this.t == ELLIPSIS) {  /* param . `...' */
-                    mark.done(LOCAL_NAME_DECL);
                     this.next();
+                    mark.done(LOCAL_NAME_DECL);
 
                     parm.done(PARAMETER);
                     fs.isVararg |= FuncState.VARARG_ISVARARG;
@@ -731,8 +731,10 @@ public class KahluaParser implements PsiParser, LuaElementTypes {
 
         if (this.t == LPAREN) {
             int line = this.linenumber;
+            PsiBuilder.Marker mark = builder.mark();
             this.next();
             this.expr(v);
+            mark.done(PARENTHEICAL_EXPRESSION);
             this.check_match(RPAREN, LPAREN, line);
             fs.dischargevars(v);
             return;
@@ -854,6 +856,7 @@ public class KahluaParser implements PsiParser, LuaElementTypes {
 
         PsiBuilder.Marker mark = builder.mark();
 
+
         try {
             if (this.t == NUMBER) {
                 v.init(VKNUM, 0);
@@ -874,13 +877,22 @@ public class KahluaParser implements PsiParser, LuaElementTypes {
                         + " outside a vararg function");
                 fs.isVararg &= ~FuncState.VARARG_NEEDSARG; /* don't need 'arg' */
                 v.init(VVARARG, fs.codeABC(FuncState.OP_VARARG, 0, 1, 0));
+                PsiBuilder.Marker ref= mark.precede();
+                PsiBuilder.Marker var = ref.precede() ;
+                this.next();
+
+                mark.done(LOCAL_NAME);
+                ref.done(REFERENCE);
+                var.done(VARIABLE);
+
+                return;
 
             } else if (this.t == LCURLY) { /* constructor */
                 this.constructor(v);
                 return;
             } else if (this.t == FUNCTION) {
-                this.next();
                 PsiBuilder.Marker funcStmt = builder.mark();
+                this.next();
                 this.body(v, false, this.linenumber);
                 funcStmt.done(ANONYMOUS_FUNCTION_EXPRESSION);
                 return;
@@ -890,7 +902,9 @@ public class KahluaParser implements PsiParser, LuaElementTypes {
             }
             this.next();
 
-            mark.done(this.t == ELLIPSIS ? VARIABLE : LITERAL_EXPRESSION);
+            mark.done(LITERAL_EXPRESSION);    
+
+
             mark = null;
         }
         finally {
@@ -1621,7 +1635,14 @@ public class KahluaParser implements PsiParser, LuaElementTypes {
         boolean islast = false;
         this.enterlevel();
         while (!islast && !block_follow(this.t)) {
+            final PsiBuilder.Marker mark = builder.mark();
             islast = this.statement();
+            if (builder.isError())
+                mark.drop();
+            else
+                mark.done(islast?LAST_STATEMENT:STATEMENT);
+
+
 //            if (builder.isError())
 //                cleanAfterError(builder);
             this.testnext(SEMI);
@@ -1642,11 +1663,10 @@ public class KahluaParser implements PsiParser, LuaElementTypes {
         int i = 0;
         PsiBuilder.Marker em = builder.mark();
         while (!builder.eof() &&
-                !(END.equals(builder.getTokenType()) ||
-                  SEMI.equals(builder.getTokenType())
-
+                !(END.equals(builder.getTokenType()) 
                 )
                 ) {
+            builder.setError(true);
             builder.advanceLexer();
             i++;
         }
@@ -1690,6 +1710,7 @@ public class KahluaParser implements PsiParser, LuaElementTypes {
             if (lexstate.t == null) // Try to kludge in handling of partial parses
                 lexstate.next(); /* read first token */
             lexstate.chunk();
+            cleanAfterError(psiBuilder);
             // lexstate.check(EMPTY_INPUT);
             lexstate.close_func();
 
@@ -1703,7 +1724,7 @@ public class KahluaParser implements PsiParser, LuaElementTypes {
 
             if (root != null)
                 rootMarker.done(root);
-
+            cleanAfterError(psiBuilder);
          return builder.getTreeBuilt();
     }
 }

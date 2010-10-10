@@ -22,6 +22,6 @@ package com.sylvanaar.idea.Lua.lang.psi.statements;
  * Date: Oct 1, 2010
  * Time: 11:10:26 PM
  */
-public interface LuaBreakStatement extends LuaStatementElement {
+public interface LuaBreakStatement extends LuaStatementElement, LuaLastStatementElement {
     LuaStatementElement findTargetStatement();  
 }

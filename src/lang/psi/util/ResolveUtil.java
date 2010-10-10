@@ -75,7 +75,7 @@ public class ResolveUtil {
         do {
             // Walking Local Declaration With Assignment Statement last parent Expression List place LuaReferenceExpression (a)
 
-//            log.info("Walking elt <" + elt + "> curr <" + cur + "> last parent <" + lastParent + "> place " + place);
+            log.info("Walking elt <" + elt + "> curr <" + cur + "> last parent <" + lastParent + "> place " + place);
 
             if (!cur.processDeclarations(processor, ResolveState.initial(), cur == elt ? lastParent : null, place)) {
                 if (processor instanceof ResolveProcessor) {
@@ -93,7 +93,7 @@ public class ResolveUtil {
 //        if (func != null) return func;
 
 
-//         log.info("Recursing Up elt <" + elt + "> context <" + elt.getContext() + ">  place " + place);
+         log.info("Recursing Up elt <" + elt + "> context <" + elt.getContext() + ">  place " + place);
         return treeWalkUp(processor, elt.getContext(), elt, place);
     }
 

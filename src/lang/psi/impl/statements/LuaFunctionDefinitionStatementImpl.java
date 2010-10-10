@@ -79,10 +79,8 @@ public class LuaFunctionDefinitionStatementImpl extends LuaStatementElementImpl 
 
 
         if (lastParent != null && lastParent.getParent() == this) {
-            final LuaParameter[] params = getParameters().getParameters();
-            for (LuaParameter param : params) {
-                if (!processor.execute(param, resolveState)) return false;
-            }
+            if (!getParameters().processDeclarations(processor, resolveState, lastParent, place))
+                return false;
 
             LuaParameter self = findChildByClass(LuaImpliedSelfParameterImpl.class);
 
