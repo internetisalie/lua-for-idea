@@ -20,10 +20,7 @@ import com.intellij.lang.ASTNode;
 import com.intellij.psi.PsiElement;
 import com.intellij.psi.tree.IElementType;
 import com.sylvanaar.idea.Lua.lang.lexer.LuaElementType;
-import com.sylvanaar.idea.Lua.lang.psi.impl.LuaDeclarationImpl;
-import com.sylvanaar.idea.Lua.lang.psi.impl.LuaPsiElementImpl;
-import com.sylvanaar.idea.Lua.lang.psi.impl.LuaPsiKeywordImpl;
-import com.sylvanaar.idea.Lua.lang.psi.impl.LuaPsiTokenImpl;
+import com.sylvanaar.idea.Lua.lang.psi.impl.*;
 import com.sylvanaar.idea.Lua.lang.psi.impl.expressions.*;
 import com.sylvanaar.idea.Lua.lang.psi.impl.statements.*;
 
@@ -51,6 +48,10 @@ public class LuaPsiCreator {
             return new LuaPsiTokenImpl(node.getElementType(), node.getChars());
         }
 
+
+        if (node.getElementType() == SYNTAX_LEVEL)
+            return new LuaSyntaxLevelImpl(node);
+        
         if (node.getElementType() == EXPR)
             return new LuaExpressionImpl(node);
 

@@ -16,13 +16,6 @@
 
 package com.sylvanaar.idea.Lua.lang.psi.statements;
 
-import com.sylvanaar.idea.Lua.lang.psi.PsiLuaToken;
-import com.sylvanaar.idea.Lua.lang.psi.expressions.LuaExpression;
-
 public interface LuaWhileStatement extends LuaConditionalLoop , LuaStatementElement {
-    public abstract LuaExpression getCondition();
 
-    public abstract PsiLuaToken getLParenth();
-
-    public abstract PsiLuaToken getRParenth();
 }

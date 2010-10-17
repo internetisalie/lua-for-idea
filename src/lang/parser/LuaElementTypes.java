@@ -46,6 +46,8 @@ public interface LuaElementTypes extends LuaTokenTypes {
 
     IElementType TOKEN_OR_KEYWORD = new LuaElementType("Token or Keyword");
 
+    IElementType SYNTAX_LEVEL = new LuaElementType("Syntax Level");
+
     IElementType REFERENCE = new LuaElementType("Reference");
 
     IElementType VARIABLE = new LuaElementType("Variable");
@@ -86,6 +88,7 @@ public interface LuaElementTypes extends LuaTokenTypes {
     IElementType DO_BLOCK = new LuaElementType("Do Block");
 
     IElementType ANON_FUNCTION_BLOCK = new LuaElementType("Anonymous Function Block");
+    IElementType REPEAT_UNTIL_BLOCK = new LuaElementType("Repeat Block");
     IElementType WHILE_BLOCK = new LuaElementType("While Block");
     IElementType GENERIC_FOR_BLOCK = new LuaElementType("Generic For Block");
     IElementType IF_THEN_BLOCK = new LuaElementType("If-Then Block");

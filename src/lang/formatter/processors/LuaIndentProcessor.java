@@ -21,7 +21,6 @@ import com.intellij.lang.ASTNode;
 import com.intellij.psi.PsiElement;
 import com.sylvanaar.idea.Lua.lang.formatter.blocks.LuaFormattingBlock;
 import com.sylvanaar.idea.Lua.lang.parser.LuaElementTypes;
-import com.sylvanaar.idea.Lua.lang.psi.expressions.LuaAnonymousFunctionExpression;
 import com.sylvanaar.idea.Lua.lang.psi.expressions.LuaTableConstructor;
 import com.sylvanaar.idea.Lua.lang.psi.statements.LuaBlock;
 import org.jetbrains.annotations.NotNull;
@@ -45,50 +44,24 @@ public abstract class LuaIndentProcessor implements LuaElementTypes {
     final PsiElement psiParent = astNode.getPsi();
 
 
-    if (psiParent instanceof LuaAnonymousFunctionExpression)
-        return Indent.getNormalIndent();
+//    if (psiParent instanceof LuaAnonymousFunctionExpression)
+//        return Indent.getNormalIndent();
       
     // For Lua Blocks
     if (child.getPsi() instanceof LuaBlock) {
         return Indent.getNormalIndent();
     }
 
-
-
     if (psiParent instanceof LuaTableConstructor) {
         if (child.getElementType() == RCURLY)
             return Indent.getNoneIndent();
         if (child.getElementType() == LCURLY)
-            return Indent.getNormalIndent();
+            return Indent.getContinuationWithoutFirstIndent();
 
         return Indent.getNormalIndent();
     }
 
-    // For common code block
-//    if (BLOCK_SET.contains(astNode.getElementType())) {
-//      return indentForBlock(psiParent, child);
-//    }
-
     return Indent.getNoneIndent();
   }
-
-
-//  /**
-//   * Indent for common block
-//   *
-//   * @param psiBlock
-//   * @param child
-//   * @return
-//   */
-//  private static Indent indentForBlock(PsiElement psiBlock, ASTNode child) {
-//    // Common case
-//    if (BLOCK_BEGIN_SET.contains(child.getElementType()) ||
-//        BLOCK_END_SET.contains(child.getElementType())) {
-//      return Indent.getNoneIndent();
-//    }
-//    return Indent.getNormalIndent();
-//
-//
-//  }
 }
 

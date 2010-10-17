@@ -14,19 +14,35 @@
  *   limitations under the License.
  */
 
-package com.sylvanaar.idea.Lua.lang.psi.statements;
+package com.sylvanaar.idea.Lua.lang.psi.impl;
 
-import com.sylvanaar.idea.Lua.lang.psi.LuaPsiElement;
+import com.intellij.lang.ASTNode;
 import com.sylvanaar.idea.Lua.lang.psi.LuaSyntaxLevel;
+import com.sylvanaar.idea.Lua.lang.psi.expressions.LuaIdentifier;
+
+import java.util.ArrayList;
+import java.util.List;
 
 /**
  * Created by IntelliJ IDEA.
  * User: Jon S Akhtar
- * Date: Jun 13, 2010
- * Time: 6:09:03 PM
+ * Date: Oct 16, 2010
+ * Time: 9:27:37 PM
  */
-public interface LuaBlock extends LuaPsiElement {
-     public LuaStatementElement[] getStatements();
+public class LuaSyntaxLevelImpl extends LuaPsiElementImpl implements LuaSyntaxLevel {    
+    public LuaSyntaxLevelImpl(ASTNode node) {
+        super(node);
+    }
 
-     public LuaSyntaxLevel getScope();
+    List<LuaIdentifier> declarations = new ArrayList<LuaIdentifier>();
+
+    @Override
+    public LuaIdentifier[] getDeclarations() {
+        return declarations.toArray(new LuaIdentifier[declarations.size()]);
+    }
+
+    @Override
+    public void addDeclaration(LuaIdentifier identifier) {
+        declarations.add(identifier);
+    }
 }

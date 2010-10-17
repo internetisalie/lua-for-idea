@@ -91,6 +91,10 @@ public class LuaElementVisitor extends PsiElementVisitor {
     public void visitLuaToken(LuaPsiTokenImpl e) {
         visitElement(e);
     }
+
+    public void visitRepeatStatement(LuaRepeatStatement e) {
+        visitElement(e);
+    }
 }
 
 

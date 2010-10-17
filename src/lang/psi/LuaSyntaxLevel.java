@@ -14,17 +14,17 @@
  *   limitations under the License.
  */
 
-package com.sylvanaar.idea.Lua.lang;
+package com.sylvanaar.idea.Lua.lang.psi;
 
-import com.intellij.lang.refactoring.DefaultRefactoringSupportProvider;
+import com.sylvanaar.idea.Lua.lang.psi.expressions.LuaIdentifier;
 
 /**
  * Created by IntelliJ IDEA.
  * User: Jon S Akhtar
- * Date: Jun 12, 2010
- * Time: 4:38:09 AM
+ * Date: Oct 16, 2010
+ * Time: 9:26:43 PM
  */
-public class LuaRefactoringSupport extends DefaultRefactoringSupportProvider {
-
-
+public interface LuaSyntaxLevel extends LuaPsiElement {
+    LuaIdentifier[] getDeclarations();
+    void addDeclaration(LuaIdentifier identifier);
 }

@@ -27,8 +27,6 @@ import se.krka.kahlua.vm.Prototype;
 
 import java.io.IOException;
 import java.io.Reader;
-import java.util.ArrayDeque;
-import java.util.Deque;
 
 
 public class KahluaParser implements PsiParser, LuaElementTypes {
@@ -391,29 +389,13 @@ public class KahluaParser implements PsiParser, LuaElementTypes {
         }
     }
 
-
-    private Deque<PsiBuilder.Marker> levelStatck = new ArrayDeque<PsiBuilder.Marker>();
-
     void enterlevel() {
-        PsiBuilder.Marker mark = null; 
         if (++nCcalls > LUAI_MAXCCALLS)
             lexerror("chunk has too many syntax levels", EMPTY_INPUT);
-        else {
-            mark = builder.mark();
-            levelStatck.addFirst(mark);
-        }
     }
 
     void leavelevel() {
         nCcalls--;
-
-
-       PsiBuilder.Marker mark = levelStatck.removeFirst();
-       if (mark != null)
-           mark.done(SYNTAX_LEVEL);
-       else
-           ;// TODO
-
     }
 
     void pushclosure(FuncState func, ExpDesc v) {
@@ -1004,10 +986,10 @@ public class KahluaParser implements PsiParser, LuaElementTypes {
     int subexpr(ExpDesc v, int limit) {
         int op;
         int uop;
-        this.enterlevel();
         PsiBuilder.Marker mark = builder.mark();
         PsiBuilder.Marker oper;
 
+        this.enterlevel();
         uop = getunopr(this.t);
         if (uop != OPR_NOUNOPR) {
              PsiBuilder.Marker mark2 = builder.mark();
@@ -1241,7 +1223,7 @@ public class KahluaParser implements PsiParser, LuaElementTypes {
         }
         fs.leaveblock(); /* finish loop */
 
-        mark.done(REPEAT_UNTIL_BLOCK);
+        mark.done(BLOCK);
     }
 
 
@@ -1406,6 +1388,8 @@ public class KahluaParser implements PsiParser, LuaElementTypes {
         ExpDesc b = new ExpDesc();
         FuncState fs = this.fs;
 
+        PsiBuilder.Marker funcStmt = stat;
+
         next();
 
         PsiBuilder.Marker funcName = builder.mark();
@@ -1420,7 +1404,7 @@ public class KahluaParser implements PsiParser, LuaElementTypes {
         this.adjustlocalvars(1);
 
         this.body(b, false, this.linenumber);
-        stat.done(LOCAL_FUNCTION);
+        funcStmt.done(LOCAL_FUNCTION);
         fs.storevar(v, b);
         /* debug information will only see the variable after this point! */
 
@@ -1462,6 +1446,7 @@ public class KahluaParser implements PsiParser, LuaElementTypes {
 
 
     boolean funcname(ExpDesc v) {
+         PsiBuilder.Marker funcName = builder.mark();
         //log.info(">>> funcname");
         /* funcname -> NAME {field} [`:' NAME] */
         boolean needself = false;
@@ -1469,24 +1454,27 @@ public class KahluaParser implements PsiParser, LuaElementTypes {
         PsiBuilder.Marker tmp = ref;
 
 
-        boolean def = lookahead == DOT || lookahead == COLON;
+        this.lookahead();
+        boolean def = (lookahead == DOT || lookahead == COLON);
 
         PsiBuilder.Marker refOrg = null;
 
+        // This is the primary identifier of the function, are we defining or referencing
         if (def)
             refOrg = builder.mark();
 
-        this.singlevar(v, def);
+        this.singlevar(v, !def);
 
         if (def)
             refOrg.done(REFERENCE);
         
-//        int lastPos = builder.getCurrentOffset();
+        int lastPos = builder.getCurrentOffset();
 
+        boolean complex = false;
 
         // OK this should work like    GETTABLE( REF(a) ID(b) )
         while (this.t == DOT) {
-
+            complex = true;
             this.field(v);
 
             ref = tmp.precede();
@@ -1495,6 +1483,7 @@ public class KahluaParser implements PsiParser, LuaElementTypes {
             tmp = ref;
         }
         if (this.t == COLON) {
+            complex=true;
             needself = true;
             this.field(v);
 
@@ -1506,6 +1495,9 @@ public class KahluaParser implements PsiParser, LuaElementTypes {
 //            ref.done(REFERENCE);
 //        else
             tmp.drop();
+
+
+        funcName.done(complex?VARIABLE_DEF:VARIABLE);
 
         //log.info("<<< funcname");
         return needself;
@@ -1523,14 +1515,11 @@ public class KahluaParser implements PsiParser, LuaElementTypes {
         ExpDesc b = new ExpDesc();
         this.next(); /* skip FUNCTION */
 
-        PsiBuilder.Marker funcName = builder.mark();
+
 
         needself = this.funcname(v);
         
-//        if (needself)
-//            funcName.done(FUNCTION_IDENTIFIER_NEEDSELF);
-//        else
-            funcName.done(VARIABLE);
+
 
         this.body(b, needself, line);
 

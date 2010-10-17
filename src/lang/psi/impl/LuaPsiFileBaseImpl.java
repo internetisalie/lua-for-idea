@@ -19,6 +19,8 @@ package com.sylvanaar.idea.Lua.lang.psi.impl;
 import com.intellij.extapi.psi.PsiFileBase;
 import com.intellij.lang.Language;
 import com.intellij.psi.FileViewProvider;
+import com.intellij.psi.PsiElement;
+import com.sylvanaar.idea.Lua.lang.psi.LuaSyntaxLevel;
 import com.sylvanaar.idea.Lua.lang.psi.visitor.LuaPsiElementVisitor;
 import com.sylvanaar.idea.Lua.lang.psi.LuaPsiFileBase;
 import com.sylvanaar.idea.Lua.lang.psi.visitor.LuaRecursiveElementVisitor;
@@ -44,8 +46,22 @@ public abstract class LuaPsiFileBaseImpl extends PsiFileBase implements LuaPsiFi
 
     @Override
     public LuaStatementElement[] getStatements() {
-        return findChildrenByClass(LuaStatementElement.class);
-    }    
+        LuaPsiElementImpl e = (LuaPsiElementImpl) getScope().getNode().getPsi();
+
+        List<LuaStatementElement> stats = new ArrayList<LuaStatementElement>();
+        final PsiElement[] children = e.getChildren();
+        for (PsiElement child : children) {
+            if (child instanceof LuaStatementElement)
+                stats.add((LuaStatementElement) child);
+        }
+
+        LuaStatementElement[] statsA = new LuaStatementElement[0];
+        return stats.toArray(statsA);
+    }
+
+    public LuaSyntaxLevel getScope() {
+        return findChildByClass(LuaSyntaxLevel.class);
+    }
 
     @Override
     public LuaFunctionDefinitionStatement[] getFunctionDefs() {

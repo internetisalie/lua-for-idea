@@ -16,6 +16,8 @@
 
 package com.sylvanaar.idea.Lua.lang.psi.statements;
 
+import com.sylvanaar.idea.Lua.lang.psi.expressions.LuaExpression;
+
 /**
  * Created by IntelliJ IDEA.
  * User: Jon S Akhtar
@@ -40,5 +42,7 @@ functioncall |
 
 
 public interface LuaConditionalLoop extends LuaStatementElement {
-    public abstract LuaStatementElement getBody();
+    public abstract LuaBlock getBody();
+    public abstract LuaExpression getCondition();
+    
 }

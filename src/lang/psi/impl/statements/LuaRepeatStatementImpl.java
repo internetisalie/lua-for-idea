@@ -19,23 +19,22 @@ package com.sylvanaar.idea.Lua.lang.psi.impl.statements;
 import com.intellij.lang.ASTNode;
 import com.sylvanaar.idea.Lua.lang.psi.expressions.LuaConditionalExpression;
 import com.sylvanaar.idea.Lua.lang.psi.statements.LuaBlock;
-import com.sylvanaar.idea.Lua.lang.psi.statements.LuaWhileStatement;
+import com.sylvanaar.idea.Lua.lang.psi.statements.LuaRepeatStatement;
 import com.sylvanaar.idea.Lua.lang.psi.visitor.LuaElementVisitor;
 
 /**
  * Created by IntelliJ IDEA.
  * User: Jon S Akhtar
- * Date: Jun 10, 2010
- * Time: 10:40:55 AM
+ * Date: Oct 16, 2010
+ * Time: 9:04:49 PM
  */
-public class LuaWhileStatementImpl extends LuaStatementElementImpl implements LuaWhileStatement {
-
-    public LuaWhileStatementImpl(ASTNode node) {
+public class LuaRepeatStatementImpl extends LuaStatementElementImpl implements LuaRepeatStatement {
+    public LuaRepeatStatementImpl(ASTNode node) {
         super(node);
     }
 
     public void accept(LuaElementVisitor visitor) {
-      visitor.visitWhileStatement(this);
+      visitor.visitRepeatStatement(this);
     }
 
     @Override
@@ -47,6 +46,4 @@ public class LuaWhileStatementImpl extends LuaStatementElementImpl implements Lu
     public LuaBlock getBody() {
         return findChildByClass(LuaBlock.class);
     }
-
-
 }

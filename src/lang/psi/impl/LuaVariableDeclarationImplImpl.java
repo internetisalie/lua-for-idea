@@ -14,19 +14,18 @@
  *   limitations under the License.
  */
 
-package com.sylvanaar.idea.Lua.lang.psi.statements;
+package com.sylvanaar.idea.Lua.lang.psi.impl;
 
-import com.sylvanaar.idea.Lua.lang.psi.LuaPsiElement;
-import com.sylvanaar.idea.Lua.lang.psi.LuaSyntaxLevel;
+import com.intellij.lang.ASTNode;
 
 /**
  * Created by IntelliJ IDEA.
  * User: Jon S Akhtar
- * Date: Jun 13, 2010
- * Time: 6:09:03 PM
+ * Date: Oct 15, 2010
+ * Time: 12:15:52 AM
  */
-public interface LuaBlock extends LuaPsiElement {
-     public LuaStatementElement[] getStatements();
-
-     public LuaSyntaxLevel getScope();
+public class LuaVariableDeclarationImplImpl extends LuaDeclarationImpl {
+    public LuaVariableDeclarationImplImpl(ASTNode node) {
+        super(node);
+    }
 }

@@ -84,15 +84,19 @@ public class LuaPsiFileImpl extends LuaPsiFileBaseImpl implements LuaPsiFile {
     }
 
     public boolean processDeclarations(@NotNull PsiScopeProcessor processor,
-                                       @NotNull ResolveState resolveState,
-                                       PsiElement lastParent,
-                                       @NotNull PsiElement place) {
+                                   @NotNull ResolveState resolveState,
+                                   PsiElement lastParent,
+                                   @NotNull PsiElement place) {
+
+       if (lastParent != null && lastParent.getParent() == this) {
         final PsiElement[] children = getChildren();
         for (PsiElement child : children) {
             if (child == lastParent) break;
             if (!child.processDeclarations(processor, resolveState, lastParent, place)) return false;
         }
-        return true;
+       }
+
+       return true;
     }
 
 

@@ -21,11 +21,15 @@ import com.intellij.psi.PsiElement;
 import com.intellij.psi.ResolveState;
 import com.intellij.psi.scope.PsiScopeProcessor;
 import com.sylvanaar.idea.Lua.lang.psi.LuaPsiElement;
+import com.sylvanaar.idea.Lua.lang.psi.LuaSyntaxLevel;
 import com.sylvanaar.idea.Lua.lang.psi.impl.LuaPsiElementImpl;
 import com.sylvanaar.idea.Lua.lang.psi.statements.LuaBlock;
 import com.sylvanaar.idea.Lua.lang.psi.statements.LuaStatementElement;
 import com.sylvanaar.idea.Lua.lang.psi.visitor.LuaElementVisitor;
 import org.jetbrains.annotations.NotNull;
+
+import java.util.ArrayList;
+import java.util.List;
 
 /**
  * Created by IntelliJ IDEA.
@@ -50,10 +54,23 @@ public class LuaBlockImpl extends LuaPsiElementImpl implements LuaBlock {
     }
 
     public LuaStatementElement[] getStatements() {
-        return findChildrenByClass(LuaStatementElement.class);
+        LuaPsiElementImpl e = (LuaPsiElementImpl) getScope().getNode().getPsi();
+
+        List<LuaStatementElement> stats = new ArrayList<LuaStatementElement>();
+        final PsiElement[] children = e.getChildren();
+        for (PsiElement child : children) {
+            if (child instanceof LuaStatementElement)
+                stats.add((LuaStatementElement) child);
+        }
+
+        LuaStatementElement[] statsA = new LuaStatementElement[0];
+        return stats.toArray(statsA);
     }
 
-
+    @Override
+    public LuaSyntaxLevel getScope() {
+        return findChildByClass(LuaSyntaxLevel.class);
+    }
 
 
     public boolean processDeclarations(@NotNull PsiScopeProcessor processor,
@@ -62,7 +79,7 @@ public class LuaBlockImpl extends LuaPsiElementImpl implements LuaBlock {
                                    @NotNull PsiElement place) {
 
        if (lastParent != null && lastParent.getParent() == this) {
-        final PsiElement[] children = getChildren();
+        final PsiElement[] children =  getScope().getChildren();
         for (PsiElement child : children) {
             if (child == lastParent) break;
             if (!child.processDeclarations(processor, resolveState, lastParent, place)) return false;
