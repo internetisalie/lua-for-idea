@@ -266,7 +266,8 @@
         </zip>
         <delete dir="${tmp.dir.idlua}"/>
 
-        <echo />
+        <concat><filelist dir="${module.idlua.basedir}/META-INF/" files="plugin.xml" />
+        </concat>
     </target>
 
     <target name="init" description="Build initialization">
