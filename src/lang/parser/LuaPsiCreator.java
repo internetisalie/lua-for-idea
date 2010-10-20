@@ -51,6 +51,9 @@ public class LuaPsiCreator {
             return new LuaPsiTokenImpl(node.getElementType(), node.getChars());
         }
 
+        if (node.getElementType() == PARENTHEICAL_EXPRESSION)
+            return new LuaParenthesizedExpressionImpl(node);
+
         if (node.getElementType() == EXPR)
             return new LuaExpressionImpl(node);
 

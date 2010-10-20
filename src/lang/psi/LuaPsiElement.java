@@ -32,11 +32,11 @@ public interface LuaPsiElement extends PsiElement {
 
 //    String getText();
 //
-//    LuaPsiElement replace(LuaPsiElement replacement);
+    LuaPsiElement replace(LuaPsiElement replacement);
 //
 //    LuaPsiElement getParent();
 //
 //    LuaPsiElement addBefore(LuaPsiElement replacement, LuaPsiElement original);
 //
-//    void delete();
+  //  void delete();
 }

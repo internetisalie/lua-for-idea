@@ -110,4 +110,9 @@ public class LuaPsiFileImpl extends LuaPsiFileBaseImpl implements LuaPsiFile {
       child = child.getNextSibling();
     }
   }
+
+    @Override
+    public LuaPsiElement replace(LuaPsiElement replacement) {
+        return null;  //To change body of implemented methods use File | Settings | File Templates.
+    }
 }

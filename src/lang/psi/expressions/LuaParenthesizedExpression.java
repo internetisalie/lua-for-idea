@@ -22,6 +22,8 @@ package com.sylvanaar.idea.Lua.lang.psi.expressions;
  * Date: Jun 28, 2010
  * Time: 3:35:54 AM
  */
-public interface LuaParenthesizedExpression {
-    LuaExpression getOperand();
+public interface LuaParenthesizedExpression extends LuaExpression {
+    LuaExpression getEnclosedExpression();
+
+    LuaExpression removeParens();
 }

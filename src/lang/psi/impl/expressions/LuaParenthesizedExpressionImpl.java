@@ -17,7 +17,6 @@
 package com.sylvanaar.idea.Lua.lang.psi.impl.expressions;
 
 import com.intellij.lang.ASTNode;
-import com.sylvanaar.idea.Lua.lang.parser.LuaElementTypes;
 import com.sylvanaar.idea.Lua.lang.psi.expressions.LuaExpression;
 import com.sylvanaar.idea.Lua.lang.psi.expressions.LuaParenthesizedExpression;
 
@@ -33,12 +32,20 @@ public class LuaParenthesizedExpressionImpl extends LuaExpressionImpl implements
     }
 
     @Override
-    public LuaExpression getOperand() {
-        return (LuaExpression) findChildByType(LuaElementTypes.EXPRESSION_SET);
+    public LuaExpression getEnclosedExpression() {
+        return findChildByClass(LuaExpression.class);
     }
 
     @Override
+    public LuaExpression removeParens() {
+        LuaExpression newExpr = getEnclosedExpression();
+
+        return (LuaExpression) replaceWithExpression(newExpr, true);
+    }
+
+
+    @Override
     public String toString() {
-        return super.toString() + ": (" + getOperand().getText() + ")";
+        return "Parens: (" + getEnclosedExpression().getText() + ")";
     }
 }

@@ -70,7 +70,6 @@ public class KahluaParser implements PsiParser, LuaElementTypes {
     //private static final int UCHAR_MAX = 255; // TO DO, convert to unicode CHAR_MAX?
     private static final int LUAI_MAXCCALLS = 200;
     private LuaPsiBuilder builder = null;
-  
 
 
 //    public KahluaParser(Project project) {
@@ -126,7 +125,6 @@ public class KahluaParser implements PsiParser, LuaElementTypes {
             VCALL = 13,    /* info = instruction pc */
             VVARARG = 14;    /* info = instruction pc */
 
-    
 
     int current = 0;  /* current character (charint) */
     int linenumber = 0;  /* input line counter */
@@ -152,8 +150,11 @@ public class KahluaParser implements PsiParser, LuaElementTypes {
         this.skipShebang();
     }
 
-    public KahluaParser() {};
-    
+    public KahluaParser() {
+    }
+
+    ;
+
     void nextChar() {
         try {
             current = z.read();
@@ -346,7 +347,7 @@ public class KahluaParser implements PsiParser, LuaElementTypes {
     }
 
     void singlevar(ExpDesc var, boolean isDefinition) {
-        PsiBuilder.Marker ref=null;
+        PsiBuilder.Marker ref = null;
         if (!isDefinition)
             ref = builder.mark();
 
@@ -358,7 +359,7 @@ public class KahluaParser implements PsiParser, LuaElementTypes {
             var.info = fs.stringK(varname); /* info points to global name */
             mark.done(GLOBAL_NAME);
         } else {
-            mark.done(isDefinition?LOCAL_NAME_DECL:LOCAL_NAME);
+            mark.done(isDefinition ? LOCAL_NAME_DECL : LOCAL_NAME);
         }
 
         if (!isDefinition)
@@ -451,8 +452,6 @@ public class KahluaParser implements PsiParser, LuaElementTypes {
         this.checkname(key);
 
 
-
-
         mark.done(FIELD_NAME);
         fs.indexed(v, key);
     }
@@ -502,7 +501,7 @@ public class KahluaParser implements PsiParser, LuaElementTypes {
     }
 
     void listfield(ConsControl cc) {
-         PsiBuilder.Marker mark = builder.mark();
+        PsiBuilder.Marker mark = builder.mark();
         this.expr(cc.v);
         fs.checklimit(cc.na, MAX_INT, "items in a constructor");
         cc.na++;
@@ -525,7 +524,7 @@ public class KahluaParser implements PsiParser, LuaElementTypes {
         cc.v.init(VVOID, 0); /* no value (yet) */
         fs.exp2nextreg(t); /* fix it at stack top (for gc) */
         this.checknext(LCURLY);
-        
+
         do {
             FuncState._assert(cc.v.k == VVOID || cc.tostore > 0);
             if (this.t == RCURLY)
@@ -588,7 +587,7 @@ public class KahluaParser implements PsiParser, LuaElementTypes {
 
             do {
                 PsiBuilder.Marker parm = builder.mark();
-                    PsiBuilder.Marker mark = builder.mark();
+                PsiBuilder.Marker mark = builder.mark();
                 if (this.t == NAME) {
                     /* param . NAME */
 
@@ -635,16 +634,16 @@ public class KahluaParser implements PsiParser, LuaElementTypes {
         PsiBuilder.Marker mark = builder.mark();
         this.parlist();
 
-        mark.done(LuaElementTypes.PARAMETER_LIST);
 
         this.checknext(RPAREN);
+        mark.done(LuaElementTypes.PARAMETER_LIST);
 
         mark = builder.mark();
         this.chunk();
-        mark.done(BLOCK);
 
         new_fs.lastlinedefined = this.linenumber;
         this.check_match(END, FUNCTION, line);
+        mark.done(BLOCK);
 
         this.close_func();
         this.pushclosure(new_fs, e);
@@ -726,24 +725,32 @@ public class KahluaParser implements PsiParser, LuaElementTypes {
      ** =======================================================================
      */
 
-    void prefixexp(ExpDesc v) {
-        /* prefixexp -> NAME | '(' expr ')' */
+    boolean pfixvar = false;
 
+    PsiBuilder.Marker prefixexp(ExpDesc v) {
+        /* prefixexp -> NAME | '(' expr ')' */
+        PsiBuilder.Marker mark = builder.mark();
         if (this.t == LPAREN) {
+            pfixvar = false;
             int line = this.linenumber;
-            PsiBuilder.Marker mark = builder.mark();
+
             this.next();
             this.expr(v);
-            mark.done(PARENTHEICAL_EXPRESSION);
             this.check_match(RPAREN, LPAREN, line);
+            //mark.done(PARENTHEICAL_EXPRESSION);
             fs.dischargevars(v);
-            return;
+            return mark;
         } else if (this.t == NAME) {
             this.singlevar(v, false);
-            return;
+            pfixvar = true;
+            return mark;
         }
-        
+
+        mark.error("unexpected symbol in prefix expression");
+
         this.syntaxerror("unexpected symbol in prefix expression");
+
+        return null;
     }
 
 
@@ -754,12 +761,15 @@ public class KahluaParser implements PsiParser, LuaElementTypes {
            */
 
 
-      PsiBuilder.Marker mark = builder.mark();
-    //    PsiBuilder.Marker ref = builder.mark();
-      //  PsiBuilder.Marker tmp = ref;
-        
+        // PsiBuilder.Marker mark = builder.mark();
+        //    PsiBuilder.Marker ref = builder.mark();
+        //  PsiBuilder.Marker tmp = ref;
+
         FuncState fs = this.fs;
-        this.prefixexp(v);
+
+        int place =  builder.getCurrentOffset();
+        PsiBuilder.Marker paren = this.prefixexp(v);
+        PsiBuilder.Marker mark = builder.mark();
         for (; ;) {
 
             if (this.t == DOT) { /* field */
@@ -783,7 +793,7 @@ public class KahluaParser implements PsiParser, LuaElementTypes {
                 //	break;
             } else if (this.t == COLON) { /* `:' NAME funcargs */
                 ExpDesc key = new ExpDesc();
-                
+
                 this.next();
 
                 PsiBuilder.Marker func = builder.mark();
@@ -796,7 +806,7 @@ public class KahluaParser implements PsiParser, LuaElementTypes {
 //                tmp = null;
 
 //                PsiBuilder.Marker call = null;
-                
+
 //                if (mark != null) {
 //
 //                    call = mark.precede();
@@ -812,7 +822,7 @@ public class KahluaParser implements PsiParser, LuaElementTypes {
                     mark.done(FUNCTION_CALL_EXPR);
 
                 mark = null;
-                
+
                 //	break;
             } else if (this.t == LPAREN
                     || this.t == STRING || this.t == LONGSTRING
@@ -824,7 +834,7 @@ public class KahluaParser implements PsiParser, LuaElementTypes {
 //                }
 
                 PsiBuilder.Marker call = null;
-                
+
 //                if (mark != null) {
 //                    call = mark.precede();
 //                    mark.done(FUNCTION_IDENTIFIER);
@@ -840,8 +850,22 @@ public class KahluaParser implements PsiParser, LuaElementTypes {
             } else {
 //                if (tmp != null)
 //                        tmp.drop();
-                if (mark != null)
-                    mark.done(VARIABLE);
+                if (mark != null) {
+                    if (pfixvar == false)
+                        mark.drop();
+                    else
+                        mark.done(VARIABLE);
+                }
+                if (paren != null) {
+                    if (pfixvar == true) {
+                        if (builder.getCurrentOffset() - place > 0)
+                            paren.done(VARIABLE);
+                        else
+                            paren.drop();
+                    } else
+                        paren.done(PARENTHEICAL_EXPRESSION);
+                }
+
                 return;
             }
         }
@@ -877,15 +901,15 @@ public class KahluaParser implements PsiParser, LuaElementTypes {
                 fs.isVararg &= ~FuncState.VARARG_NEEDSARG; /* don't need 'arg' */
                 v.init(VVARARG, fs.codeABC(FuncState.OP_VARARG, 0, 1, 0));
 
-                
-                PsiBuilder.Marker ref= mark.precede();
-                PsiBuilder.Marker var = ref.precede() ;
+
+                PsiBuilder.Marker ref = mark.precede();
+                PsiBuilder.Marker var = ref.precede();
                 this.next();
 
                 mark.done(LOCAL_NAME);
                 ref.done(REFERENCE);
                 var.done(VARIABLE);
-                mark=null;
+                mark = null;
                 return;
             } else if (this.t == LCURLY) { /* constructor */
                 this.constructor(v);
@@ -902,7 +926,7 @@ public class KahluaParser implements PsiParser, LuaElementTypes {
             }
             this.next();
 
-            mark.done(LITERAL_EXPRESSION);    
+            mark.done(LITERAL_EXPRESSION);
             mark = null;
         }
         finally {
@@ -992,33 +1016,31 @@ public class KahluaParser implements PsiParser, LuaElementTypes {
         this.enterlevel();
         uop = getunopr(this.t);
         if (uop != OPR_NOUNOPR) {
-             PsiBuilder.Marker mark2 = builder.mark();
+            PsiBuilder.Marker mark2 = builder.mark();
             oper = builder.mark();
             this.next();
             oper.done(UNARY_OP);
-            
+
             this.subexpr(v, UNARY_PRIORITY);
             mark2.done(UNARY_EXP);
             fs.prefix(uop, v);
         } else {
             this.simpleexp(v);
 
-         }
+        }
 
         /* expand while operators have priorities higher than `limit' */
         op = getbinopr(this.t);
 
 
-
         while (op != OPR_NOBINOPR && priorityLeft[op] > limit) {
-           
+
             ExpDesc v2 = new ExpDesc();
             int nextop;
             oper = builder.mark();
             this.next();
             oper.done(BINARY_OP);
             fs.infix(op, v);
-
 
 
             /* read sub-expression with higher priority */
@@ -1037,9 +1059,9 @@ public class KahluaParser implements PsiParser, LuaElementTypes {
     }
 
     void expr(ExpDesc v) {
-        PsiBuilder.Marker mark = builder.mark();
+        // PsiBuilder.Marker mark = builder.mark();
         this.subexpr(v, 0);
-        mark.done(EXPR);
+        //mark.done(EXPR);
         // next();
     }
 
@@ -1102,7 +1124,7 @@ public class KahluaParser implements PsiParser, LuaElementTypes {
 
 
     void assignment(LHS_assign lh, int nvars, PsiBuilder.Marker expr) {
-       // PsiBuilder.Marker mark = builder.mark();
+        // PsiBuilder.Marker mark = builder.mark();
         ExpDesc e = new ExpDesc();
         this.check_condition(VLOCAL <= lh.v.k && lh.v.k <= VINDEXED,
                 "syntax error");
@@ -1129,14 +1151,14 @@ public class KahluaParser implements PsiParser, LuaElementTypes {
                 fs.setoneret(e);  /* close last expression */
                 fs.storevar(lh.v, e);
 
-               // mark.done(ASSIGN_STMT);
+                // mark.done(ASSIGN_STMT);
                 return;  /* avoid default */
             }
         }
         e.init(VNONRELOC, this.fs.freereg - 1);  /* default assignment */
         fs.storevar(lh.v, e);
-       // mark.done(ASSIGN_STMT);
-        
+        // mark.done(ASSIGN_STMT);
+
     }
 
 
@@ -1166,8 +1188,7 @@ public class KahluaParser implements PsiParser, LuaElementTypes {
         }
         if (bl == null) {
             this.syntaxerror("no loop to break");
-        }
-        else {
+        } else {
             if (upval)
                 fs.codeABC(FuncState.OP_CLOSE, bl.nactvar, 0, 0);
             bl.breaklist = fs.concat(bl.breaklist, fs.jump());
@@ -1295,7 +1316,7 @@ public class KahluaParser implements PsiParser, LuaElementTypes {
 
         this.new_localvar(indexname, nvars++);
 
-       // next();
+        // next();
 
         while (this.testnext(COMMA)) {
             PsiBuilder.Marker mark = builder.mark();
@@ -1397,7 +1418,7 @@ public class KahluaParser implements PsiParser, LuaElementTypes {
         String name = this.str_checkname();
         mark.done(LOCAL_NAME_DECL);
         funcName.done(FUNCTION_IDENTIFIER);
-        
+
         this.new_localvar(name, 0);
         v.init(VLOCAL, fs.freereg);
         fs.reserveregs(1);
@@ -1408,14 +1429,14 @@ public class KahluaParser implements PsiParser, LuaElementTypes {
         fs.storevar(v, b);
         /* debug information will only see the variable after this point! */
 
-        
+
     }
 
 
     void localstat(PsiBuilder.Marker stat) {
 
-       // PsiBuilder.Marker mark = stat;
-        PsiBuilder.Marker names =  builder.mark();
+        // PsiBuilder.Marker mark = stat;
+        PsiBuilder.Marker names = builder.mark();
 
         /* stat -> LOCAL NAME {`,' NAME} [`=' explist1] */
         int nvars = 0;
@@ -1433,8 +1454,7 @@ public class KahluaParser implements PsiParser, LuaElementTypes {
         if (this.testnext(ASSIGN)) {
             nexps = this.explist1(e);
             stat.done(LOCAL_DECL_WITH_ASSIGNMENT);
-        }
-        else {
+        } else {
             e.k = VVOID;
             nexps = 0;
             stat.done(LOCAL_DECL);
@@ -1464,7 +1484,7 @@ public class KahluaParser implements PsiParser, LuaElementTypes {
 
         if (def)
             refOrg.done(REFERENCE);
-        
+
         int lastPos = builder.getCurrentOffset();
 
 
@@ -1482,7 +1502,7 @@ public class KahluaParser implements PsiParser, LuaElementTypes {
             needself = true;
             this.field(v);
 
-           // ref = ref.precede();
+            // ref = ref.precede();
             tmp.done(GETSELF);
             tmp = null;
         }
@@ -1498,7 +1518,7 @@ public class KahluaParser implements PsiParser, LuaElementTypes {
 
     void funcstat(int line) {
         //log.info(">>> funcstat");
-        
+
         PsiBuilder.Marker funcStmt = builder.mark();
 
         /* funcstat -> FUNCTION funcname body */
@@ -1510,16 +1530,16 @@ public class KahluaParser implements PsiParser, LuaElementTypes {
         PsiBuilder.Marker funcName = builder.mark();
 
         needself = this.funcname(v);
-        
+
 //        if (needself)
 //            funcName.done(FUNCTION_IDENTIFIER_NEEDSELF);
 //        else
-            funcName.done(VARIABLE);
+        funcName.done(VARIABLE);
 
         this.body(b, needself, line);
 
         funcStmt.done(FUNCTION_DEFINITION);
-        
+
         fs.storevar(v, b);
         fs.fixline(line); /* definition `happens' in the first line */
 
@@ -1535,10 +1555,9 @@ public class KahluaParser implements PsiParser, LuaElementTypes {
         PsiBuilder.Marker mark = builder.mark();
         this.primaryexp(v.v);
         if (v.v.k == VCALL) /* stat -> func */ {
-            mark.done(FUNCTION_CALL);    
+            mark.done(FUNCTION_CALL);
             FuncState.SETARG_C(fs.getcodePtr(v.v), 1); /* call statement uses no results */
-        }
-        else { /* stat -> assignment */
+        } else { /* stat -> assignment */
 
             PsiBuilder.Marker expr = mark;
             mark = expr.precede();
@@ -1550,7 +1569,7 @@ public class KahluaParser implements PsiParser, LuaElementTypes {
     }
 
     void retstat() {
-        
+
         PsiBuilder.Marker mark = builder.mark();
         boolean tailCall = false;
         /* stat -> RETURN explist */
@@ -1582,7 +1601,7 @@ public class KahluaParser implements PsiParser, LuaElementTypes {
             }
         }
 
-        mark.done(tailCall?RETURN_STATEMENT_WITH_TAIL_CALL:RETURN_STATEMENT);
+        mark.done(tailCall ? RETURN_STATEMENT_WITH_TAIL_CALL : RETURN_STATEMENT);
         fs.ret(first, nret);
     }
 
@@ -1664,7 +1683,6 @@ public class KahluaParser implements PsiParser, LuaElementTypes {
         }
 
 
-
         this.leavelevel();
 
         //log.info("<<< chunk");
@@ -1674,7 +1692,7 @@ public class KahluaParser implements PsiParser, LuaElementTypes {
     private static void cleanAfterError(LuaPsiBuilder builder) {
         int i = 0;
         PsiBuilder.Marker em = builder.mark();
-        while (!builder.eof() && !(END.equals(builder.getTokenType())) ) {
+        while (!builder.eof() && !(END.equals(builder.getTokenType()))) {
             builder.advanceLexer();
             i++;
         }
@@ -1690,9 +1708,6 @@ public class KahluaParser implements PsiParser, LuaElementTypes {
     /* }====================================================================== */
 
 
-
-
-
     @NotNull
     @Override
     public ASTNode parse(IElementType root, PsiBuilder builder) {
@@ -1700,39 +1715,38 @@ public class KahluaParser implements PsiParser, LuaElementTypes {
         final LuaPsiBuilder psiBuilder = new LuaPsiBuilder(builder);
         final PsiBuilder.Marker rootMarker = psiBuilder.mark();
 
-            String name = "todo:name";
-            source = name;
-            KahluaParser lexstate = new KahluaParser(z, 0, source);
-            FuncState funcstate = new FuncState(lexstate);
-            // lexstate.buff = buff;
+        String name = "todo:name";
+        source = name;
+        KahluaParser lexstate = new KahluaParser(z, 0, source);
+        FuncState funcstate = new FuncState(lexstate);
+        // lexstate.buff = buff;
 
-            /* main func. is always vararg */
-            funcstate.isVararg = FuncState.VARARG_ISVARARG;
-            funcstate.f.name = name;
+        /* main func. is always vararg */
+        funcstate.isVararg = FuncState.VARARG_ISVARARG;
+        funcstate.f.name = name;
 
 
-
-            lexstate.builder = psiBuilder;
-            lexstate.t = psiBuilder.getTokenType();
-            lexstate.builder.debug();
+        lexstate.builder = psiBuilder;
+        lexstate.t = psiBuilder.getTokenType();
+        lexstate.builder.debug();
 //            if (lexstate.t == null) // Try to kludge in handling of partial parses
 //                lexstate.next(); /* read first token */
-            lexstate.chunk();
-            //cleanAfterError(psiBuilder);
-            // lexstate.check(EMPTY_INPUT);
-            lexstate.close_func();
+        lexstate.chunk();
+        //cleanAfterError(psiBuilder);
+        // lexstate.check(EMPTY_INPUT);
+        lexstate.close_func();
 
-            FuncState._assert(funcstate.prev == null);
-            FuncState._assert(funcstate.f.numUpvalues == 0);
-            FuncState._assert(lexstate.fs == null);
-
-
-            //  return funcstate.f;
+        FuncState._assert(funcstate.prev == null);
+        FuncState._assert(funcstate.f.numUpvalues == 0);
+        FuncState._assert(lexstate.fs == null);
 
 
-            if (root != null)
-                rootMarker.done(root);
+        //  return funcstate.f;
 
-         return builder.getTreeBuilt();
+
+        if (root != null)
+            rootMarker.done(root);
+
+        return builder.getTreeBuilt();
     }
 }

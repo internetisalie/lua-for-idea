@@ -68,7 +68,7 @@ public class FlipConjunctionIntention extends MutablyNamedIntention {
     }
 
     final String newExpression =
-        rhsText + conjunction + lhsText;
+        rhsText.trim() + " " + conjunction + " " + lhsText.trim();
     IntentionUtils.replaceExpression(newExpression, exp);
   }
 

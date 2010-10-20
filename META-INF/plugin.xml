@@ -320,7 +320,11 @@
       <categoryKey>intention.category.lua/intention.category.comments</categoryKey>
       <className>com.sylvanaar.idea.Lua.intentions.comments.ChangeToEndOfLineCommentIntention</className>
     </intentionAction>
-
+    <intentionAction>
+      <bundleName>com.sylvanaar.idea.Lua.intentions.LuaIntentionsBundle</bundleName>
+      <categoryKey>intention.category.lua/intention.category.expression</categoryKey>
+      <className>com.sylvanaar.idea.Lua.intentions.expression.RemoveUnnecessaryParenthesesIntention</className>
+    </intentionAction>
 
 
     </extensions>

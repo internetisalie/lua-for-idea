@@ -98,7 +98,7 @@ public class BoolUtils {
       final LuaExpression rhs = binaryExpression.getRightOperand();
       assert rhs != null;
       return lhs.getText() + negatedComparison + rhs.getText();
-    } else if (ParenthesesUtils.getPrecendence(condition) >
+    } else if (ParenthesesUtils.getPrecedence(condition) >
         ParenthesesUtils.PREFIX_PRECEDENCE) {
       return "not (" + condition.getText() + ')';
     } else {

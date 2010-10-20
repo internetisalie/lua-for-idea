@@ -22,9 +22,15 @@ import com.intellij.lang.Language;
 import com.intellij.openapi.diagnostic.Logger;
 import com.intellij.psi.PsiElement;
 import com.intellij.psi.ResolveState;
+import com.intellij.psi.impl.CheckUtil;
+import com.intellij.psi.impl.source.SourceTreeToPsiMap;
+import com.intellij.psi.impl.source.tree.ChangeUtil;
+import com.intellij.psi.impl.source.tree.CompositeElement;
+import com.intellij.psi.impl.source.tree.TreeElement;
 import com.intellij.psi.scope.PsiScopeProcessor;
 import com.intellij.psi.search.LocalSearchScope;
 import com.intellij.psi.search.SearchScope;
+import com.intellij.util.IncorrectOperationException;
 import com.sylvanaar.idea.Lua.LuaFileType;
 import com.sylvanaar.idea.Lua.lang.psi.LuaPsiElement;
 import com.sylvanaar.idea.Lua.lang.psi.util.LuaPsiUtils;
@@ -96,15 +102,30 @@ public class LuaPsiElementImpl extends ASTWrapperPsiElement implements LuaPsiEle
       }
     }
 
-//    @Override
-//    public LuaPsiElement replace(LuaPsiElement replacement) {
-//        return null;
-//    }
-//
-//    @Override
-//    public LuaPsiElement addBefore(LuaPsiElement replacement, LuaPsiElement original) {
-//        return null;
-//    }
+    @Override
+    public LuaPsiElement replace(LuaPsiElement replacement) {
+        return replace((PsiElement)replacement);
+    }
+
+    public LuaPsiElement replace(@NotNull PsiElement newElement) throws IncorrectOperationException {
+    CompositeElement treeElement = calcTreeElement();
+    assert treeElement.getTreeParent() != null;
+    CheckUtil.checkWritable(this);
+    TreeElement elementCopy = ChangeUtil.copyToElement(newElement);
+    treeElement.getTreeParent().replaceChildInternal(treeElement, elementCopy);
+    elementCopy = ChangeUtil.decodeInformation(elementCopy);
+    return (LuaPsiElement) SourceTreeToPsiMap.treeElementToPsi(elementCopy);
+  }
+
+
+      protected CompositeElement calcTreeElement() {
+    return (CompositeElement)getNode();
+  }
+
+//        @Override
+//        public LuaPsiElement addBefore(LuaPsiElement replacement, LuaPsiElement original) {
+//            return null;
+//        }
 
 
 }
