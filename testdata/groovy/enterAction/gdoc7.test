@@ -1,0 +1,11 @@
+/**<caret>
+def foo() {
+}
+-----
+/**
+ * <caret>
+ * @return
+ */
+
+def foo() {
+}

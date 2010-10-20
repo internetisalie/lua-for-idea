@@ -1,0 +1,40 @@
+package a.b.c
+
+import org.*
+
+class A  {
+  def foo()   {
+    switch (k){
+
+    }
+    <caret>
+  }
+}
+-----
+assert
+boolean
+byte
+char
+class
+double
+false
+final
+float
+for
+int
+k
+long
+new
+null
+return
+short
+super
+switch
+synchronized
+this
+throw
+true
+try
+void
+while
+with

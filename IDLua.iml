@@ -10,6 +10,10 @@
       <sourceFolder url="file://$MODULE_DIR$/src" isTestSource="false" packagePrefix="com.sylvanaar.idea.Lua" />
       <sourceFolder url="file://$MODULE_DIR$/test" isTestSource="true" />
       <sourceFolder url="file://$MODULE_DIR$/resources" isTestSource="false" />
+      <sourceFolder url="file://$MODULE_DIR$/testdata" isTestSource="true" />
+      <sourceFolder url="file://$MODULE_DIR$/testdata1" isTestSource="true" />
+      <excludeFolder url="file://$MODULE_DIR$/test" />
+      <excludeFolder url="file://$MODULE_DIR$/testdata" />
     </content>
     <orderEntry type="jdk" jdkName="IDEA SDK - Debug" jdkType="IDEA JDK" />
     <orderEntry type="sourceFolder" forTests="false" />

@@ -1,0 +1,13 @@
+class Stub {
+  int myInt = 42
+  Boo foo(int i) {}
+}
+-----
+[Groovy script]
+  [Class definition : Stub]
+    [Modifiers]
+    [Modifiers]
+    [Field : myInt]
+    [Method : foo]
+      [Modifiers]
+      [Modifiers]
