@@ -18,14 +18,15 @@ package com.sylvanaar.idea.Lua.lang.psi.impl;
 
 import com.intellij.lang.ASTNode;
 import com.intellij.psi.PsiElement;
+import com.intellij.psi.PsiElementVisitor;
 import com.intellij.psi.ResolveState;
 import com.intellij.psi.scope.PsiScopeProcessor;
 import com.sylvanaar.idea.Lua.lang.psi.LuaPsiType;
 import com.sylvanaar.idea.Lua.lang.psi.expressions.LuaExpression;
 import com.sylvanaar.idea.Lua.lang.psi.expressions.LuaIdentifier;
+import com.sylvanaar.idea.Lua.lang.psi.impl.expressions.LuaDeclarationExpression;
 import com.sylvanaar.idea.Lua.lang.psi.impl.expressions.LuaIdentifierImpl;
-import com.sylvanaar.idea.Lua.lang.psi.statements.LuaDeclaration;
-import com.sylvanaar.idea.Lua.lang.psi.statements.LuaLocalDefinitionStatement;
+import com.sylvanaar.idea.Lua.lang.psi.visitor.LuaElementVisitor;
 import org.jetbrains.annotations.NotNull;
 
 /**
@@ -34,14 +35,23 @@ import org.jetbrains.annotations.NotNull;
  * Date: Sep 3, 2010
  * Time: 12:38:19 AM
  */
-public class LuaDeclarationImpl extends LuaIdentifierImpl implements LuaDeclaration, LuaIdentifier {
+public class LuaDeclarationImpl extends LuaIdentifierImpl implements LuaDeclarationExpression, LuaIdentifier {
     public LuaDeclarationImpl(ASTNode node) {
         super(node);
     }
 
     @Override
-    public boolean isDeclaration() {
-        return true;
+    public void accept(LuaElementVisitor visitor) {
+      visitor.visitDeclarationExpression(this);
+    }
+
+    @Override
+    public void accept(@NotNull PsiElementVisitor visitor) {
+        if (visitor instanceof LuaElementVisitor) {
+            ((LuaElementVisitor) visitor).visitDeclarationExpression(this);
+        } else {
+            visitor.visitElement(this);
+        }
     }
 
     @Override
@@ -70,12 +80,12 @@ public class LuaDeclarationImpl extends LuaIdentifierImpl implements LuaDeclarat
     }
 
 
-    
+
     public boolean processDeclarations(@NotNull PsiScopeProcessor processor,
                                        @NotNull ResolveState resolveState,
                                        PsiElement lastParent,
                                        @NotNull PsiElement place) {
-        if (isLocal() && lastParent != null && !(lastParent instanceof LuaLocalDefinitionStatement))
+        if (isLocal() && lastParent != null)
            return processor.execute(this, resolveState);
         
         return true;
@@ -84,5 +94,10 @@ public class LuaDeclarationImpl extends LuaIdentifierImpl implements LuaDeclarat
     @Override
     public PsiElement setName(String s) {
         return null;  //To change body of implemented methods use File | Settings | File Templates.
+    }
+
+    @Override
+    public String toString() {
+        return "Declaration: " + getDefinedName();
     }
 }
