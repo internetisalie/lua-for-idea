@@ -17,9 +17,9 @@
 <idea-plugin url="http://bitbucket.org/sylvanaar2/lua-for-idea/" version="2">
     <name>Lua</name>
     <id>Lua</id>
-    <version>0.8.24</version>
-    <!--##teamcity[buildNumber '0.8.24']-->
-    <idea-version since-build="80.8000" until-build="95.9999" />
+    <version>0.8.27</version>
+    <!--##teamcity[buildNumber '0.8.27']-->
+    <idea-version since-build="80.8000" until-build="98.9999" />
     <category>Custom Languages</category>
     <vendor url="https://www.ohloh.net/accounts/sylvanaar" email="sylvanaar@mindspring.com">sylvanaar</vendor>
     
@@ -61,6 +61,8 @@
         <html>
         <body>
         <dl>
+            <dt>0.8.25-7</dt>
+            <dd>bugfixes</dd>
             <dt>0.8.24</dt>
             <dd>Disable auto brace closing and remove the name validator</dd>    
             <dt>0.8.23</dt>
@@ -193,12 +195,12 @@
         <!--</action>-->
     </actions>
 
-    <!--<helpset file="IDLuaHelp.jar" path="/Lua.hs" />-->
+    <helpset file="IDLuaHelp.jar" path="/Lua.hs" />
 
     <extensions defaultExtensionNs="com.intellij">
         <!-- Error reporter-->
         <errorHandler implementation="com.sylvanaar.idea.errorreporting.BugzReport"/>
-
+        <!--<errorHandler implementation="com.sylvanaar.idea.errorreporting.YouTrackBugReporter"/>-->
         <!--<facetType id="Lua" implementation="com.sylvanaar.idea.Lua.settings.facet.LuaFacetType" />-->
         <!--<frameworkSupport id="Lua" implementation="com.sylvanaar.idea.Lua.settings.facet.LuaFacetTypeFrameworkSupportProvider"/>-->
 

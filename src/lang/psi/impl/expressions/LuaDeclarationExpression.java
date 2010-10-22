@@ -14,19 +14,17 @@
  *   limitations under the License.
  */
 
-package com.sylvanaar.idea.Lua.lang.psi;
+package com.sylvanaar.idea.Lua.lang.psi.impl.expressions;
 
 import com.sylvanaar.idea.Lua.lang.psi.expressions.LuaIdentifier;
 
 /**
  * Created by IntelliJ IDEA.
  * User: Jon S Akhtar
- * Date: Jun 12, 2010
- * Time: 4:56:41 AM
+ * Date: 10/22/10
+ * Time: 4:20 AM
  */
-public interface LuaFunctionIdentifier extends LuaIdentifier {
-    //boolean getUsesSelf();
-    public String getFunctionName();
-
-    public String getNameSpace(); 
+public interface LuaDeclarationExpression {
+        public LuaIdentifier getNameSymbol();
+    public String getDefinedName();
 }
