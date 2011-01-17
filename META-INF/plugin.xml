@@ -336,6 +336,13 @@
         
         <sdkType implementation="com.sylvanaar.idea.Lua.sdk.LuaSdkType"/>
 
+        <stubElementTypeHolder class="com.sylvanaar.idea.Lua.lang.parser.LuaElementTypes"/>
+
+        <stubIndex implementation="com.sylvanaar.idea.Lua.lang.psi.stubs.index.LuaFullScriptNameIndex"/>
+
+
+
+
     <!-- control -->
     <intentionAction>
       <bundleName>com.sylvanaar.idea.Lua.intentions.LuaIntentionsBundle</bundleName>
