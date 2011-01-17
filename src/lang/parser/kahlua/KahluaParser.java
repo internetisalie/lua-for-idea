@@ -462,7 +462,7 @@ public class KahluaParser implements PsiParser, LuaElementTypes {
         this.next(); /* skip the '[' */
         PsiBuilder.Marker mark = builder.mark();
         this.expr(v);
-        mark.done(TABLE_INDEX);
+        mark.done(FIELD_NAME);
         this.fs.exp2val(v);
         this.checknext(RBRACK);
     }
@@ -487,11 +487,12 @@ public class KahluaParser implements PsiParser, LuaElementTypes {
         if (this.t == NAME) {
             fs.checklimit(cc.nh, MAX_INT, "items in a constructor");
             this.checkname(key);
-
-        } else
+            field.done(FIELD_NAME);
+        } else {
+            field.drop();
             /* this.t == '[' */
             this.yindex(key);
-        field.done(FIELD_NAME);
+        }
         cc.nh++;
         this.checknext(ASSIGN);
         rkkey = fs.exp2RK(key);
@@ -758,33 +759,31 @@ public class KahluaParser implements PsiParser, LuaElementTypes {
 
 
       PsiBuilder.Marker mark = builder.mark();
-      //PsiBuilder.Marker var = builder.mark();
-      //  PsiBuilder.Marker tmp = ref;
+      PsiBuilder.Marker var = builder.mark();
+      var.drop();
+
         
         FuncState fs = this.fs;
         this.prefixexp(v);
         for (; ;) {
 
             if (this.t == DOT) { /* field */
+                PsiBuilder.Marker gettable = var.precede();
                 this.field(v);
-//                if (tmp != null) {
-//                    ref = ref.precede();
-//                    tmp.done(REFERENCE);
-//                    tmp = ref;
-//                }
+                gettable.done(GETTABLE);
+                var = gettable;
                 //	break;
             } else if (this.t == LBRACK) { /* `[' exp1 `]' */
+                PsiBuilder.Marker gettable = var.precede();
                 ExpDesc key = new ExpDesc();
                 fs.exp2anyreg(v);
                 this.yindex(key);
-//                if (tmp != null) {
-//                    ref = ref.precede();
-//                    tmp.done(REFERENCE);
-//                    tmp = ref;
-//                }
                 fs.indexed(v, key);
+                gettable.done(GETTABLE);
+                var = gettable;
                 //	break;
             } else if (this.t == COLON) { /* `:' NAME funcargs */
+                PsiBuilder.Marker gettable = var.precede();
                 ExpDesc key = new ExpDesc();
                 
                 this.next();
@@ -793,20 +792,8 @@ public class KahluaParser implements PsiParser, LuaElementTypes {
                 this.checkname(key);
                 func.done(FIELD_NAME);
 
-//               // ref = ref.precede();
-//                if (tmp != null)
-//                    tmp.done(REFERENCE);
-//                tmp = null;
-
-//                PsiBuilder.Marker call = null;
-                
-//                if (mark != null) {
-//
-//                    call = mark.precede();
-//                    //mark.done(FUNCTION_IDENTIFIER);
-//                    mark.drop();
-//                    mark = null;
-//                }
+                gettable.done(GETTABLE);
+                var = gettable;
 
                 fs.self(v, key);
                 if (mark != null) {
@@ -827,17 +814,7 @@ public class KahluaParser implements PsiParser, LuaElementTypes {
                     || this.t == LCURLY) { /* funcargs */
                 fs.exp2nextreg(v);
 
-//                if (tmp != null) {
-//                        tmp.drop(); tmp = null;
-//                }
 
-                PsiBuilder.Marker call = null;
-                
-//                if (mark != null) {
-//                    call = mark.precede();
-//                    mark.done(FUNCTION_IDENTIFIER);
-//                    mark = null;
-//                }
                if (mark != null) {
                 mark.done(VARIABLE);
                 mark = mark.precede();
@@ -1048,9 +1025,9 @@ public class KahluaParser implements PsiParser, LuaElementTypes {
     }
 
     void expr(ExpDesc v) {
-        PsiBuilder.Marker mark = builder.mark();
+       // PsiBuilder.Marker mark = builder.mark();
         this.subexpr(v, 0);
-        mark.done(EXPR);
+       // mark.done(EXPR);
         // next();
     }
 
