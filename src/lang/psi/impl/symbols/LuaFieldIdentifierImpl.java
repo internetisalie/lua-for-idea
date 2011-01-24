@@ -14,16 +14,15 @@
  * limitations under the License.
  */
 
-package com.sylvanaar.idea.Lua.lang.psi.impl.expressions;
+package com.sylvanaar.idea.Lua.lang.psi.impl.symbols;
 
 import com.intellij.lang.ASTNode;
 import com.intellij.psi.PsiElement;
-import com.intellij.psi.search.EverythingGlobalScope;
-import com.intellij.psi.search.SearchScope;
 import com.intellij.util.IncorrectOperationException;
-import com.sylvanaar.idea.Lua.lang.psi.expressions.LuaGlobalIdentifier;
+import com.sylvanaar.idea.Lua.lang.psi.LuaPsiType;
+import com.sylvanaar.idea.Lua.lang.psi.expressions.LuaExpression;
+import com.sylvanaar.idea.Lua.lang.psi.expressions.LuaFieldIdentifier;
 import org.jetbrains.annotations.NonNls;
-import org.jetbrains.annotations.NotNull;
 
 /**
  * Created by IntelliJ IDEA.
@@ -31,19 +30,28 @@ import org.jetbrains.annotations.NotNull;
  * Date: 1/15/11
  * Time: 1:31 AM
  */
-public class LuaGlobalIdentifierImpl extends LuaIdentifierImpl implements LuaGlobalIdentifier {
-    public LuaGlobalIdentifierImpl(ASTNode node) {
+public class LuaFieldIdentifierImpl  extends LuaIdentifierImpl implements LuaFieldIdentifier {
+    public LuaFieldIdentifierImpl(ASTNode node) {
         super(node);
-    }
-
-
-    @NotNull
-    public SearchScope getUseScope() {
-        return new EverythingGlobalScope();
     }
 
     @Override
     public PsiElement setName(@NonNls String name) throws IncorrectOperationException {
+        return null;  //To change body of implemented methods use File | Settings | File Templates.
+    }
+
+    @Override
+    public boolean isDeclaration() {
+        return false;
+    }
+
+    @Override
+    public PsiElement replaceWithExpression(LuaExpression newCall, boolean b) {
+        return null;  //To change body of implemented methods use File | Settings | File Templates.
+    }
+
+    @Override
+    public LuaPsiType getType() {
         return null;  //To change body of implemented methods use File | Settings | File Templates.
     }
 }

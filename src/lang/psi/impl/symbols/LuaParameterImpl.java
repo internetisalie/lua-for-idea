@@ -13,7 +13,7 @@
  *   See the License for the specific language governing permissions and
  *   limitations under the License.
  */
-package com.sylvanaar.idea.Lua.lang.psi.impl.expressions;
+package com.sylvanaar.idea.Lua.lang.psi.impl.symbols;
 
 import com.intellij.lang.ASTNode;
 import com.intellij.openapi.util.Comparing;
@@ -219,5 +219,10 @@ public class LuaParameterImpl extends LuaIdentifierImpl implements LuaPsiElement
     @Override
     public LuaNamedElement getPrimaryIdentifier() {
         return null; //To change body of implemented methods use File | Settings | File Templates.
+    }
+
+    @Override
+    public boolean isDeclaration() {
+        return true;
     }
 }

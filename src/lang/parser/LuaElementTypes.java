@@ -17,9 +17,15 @@
 package com.sylvanaar.idea.Lua.lang.parser;
 
 import com.intellij.psi.tree.IElementType;
+import com.intellij.psi.tree.IStubFileElementType;
 import com.intellij.psi.tree.TokenSet;
 import com.sylvanaar.idea.Lua.lang.lexer.LuaElementType;
 import com.sylvanaar.idea.Lua.lang.lexer.LuaTokenTypes;
+import com.sylvanaar.idea.Lua.lang.psi.expressions.LuaGlobalDeclaration;
+import com.sylvanaar.idea.Lua.lang.psi.stubs.LuaStubElementType;
+import com.sylvanaar.idea.Lua.lang.psi.stubs.api.LuaGlobalDeclarationStub;
+import com.sylvanaar.idea.Lua.lang.psi.stubs.elements.LuaStubFileElementType;
+import com.sylvanaar.idea.Lua.lang.psi.stubs.elements.LuaStubGlobalDeclarationType;
 
 /**
  * Created by IntelliJ IDEA.
@@ -30,12 +36,17 @@ import com.sylvanaar.idea.Lua.lang.lexer.LuaTokenTypes;
 public interface LuaElementTypes extends LuaTokenTypes {
     IElementType EMPTY_INPUT = new LuaElementType("empty input");
 
+    IStubFileElementType FILE = new LuaStubFileElementType();
+
     IElementType FUNCTION_DEFINITION = new LuaElementType("Function Definition");
 
     IElementType LOCAL_NAME = new LuaElementType("local name");
     IElementType LOCAL_NAME_DECL = new LuaElementType("local name declaration");
 
     IElementType GLOBAL_NAME = new LuaElementType("global name");
+
+    LuaStubElementType<LuaGlobalDeclarationStub, LuaGlobalDeclaration> GLOBAL_NAME_DECL = new LuaStubGlobalDeclarationType();
+
     IElementType FIELD_NAME = new LuaElementType("field name");
     IElementType GETSELF = new LuaElementType("get self");
     IElementType GETTABLE = new LuaElementType("get table");
@@ -43,8 +54,6 @@ public interface LuaElementTypes extends LuaTokenTypes {
     IElementType TABLE_INDEX = new LuaElementType("table index");
     IElementType KEY_ASSIGNMENT = new LuaElementType("keyed field initializer");
     IElementType IDX_ASSIGNMENT = new LuaElementType("indexed field initializer");
-
-    IElementType TOKEN_OR_KEYWORD = new LuaElementType("Token or Keyword");
 
     IElementType REFERENCE = new LuaElementType("Reference");
 
@@ -71,10 +80,7 @@ public interface LuaElementTypes extends LuaTokenTypes {
     IElementType LOCAL_DECL_WITH_ASSIGNMENT = new LuaElementType("Local Declaration With Assignment Statement");
     IElementType LOCAL_DECL = new LuaElementType("Local Declaration ");
 
-    IElementType FUNCTION_IDENTIFIER = new LuaElementType("Function identifier");
     IElementType SELF_PARAMETER = new LuaElementType("Implied parameter (self)");
-
-    TokenSet FUNCTION_IDENTIFIER_SET = TokenSet.create(FUNCTION_IDENTIFIER);//, FUNCTION_IDENTIFIER_NEEDSELF);
 
     IElementType BLOCK = new LuaElementType("Block");
 

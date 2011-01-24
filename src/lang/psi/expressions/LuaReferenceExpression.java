@@ -28,6 +28,11 @@ import com.sylvanaar.idea.Lua.lang.psi.LuaReferenceElement;
 public interface LuaReferenceExpression extends LuaExpression, LuaReferenceElement, LuaNamedElement, PsiPolyVariantReference {
 
     public ASTNode getNameElement();
+
+    public boolean isDeclaration();
+
+
+    
 //  @Nullable
 //  LuaExpression getQualifierExpression();
 //

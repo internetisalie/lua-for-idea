@@ -226,6 +226,9 @@
         <component>
             <implementation-class>com.sylvanaar.idea.Lua.settings.LuaProjectSettingsComponent</implementation-class>
         </component>
+    <component>
+      <implementation-class>com.sylvanaar.idea.Lua.lang.psi.impl.LuaPsiManager</implementation-class>
+    </component>
     </project-components>
 
     <actions>
@@ -319,6 +322,8 @@
 
         <lang.findUsagesProvider language="Lua" implementationClass="com.sylvanaar.idea.Lua.findUsages.LuaFindUsagesProvider" />
 
+       
+
         <lang.namesValidator language="Lua" implementationClass="com.sylvanaar.idea.Lua.lang.LuaNamesValidation" />
 
         <gotoSymbolContributor implementation="com.sylvanaar.idea.Lua.editor.LuaGotoSymbolContributor" />
@@ -335,6 +340,18 @@
         <moduleConfigurationEditorProvider implementation="com.sylvanaar.idea.Lua.module.LuaModuleConfigurationEditorProvider" />
         
         <sdkType implementation="com.sylvanaar.idea.Lua.sdk.LuaSdkType"/>
+
+
+        <!--Stubs-->
+        <stubElementTypeHolder class="com.sylvanaar.idea.Lua.lang.parser.LuaElementTypes"/>
+
+        <stubIndex implementation="com.sylvanaar.idea.Lua.lang.psi.stubs.index.LuaFullScriptNameIndex"/>
+        <stubIndex implementation="com.sylvanaar.idea.Lua.lang.psi.stubs.index.LuaGlobalDeclarationIndex" />
+
+        <java.shortNamesCache id="Lua" implementation="com.sylvanaar.idea.Lua.lang.psi.stubs.LuaShortNamesCache" />
+
+
+
 
     <!-- control -->
     <intentionAction>
