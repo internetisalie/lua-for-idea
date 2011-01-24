@@ -4,6 +4,7 @@ import com.intellij.lang.ASTNode;
 import com.intellij.openapi.util.Comparing;
 import com.intellij.openapi.util.TextRange;
 import com.intellij.psi.*;
+import com.intellij.psi.search.GlobalSearchScope;
 import com.intellij.util.IncorrectOperationException;
 import com.sylvanaar.idea.Lua.lang.parser.LuaElementTypes;
 import com.sylvanaar.idea.Lua.lang.psi.LuaPsiType;
@@ -75,6 +76,15 @@ public class LuaReferenceExpressionImpl extends LuaExpressionImpl implements Lua
         return null;
     }
 
+    @Override
+    public boolean isDeclaration() {
+        LuaIdentifier id = findChildByClass(LuaIdentifier.class);
+
+
+        return id != null && id.isDeclaration();
+    }
+
+
     public PsiElement resolve() {
         final String referencedName = getReferencedName();
         if (referencedName == null) return null;
@@ -86,8 +96,9 @@ public class LuaReferenceExpressionImpl extends LuaExpressionImpl implements Lua
         return ResolveUtil.treeWalkUp(new ResolveUtil.ResolveProcessor(referencedName), this, this, this);
     }
 
+    @NotNull
     public String getCanonicalText() {
-        return null;
+        return getText();
     }
 
     public PsiElement handleElementRename(String newElementName) throws IncorrectOperationException {
@@ -98,7 +109,7 @@ public class LuaReferenceExpressionImpl extends LuaExpressionImpl implements Lua
         return this;
     }
 
-    public PsiElement bindToElement(PsiElement element) throws IncorrectOperationException {
+    public PsiElement bindToElement(@NotNull PsiElement element) throws IncorrectOperationException {
         findChildByClass(LuaIdentifier.class).replace(element);
         return this;
     }
@@ -156,9 +167,15 @@ public class LuaReferenceExpressionImpl extends LuaExpressionImpl implements Lua
         return this;
     }
 
+
     @NotNull
     @Override
-    public ResolveResult[] multiResolve(boolean incompleteCode) {
-        return new ResolveResult[0];  //To change body of implemented methods use File | Settings | File Templates.
+    public GlobalSearchScope getResolveScope() {
+        return getElement().getResolveScope();
     }
+
+    @NotNull
+  public ResolveResult[] multiResolve(boolean incomplete) {
+    return new ResolveResult[0]; //getManager().getResolveCache().resolveWithCaching(this, RESOLVER, true, incomplete);
+  }
 }

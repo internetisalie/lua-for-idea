@@ -22,11 +22,16 @@ import com.intellij.psi.PsiFile;
 import com.intellij.psi.PsiNamedElement;
 import com.intellij.psi.ResolveState;
 import com.intellij.psi.scope.PsiScopeProcessor;
+import com.intellij.psi.stubs.StubIndex;
 import com.sylvanaar.idea.Lua.lang.psi.LuaPsiElement;
+import com.sylvanaar.idea.Lua.lang.psi.expressions.LuaGlobalIdentifier;
+import com.sylvanaar.idea.Lua.lang.psi.expressions.LuaReferenceExpression;
+import com.sylvanaar.idea.Lua.lang.psi.stubs.index.LuaGlobalDeclarationIndex;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 
 import java.util.ArrayList;
+import java.util.Collection;
 import java.util.List;
 
 /**
@@ -85,7 +90,52 @@ public class ResolveUtil {
             }
 
 
-            if (cur instanceof PsiFile) break;
+            if (cur instanceof PsiFile) {
+                // If the variable is global, we have to process all the files in the project
+                // otherwise we are done.
+                if (place instanceof LuaReferenceExpression
+                    && ((LuaReferenceExpression)place).getElement() instanceof LuaGlobalIdentifier) {
+                    // Do global resolution
+
+                    System.out.println("Need to resolve global: " + place);
+
+
+    Collection<String> fields = StubIndex.getInstance().getAllKeys(LuaGlobalDeclarationIndex.KEY, cur.getProject());
+                      for(String field : fields)
+                          System.out.println(field);
+
+
+//                    final Project project = cur.getProject();
+//                    final PsiScopeProcessor scopeProcessor = processor;
+//                    final PsiElement filePlace = cur;
+//
+//                    FileIndex fi = ProjectRootManager.getInstance(project).getFileIndex();
+//
+//
+//                    fi.iterateContent(new ContentIterator() {
+//                        @Override
+//                        public boolean processFile(VirtualFile fileOrDir) {
+//                            try {
+//                            if (fileOrDir.getFileType() == LuaFileType.LUA_FILE_TYPE) {
+//                                PsiFile f = PsiManagerEx.getInstance(project).findFile(fileOrDir);
+//
+//                                assert f instanceof LuaPsiFile;
+//
+//                                f.processDeclarations(scopeProcessor, ResolveState.initial(), filePlace, filePlace);
+//                            }
+//                            } catch (Throwable unused) { unused.printStackTrace(); }
+//                            return true;  // keep going
+//
+//                        }
+//                    });
+//
+//                    if (processor instanceof ResolveProcessor) {
+//                        return ((ResolveProcessor) processor).getResult();
+//                    }
+                }
+
+                break;
+            }
 
             cur = cur.getPrevSibling();
         } while (cur != null);

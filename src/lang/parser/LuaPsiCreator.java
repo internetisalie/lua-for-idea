@@ -20,12 +20,10 @@ import com.intellij.lang.ASTNode;
 import com.intellij.psi.PsiElement;
 import com.intellij.psi.tree.IElementType;
 import com.sylvanaar.idea.Lua.lang.lexer.LuaElementType;
-import com.sylvanaar.idea.Lua.lang.psi.impl.expressions.LuaLocalDeclarationImpl;
 import com.sylvanaar.idea.Lua.lang.psi.impl.LuaPsiElementImpl;
-import com.sylvanaar.idea.Lua.lang.psi.impl.LuaPsiKeywordImpl;
-import com.sylvanaar.idea.Lua.lang.psi.impl.LuaPsiTokenImpl;
 import com.sylvanaar.idea.Lua.lang.psi.impl.expressions.*;
 import com.sylvanaar.idea.Lua.lang.psi.impl.statements.*;
+import com.sylvanaar.idea.Lua.lang.psi.impl.symbols.*;
 
 import static com.sylvanaar.idea.Lua.lang.parser.LuaElementTypes.*;
 
@@ -42,13 +40,6 @@ public class LuaPsiCreator {
 
         if (elem instanceof LuaElementType.PsiCreator) {
             return ((LuaElementType.PsiCreator) elem).createPsi(node);
-        }
-
-        if (node.getElementType() == TOKEN_OR_KEYWORD) {
-            if (KEYWORDS.contains(node.getElementType()))
-                return new LuaPsiKeywordImpl(node.getElementType(), node.getChars());
-
-            return new LuaPsiTokenImpl(node.getElementType(), node.getChars());
         }
 
         if (node.getElementType() == EXPR)
@@ -93,7 +84,7 @@ public class LuaPsiCreator {
 
         if (node.getElementType() == VARIABLE)
             return new LuaVariableImpl(node);
-        
+
         if (node.getElementType() == LITERAL_EXPRESSION)
             return new LuaLiteralExpressionImpl(node);
 
@@ -111,6 +102,9 @@ public class LuaPsiCreator {
 
         if (node.getElementType() == NUMERIC_FOR_BLOCK)
             return new LuaNumericForStatementImpl(node);
+
+        if (node.getElementType() == PARENTHEICAL_EXPRESSION)
+            return new LuaParenthesizedExpressionImpl(node);
 
         if (node.getElementType() == GENERIC_FOR_BLOCK)
             return new LuaGenericForStatementImpl(node);
@@ -130,11 +124,11 @@ public class LuaPsiCreator {
         if (node.getElementType() == SELF_PARAMETER)
             return new LuaImpliedSelfParameterImpl(node);
 
-//        if (node.getElementType() == FUNCTION_IDENTIFIER)
-//            return new LuaFunctionIdentifierDefImpl(node);
-
         if (node.getElementType() == GLOBAL_NAME)
-            return new LuaGlobalIdentifierImpl(node);
+            return new LuaGlobalUsageImpl(node);
+
+        if (node.getElementType() == GLOBAL_NAME_DECL)
+            return new LuaGlobalDeclarationImpl(node);
 
         if (node.getElementType() == LOCAL_NAME_DECL)
             return new LuaLocalDeclarationImpl(node);
@@ -158,7 +152,9 @@ public class LuaPsiCreator {
         if (node.getElementType() == LuaElementTypes.FUNCTION_CALL_ARGS)
             return new LuaFunctionArgumentsImpl(node);
 
-        
+        if (node.getElementType() == LuaElementTypes.GETTABLE)
+            return new LuaGetTableExpressionImpl(node);
+
         return new LuaPsiElementImpl(node);
     }
 

@@ -14,7 +14,7 @@
  * limitations under the License.
  */
 
-package com.sylvanaar.idea.Lua.lang.psi.impl.expressions;
+package com.sylvanaar.idea.Lua.lang.psi.impl.symbols;
 
 import com.intellij.lang.ASTNode;
 import com.intellij.psi.PsiElement;
@@ -74,17 +74,6 @@ public class LuaLocalDeclarationImpl extends LuaIdentifierImpl implements LuaDec
     }
 
 
-//
-//    public boolean processDeclarations(@NotNull PsiScopeProcessor processor,
-//                                       @NotNull ResolveState resolveState,
-//                                       PsiElement lastParent,
-//                                       @NotNull PsiElement place) {
-//        if (isLocal() && lastParent != null)
-//           return processor.execute(this, resolveState);
-//
-//        return true;
-//    }
-
     @Override
     public PsiElement setName(@NotNull String s) {
         LuaDeclarationExpression decl = LuaPsiElementFactoryImpl.getInstance(getProject()).createLocalNameIdentifierDecl(s);
@@ -94,6 +83,11 @@ public class LuaLocalDeclarationImpl extends LuaIdentifierImpl implements LuaDec
 
     @Override
     public String toString() {
-        return "Declaration: " + getDefinedName();
+        return "Local Declaration: " + getDefinedName();
+    }
+
+    @Override
+    public boolean isDeclaration() {
+        return true;
     }
 }
