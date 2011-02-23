@@ -370,10 +370,12 @@
         <gotoSymbolContributor implementation="com.sylvanaar.idea.Lua.editor.LuaGotoSymbolContributor" />
 
         <!--<lang.smartEnterProcessor language="Lua" implementationClass="com.sylvanaar.idea.Lua.lang.LuaSmartEnterProcessor" />-->
-        <!--<typedHandler  implementation="com.sylvanaar.idea.Lua.lang.LuaTypedHandlerDelegate" />-->
-        <!--<enterHandlerDelegate implementation= "com.sylvanaar.idea.Lua.lang.LuaEnterHandlerDelegate"/>-->
+        <!--<typedHandler  implementation="com.sylvanaar.idea.Lua.editor.LuaTypedHandlerDelegate" />-->
+        <!--<enterHandlerDelegate implementation= "com.sylvanaar.idea.Lua.editor.LuaEnterHandlerDelegate"/>-->
         <!--<backspaceHandlerDelegate implementation="com.sylvanaar.idea.Lua.editor.LuaBackspaceHandlerDelegate"/>-->
-        <!--<lang.smartEnterProcessor language="Lua" implementationClass="com.sylvanaar.idea.Lua.editor.completion.smartEnter.LuaSmartEnterProcessor" />-->
+
+
+        <lang.smartEnterProcessor language="Lua" implementationClass="com.sylvanaar.idea.Lua.editor.smartEnter.LuaSmartEnterProcessor" />
 
         <codeInsight.lineMarkerProvider language="Lua" implementationClass="com.sylvanaar.idea.Lua.codeInsight.LuaLineMarkerProvider" />            
 

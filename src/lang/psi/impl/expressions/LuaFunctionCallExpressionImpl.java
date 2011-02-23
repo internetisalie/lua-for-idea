@@ -62,7 +62,11 @@ public class LuaFunctionCallExpressionImpl extends LuaExpressionImpl implements 
 
     @Override
     public String getName() {
-        return findChildByClass(LuaReferenceElement.class).getName();
+        LuaReferenceElement nameElem = findChildByClass(LuaReferenceElement.class);
+
+        assert nameElem != null;
+
+        return nameElem.getName();
     }
 
     @Override
