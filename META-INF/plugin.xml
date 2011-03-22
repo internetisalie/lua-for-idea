@@ -319,6 +319,12 @@
 
         <programRunner implementation="com.sylvanaar.idea.Lua.run.LuaRunner"/>
 
+        <!-- Script Debugging -->
+        <programRunner implementation="com.sylvanaar.idea.Lua.debugger.LuaRemoteDebugRunner"/>
+        <configurationType implementation="com.sylvanaar.idea.Lua.debugger.LuaRemoteDebugConfigurationType"/>
+        <xdebugger.settings implementation="com.sylvanaar.idea.Lua.debugger.LuaDebuggerSettings"/>
+        
+
         <!-- Editor -->
         <codeInsight.parameterInfo language="Lua" implementationClass="com.sylvanaar.idea.Lua.codeInsight.LuaParameterInfoHandler" />
 
