@@ -1,5 +1,5 @@
 /*
- * Copyright 2010 Jon S Akhtar (Sylvanaar)
+ * Copyright 2011 Jon S Akhtar (Sylvanaar)
  *
  *   Licensed under the Apache License, Version 2.0 (the "License");
  *   you may not use this file except in compliance with the License.
@@ -14,20 +14,15 @@
  *   limitations under the License.
  */
 
-package com.sylvanaar.idea.Lua.lang.psi;
+package com.sylvanaar.idea.Lua.settings.facet;
 
-import com.intellij.psi.FileResolveScopeProvider;
-import com.intellij.psi.impl.source.PsiFileWithStubSupport;
+import java.io.Serializable;
 
 /**
  * Created by IntelliJ IDEA.
  * User: Jon S Akhtar
- * Date: Jun 13, 2010
- * Time: 7:29:34 PM
+ * Date: 3/24/11
+ * Time: 10:18 AM
  */
-public interface LuaPsiFile extends LuaPsiFileBase, FileResolveScopeProvider, PsiFileWithStubSupport {
-
-    String getModuleName();
-
-    void setModuleName(String moduleName);
+public class LuaFacetSettings implements Serializable {
 }

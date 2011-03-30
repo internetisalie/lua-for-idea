@@ -242,7 +242,9 @@
         ]]></change-notes>
 
     <depends>com.intellij.modules.lang</depends>
-
+    <depends>com.intellij.modules.platform</depends>
+    <depends>com.intellij.modules.xdebugger</depends>
+    
     <!--<depends optional="true" config-file="lua-copyright.xml">com.intellij.copyright</depends>-->
 
     <application-components>
@@ -263,9 +265,6 @@
     </application-components>
 
     <project-components>
-        <component>
-            <implementation-class>com.sylvanaar.idea.Lua.settings.LuaProjectSettingsComponent</implementation-class>
-        </component>
     <component>
       <implementation-class>com.sylvanaar.idea.Lua.lang.psi.impl.LuaPsiManager</implementation-class>
     </component>
@@ -301,7 +300,7 @@
 
         <!-- Facet -->
         <!--<facetType id="Lua" implementation="com.sylvanaar.idea.Lua.settings.facet.LuaFacetType" />-->
-        <!--<frameworkSupport id="Lua" implementation="com.sylvanaar.idea.Lua.settings.facet.LuaFacetTypeFrameworkSupportProvider"/>-->
+        <!--<frameworkSupport id="Lua" implementation="com.sylvanaar.idea.Lua.settings.facet.LuaFacetFrameworkSupportProvider" />-->
 
         <!-- Repl Window -->
         <toolWindow id="Kahlua" anchor="right" icon="/icons/Lua.png"
@@ -310,8 +309,7 @@
         <applicationService serviceImplementation="com.sylvanaar.idea.Lua.options.LuaApplicationSettings" />
 
         <!-- Project Configuration -->
-        <!--<projectConfigurable implementation="com.sylvanaar.idea.Lua.settings.LuaProjectSettingsConfigurable" />-->
-
+        <projectConfigurable  instance="com.sylvanaar.idea.Lua.settings.LuaProjectSettingsConfigurable" />
         <projectService serviceImplementation="com.sylvanaar.idea.Lua.settings.LuaProjectSettings"
                         serviceInterface="com.sylvanaar.idea.Lua.settings.LuaProjectSettings" />
 
@@ -323,6 +321,10 @@
         <configurationProducer id="Lua" implementation="com.sylvanaar.idea.Lua.run.LuaRunConfigurationProducer" />
 
         <programRunner implementation="com.sylvanaar.idea.Lua.run.LuaRunner"/>
+
+        <!-- Script Debugging -->
+        <programRunner implementation="com.sylvanaar.idea.Lua.debugger.LuaDebugRunner"/>
+        <xdebugger.breakpointType implementation="com.sylvanaar.idea.Lua.debugger.LuaLineBreakpointType" />
 
         <!-- Editor -->
         <codeInsight.parameterInfo language="Lua" implementationClass="com.sylvanaar.idea.Lua.codeInsight.LuaParameterInfoHandler" />
