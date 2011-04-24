@@ -16,6 +16,7 @@
 
 package com.sylvanaar.idea.Lua.lang.psi.statements;
 
+import com.intellij.psi.PsiElement;
 import com.intellij.psi.tree.IElementType;
 import com.sylvanaar.idea.Lua.lang.psi.expressions.LuaExpressionList;
 import com.sylvanaar.idea.Lua.lang.psi.expressions.LuaIdentifierList;
@@ -25,4 +26,5 @@ public interface LuaAssignmentStatement extends LuaMaybeDeclarationAssignmentSta
     public LuaExpressionList getRightExprs();
     
     public IElementType getOperationTokenType();
+    public PsiElement getOperatorElement();
 }

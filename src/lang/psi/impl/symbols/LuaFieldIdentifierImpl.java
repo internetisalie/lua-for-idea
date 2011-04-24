@@ -23,11 +23,14 @@ import com.intellij.util.IncorrectOperationException;
 import com.sylvanaar.idea.Lua.lang.parser.LuaElementTypes;
 import com.sylvanaar.idea.Lua.lang.psi.expressions.LuaExpression;
 import com.sylvanaar.idea.Lua.lang.psi.expressions.LuaFieldIdentifier;
+import com.sylvanaar.idea.Lua.lang.psi.impl.LuaPsiElementFactoryImpl;
 import com.sylvanaar.idea.Lua.lang.psi.impl.LuaStubElementBase;
 import com.sylvanaar.idea.Lua.lang.psi.stubs.impl.LuaFieldStub;
 import com.sylvanaar.idea.Lua.lang.psi.symbols.LuaCompoundIdentifier;
+import com.sylvanaar.idea.Lua.lang.psi.symbols.LuaIdentifier;
 import com.sylvanaar.idea.Lua.lang.psi.symbols.LuaSymbol;
 import com.sylvanaar.idea.Lua.lang.psi.types.LuaType;
+import com.sylvanaar.idea.Lua.lang.psi.util.LuaPsiUtils;
 import com.sylvanaar.idea.Lua.lang.psi.visitor.LuaElementVisitor;
 import org.jetbrains.annotations.NonNls;
 import org.jetbrains.annotations.NotNull;
@@ -58,25 +61,23 @@ public class LuaFieldIdentifierImpl  extends LuaStubElementBase<LuaFieldStub> im
     }
 
     @Override
-    public PsiElement setName(@NonNls String name) throws IncorrectOperationException {
-        return null;  //To change body of implemented methods use File | Settings | File Templates.
-    }
+    public PsiElement setName(@NotNull @NonNls String name) throws IncorrectOperationException {
+        LuaIdentifier node = LuaPsiElementFactoryImpl.getInstance(getProject()).createFieldNameIdentifier(name);
+        replace(node);
 
-    @Override
-    public PsiElement replaceWithExpression(LuaExpression newCall, boolean b) {
-        return null;  //To change body of implemented methods use File | Settings | File Templates.
+        return this;
     }
 
     @Override
     public LuaType getLuaType() {
-        return null;  //To change body of implemented methods use File | Settings | File Templates.
+        return LuaType.ANY;
     }
 
-//    @Override
-//    public PsiReference getReference() {
-//        return (PsiReference) getCompositeIdentifier().getEnclosingIdentifier().getParent();
-//    }
-
+    @Override
+    public PsiElement replaceWithExpression(LuaExpression newExpr, boolean removeUnnecessaryParentheses) {
+        return LuaPsiUtils.replaceElement(this, newExpr);
+    }
+    
     @Override
     public boolean isSameKind(LuaSymbol identifier) {
         return identifier instanceof LuaFieldIdentifier;

@@ -40,7 +40,7 @@ import java.util.ArrayList;
 /**
  * @author ilyas
  */
-public class LuaDocParameterReferenceImpl extends LuaDocPsiElementImpl implements LuaDocParameterReference {
+public class LuaDocParameterReferenceImpl extends LuaDocReferenceElementImpl implements LuaDocParameterReference {
 
   public LuaDocParameterReferenceImpl(@NotNull ASTNode node) {
     super(node);
@@ -104,7 +104,7 @@ public class LuaDocParameterReferenceImpl extends LuaDocPsiElementImpl implement
   public PsiElement handleElementRename(String newElementName) throws IncorrectOperationException {
     PsiElement nameElement = getReferenceNameElement();
     ASTNode node = nameElement.getNode();
-    ASTNode newNameNode = LuaPsiElementFactory.getInstance(getProject()).createDocMemberReferenceNameFromText(newElementName).getNode();
+    ASTNode newNameNode = LuaPsiElementFactory.getInstance(getProject()).createParameterDocMemberReferenceNameFromText(newElementName).getNode();
     assert newNameNode != null && node != null;
     node.getTreeParent().replaceChild(node, newNameNode);
     return this;

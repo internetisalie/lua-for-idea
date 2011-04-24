@@ -26,19 +26,24 @@ import org.jetbrains.annotations.Nullable;
  * @author ilyas
  */
 public interface LuaDocTag extends LuaDocPsiElement, LuaNamedElement /*, PsiDocTag */ {
-  LuaDocTag[] EMPTY_ARRAY = new LuaDocTag[0];
+    LuaDocTag[] EMPTY_ARRAY = new LuaDocTag[0];
 
-  LuaDocComment getContainingComment();
+    LuaDocComment getContainingComment();
 
-  @Nullable
-  LuaDocTagValueToken getValueElement();
+    @Nullable
+    LuaDocTagValueToken getValueElement();
 
-  @Nullable
-  LuaDocParameterReference getDocParameterReference();
+    @NotNull
+    public PsiElement[] getDescriptionElements();
 
-  PsiElement getNameElement();
-    
-  @NonNls
-  @NotNull
-  String getName();
+    @Nullable
+    LuaDocParameterReference getDocParameterReference();
+
+    LuaDocFieldReference getDocFieldReference();
+
+    PsiElement getNameElement();
+
+    @NonNls
+    @NotNull
+    String getName();
 }

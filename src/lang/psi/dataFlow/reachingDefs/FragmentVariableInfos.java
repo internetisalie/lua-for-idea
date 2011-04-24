@@ -1,5 +1,5 @@
 /*
- * Copyright 2010 Jon S Akhtar (Sylvanaar)
+ * Copyright 2000-2009 JetBrains s.r.o.
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -13,16 +13,15 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
+package com.sylvanaar.idea.Lua.lang.psi.dataFlow.reachingDefs;
 
-package com.sylvanaar.idea.Lua.lang.psi.symbols;
-
-import com.sylvanaar.idea.Lua.lang.psi.statements.LuaDeclarationStatement;
+import com.intellij.psi.PsiVariable;
 
 /**
- * Created by IntelliJ IDEA.
- * User: Jon S Akhtar
- * Date: 12/17/10
- * Time: 11:46 PM
+ * @author ven
  */
-public interface LuaSyntheticGlobalDeclarationStatement extends LuaDeclarationStatement {
+public interface FragmentVariableInfos {
+  VariableInfo[] getInputVariableNames();
+
+  VariableInfo[] getOutputVariableNames();
 }

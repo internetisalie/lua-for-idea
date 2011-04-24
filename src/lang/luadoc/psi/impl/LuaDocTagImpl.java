@@ -20,10 +20,7 @@ import com.intellij.lang.ASTNode;
 import com.intellij.psi.PsiElement;
 import com.intellij.psi.tree.TokenSet;
 import com.intellij.util.IncorrectOperationException;
-import com.sylvanaar.idea.Lua.lang.luadoc.psi.api.LuaDocComment;
-import com.sylvanaar.idea.Lua.lang.luadoc.psi.api.LuaDocParameterReference;
-import com.sylvanaar.idea.Lua.lang.luadoc.psi.api.LuaDocTag;
-import com.sylvanaar.idea.Lua.lang.luadoc.psi.api.LuaDocTagValueToken;
+import com.sylvanaar.idea.Lua.lang.luadoc.psi.api.*;
 import com.sylvanaar.idea.Lua.lang.psi.LuaPsiElementFactory;
 import com.sylvanaar.idea.Lua.lang.psi.util.LuaPsiUtils;
 import com.sylvanaar.idea.Lua.lang.psi.visitor.LuaElementVisitor;
@@ -74,7 +71,7 @@ public class LuaDocTagImpl extends LuaDocPsiElementImpl implements LuaDocTag {
     }
 
     public LuaDocTagValueToken getValueElement() {
-        final LuaDocParameterReference reference = getDocParameterReference();
+        final LuaDocReferenceElement reference = findChildByClass(LuaDocReferenceElement.class);
         if (reference == null) return null;
         return reference.getReferenceNameElement();
     }
@@ -84,7 +81,14 @@ public class LuaDocTagImpl extends LuaDocPsiElementImpl implements LuaDocTag {
         return findChildByClass(LuaDocParameterReference.class);
     }
 
-    public PsiElement[] getDataElements() {
+    @Override
+    public LuaDocFieldReference getDocFieldReference() {
+        return findChildByClass(LuaDocFieldReference.class);
+    }
+
+    @NotNull
+    @Override
+    public PsiElement[] getDescriptionElements() {
         final List<PsiElement> list = findChildrenByType(LDOC_COMMENT_DATA);
         return LuaPsiUtils.toPsiElementArray(list);
     }
