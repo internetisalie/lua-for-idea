@@ -129,9 +129,11 @@ public class ParserTest extends TestCase {
             ex.printStackTrace();
         }
 
-        PsiFile psiFile = createPseudoPhysicalFile(myProject, "test.lua", contents.toString());
+        PsiFile psiFile = createPseudoPhysicalFile(myProject, fileName, contents.toString());
         String psiTree = DebugUtil.psiToString(psiFile, false);
         System.out.println(psiTree);
+
+        //assertEquals(output.trim(), psiTree.trim());
     }
 
     @Test
@@ -141,7 +143,7 @@ public class ParserTest extends TestCase {
 
     @Test
     public void testSymbol2() {
-        parseit("basic/complexity");
+        parseit("basic/buildparsetest");
     }
 
 
