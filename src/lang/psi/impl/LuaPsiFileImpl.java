@@ -17,39 +17,33 @@
 package com.sylvanaar.idea.Lua.lang.psi.impl;
 
 import com.intellij.openapi.fileTypes.FileType;
+import com.intellij.openapi.util.NotNullLazyValue;
 import com.intellij.psi.FileViewProvider;
 import com.intellij.psi.PsiElement;
 import com.intellij.psi.ResolveState;
 import com.intellij.psi.impl.PsiFileEx;
 import com.intellij.psi.impl.source.PsiFileWithStubSupport;
 import com.intellij.psi.scope.PsiScopeProcessor;
-import com.intellij.psi.search.GlobalSearchScope;
-import com.intellij.psi.search.ProjectAndLibrariesScope;
 import com.intellij.psi.util.CachedValue;
 import com.intellij.psi.util.CachedValueProvider;
 import com.intellij.psi.util.CachedValuesManager;
 import com.intellij.util.IncorrectOperationException;
 import com.sylvanaar.idea.Lua.LuaFileType;
+import com.sylvanaar.idea.Lua.lang.InferenceCapable;
 import com.sylvanaar.idea.Lua.lang.psi.*;
 import com.sylvanaar.idea.Lua.lang.psi.controlFlow.Instruction;
 import com.sylvanaar.idea.Lua.lang.psi.controlFlow.impl.ControlFlowBuilder;
-import com.sylvanaar.idea.Lua.lang.psi.expressions.LuaAnonymousFunctionExpression;
-import com.sylvanaar.idea.Lua.lang.psi.expressions.LuaDeclarationExpression;
-import com.sylvanaar.idea.Lua.lang.psi.expressions.LuaExpression;
+import com.sylvanaar.idea.Lua.lang.psi.expressions.*;
 import com.sylvanaar.idea.Lua.lang.psi.statements.*;
 import com.sylvanaar.idea.Lua.lang.psi.symbols.LuaCompoundIdentifier;
 import com.sylvanaar.idea.Lua.lang.psi.symbols.LuaIdentifier;
 import com.sylvanaar.idea.Lua.lang.psi.symbols.LuaLocalIdentifier;
 import com.sylvanaar.idea.Lua.lang.psi.visitor.LuaElementVisitor;
 import com.sylvanaar.idea.Lua.lang.psi.visitor.LuaRecursiveElementVisitor;
-import com.sylvanaar.idea.Lua.util.LuaModuleUtil;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 
-import java.util.ArrayList;
-import java.util.HashSet;
-import java.util.List;
-import java.util.Set;
+import java.util.*;
 
 /**
  * Created by IntelliJ IDEA.
@@ -77,45 +71,39 @@ public class LuaPsiFileImpl extends LuaPsiFileBaseImpl implements LuaPsiFile, Ps
     }
 
     @Override
-    public GlobalSearchScope getFileResolveScope() {
-        return new ProjectAndLibrariesScope(getProject());
-    }
-
-    @Override
-    public boolean ignoreReferencedElementAccessibility() {
-        return true;
-    }
-
-
-    @Override
     public LuaStatementElement addStatementBefore(@NotNull LuaStatementElement statement, LuaStatementElement anchor) throws IncorrectOperationException {
         return (LuaStatementElement) addBefore(statement, anchor);
     }
 
-    LuaModuleStatement[] moduleStatements;
+    NotNullLazyValue<List<LuaModuleExpression>> moduleStatements = new Modules();
 
-    @Override @Nullable
+    public LuaModuleExpression getModuleAtOffset(final int offset) {
+        final List<LuaModuleExpression> modules = moduleStatements.getValue();
+        if (modules.size() == 0) return null;
+
+        LuaModuleExpression module = null;
+        for (LuaModuleExpression m : modules) {
+            if (m.getIncludedTextRange().contains(offset)) module = module == null ? m :
+                    m.getIncludedTextRange().getStartOffset() >
+                            module.getIncludedTextRange().getStartOffset() ? m : module;
+        }
+
+        return module;
+    }
+    
+    @Override
+    @Nullable
     public String getModuleNameAtOffset(final int offset) {
-        if (moduleStatements == null) {
-            moduleStatements = findChildrenByClass(LuaModuleStatement.class);
-        }
-
-        if (moduleStatements.length == 0)
-            return null;
-
-        for (LuaModuleStatement m : moduleStatements) {
-            if (m.getIncludedTextRange().contains(offset))
-                return m.getName();
-        }
-        
-        return null;
+        LuaModuleExpression module = getModuleAtOffset(offset);
+        return module == null ? null : module.getGlobalEnvironmentName();
     }
 
 
     @Override
     public void clearCaches() {
         super.clearCaches();
-        moduleStatements = null;
+        moduleStatements = new Modules();
+
     }
 
     @Override
@@ -130,42 +118,19 @@ public class LuaPsiFileImpl extends LuaPsiFileBaseImpl implements LuaPsiFile, Ps
         return ((LuaReturnStatement) s).getReturnValue();
     }
 
-
     @Override
-    public boolean isSdkFile() {
-        LuaModuleUtil.checkForSdkFile(this, getProject());
-        return sdkFile;
-    }
-
-    @Override
-    public void setSdkFile(boolean b) {
-        sdkFile = b;
-    }
-
-
-    @Override
-    public void removeVariable(LuaIdentifier variable) {
-
-    }
-
-    @Override
-    public LuaDeclarationStatement addVariableDeclarationBefore(LuaDeclarationStatement declaration, LuaStatementElement anchor) throws IncorrectOperationException {
-        return null;
-    }
-
-    @Override
-    public boolean processDeclarations(@NotNull PsiScopeProcessor processor,
-                                       @NotNull ResolveState resolveState,
-                                       PsiElement lastParent,
-                                       @NotNull PsiElement place) {
-        final PsiElement[] children = getChildren();
-        for (PsiElement child : children) {
-            if (child == lastParent) break;
-            if (!child.processDeclarations(processor, resolveState, lastParent, place)) return false;
+    public boolean processDeclarations(PsiScopeProcessor processor,
+                                                   ResolveState state, PsiElement lastParent,
+                                                   PsiElement place) {
+        PsiElement run = lastParent == null ? getLastChild() : lastParent.getPrevSibling();
+        if (run != null && run.getParent() != this) run = null;
+        while (run != null) {
+            if (!run.processDeclarations(processor, state, null, place)) return false;
+            run = run.getPrevSibling();
         }
+
         return true;
     }
-
 
     public void accept(LuaElementVisitor visitor) {
         visitor.visitFile(this);
@@ -182,11 +147,16 @@ public class LuaPsiFileImpl extends LuaPsiFileBaseImpl implements LuaPsiFile, Ps
         }
     }
 
+    @Override
+    public String getPresentationText() {
+        return null;
+    }
+
 
     @Override
-    public LuaDeclarationExpression[] getSymbolDefs() {
-        final Set<LuaDeclarationExpression> decls =
-                new HashSet<LuaDeclarationExpression>();
+    public Assignable[] getSymbolDefs() {
+        final Set<Assignable> decls =
+                new HashSet<Assignable>();
 
         LuaElementVisitor v = new LuaRecursiveElementVisitor() {
             public void visitDeclarationExpression(LuaDeclarationExpression e) {
@@ -206,7 +176,7 @@ public class LuaPsiFileImpl extends LuaPsiFileBaseImpl implements LuaPsiFile, Ps
 
         v.visitElement(this);
 
-        return decls.toArray(new LuaDeclarationExpression[decls.size()]);
+        return decls.toArray(new Assignable[decls.size()]);
     }
 
 
@@ -277,22 +247,52 @@ public class LuaPsiFileImpl extends LuaPsiFileBaseImpl implements LuaPsiFile, Ps
         return controlFlow.getValue();
     }
 
+    @Override
+    public void removeVariable(LuaIdentifier variable) {
+        //To change body of implemented methods use File | Settings | File Templates.
+    }
+
+    @Override
+    public LuaDeclarationStatement addVariableDeclarationBefore(LuaDeclarationStatement declaration, LuaStatementElement anchor) throws IncorrectOperationException {
+        return null;  //To change body of implemented methods use File | Settings | File Templates.
+    }
+
+    @Override
+    public void inferTypes() {
+        //if (getStub() != null) return;
+        
+        for(LuaStatementElement s : getAllStatements()) {
+            if (s instanceof InferenceCapable)
+                ((InferenceCapable) s).inferTypes();
+        }
+    }
+
     // Only looks at the current block
     private class LuaModuleVisitor extends LuaElementVisitor {
-        private final int offset;
-        private String moduleName = null;
+        private final Collection<LuaModuleExpression> list;
 
-        public LuaModuleVisitor(int offset) {this.offset = offset;}
+        public LuaModuleVisitor(Collection<LuaModuleExpression> list) {this.list = list;}
 
-        public void visitModuleStatement(LuaModuleStatement e) {
-            super.visitModuleStatement(e);
-            if (e.getIncludedTextRange().contains(offset))
-                moduleName = e.getName();
+        @Override
+        public void visitFunctionCallStatement(LuaFunctionCallStatement e) {
+            super.visitFunctionCallStatement(e);
+            e.acceptChildren(this);
         }
 
-        @Nullable
-        public String getModuleName() {
-            return moduleName;
+        @Override
+        public void visitModuleExpression(LuaModuleExpression e) {
+            super.visitModuleExpression(e);
+            list.add(e);
+        }
+    }
+
+    private class Modules extends NotNullLazyValue<List<LuaModuleExpression>> {
+        @NotNull
+        @Override
+        protected List<LuaModuleExpression> compute() {
+            List<LuaModuleExpression> val = new ArrayList<LuaModuleExpression>();
+            acceptChildren(new LuaModuleVisitor(val));
+            return val;
         }
     }
 }

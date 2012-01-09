@@ -176,11 +176,15 @@ public interface LuaTokenTypes extends LuaDocElementTypes {
     
     TokenSet DEFINED_CONSTANTS = TokenSet.create(NIL, TRUE, FALSE);
 
-    TokenSet UNARY_OP_SET = TokenSet.create(NOT, MINUS, GETN);
+    TokenSet UNARY_OP_SET = TokenSet.create(MINUS, GETN);
 
-    TokenSet BINARY_OP_SET = TokenSet.create(AND, OR,
-            EQ, GE, GT, LT, LE, NE, DOT, COLON,
-            MINUS, PLUS, DIV, MULT, EXP, MOD);
+    TokenSet BINARY_OP_SET = TokenSet.create(
+            MINUS, PLUS, DIV, MULT, EXP, MOD,
+            CONCAT);
+
+    TokenSet COMPARE_OPS = TokenSet.create(EQ, GE, GT, LT, LE, NE);
+    TokenSet LOGICAL_OPS = TokenSet.create(AND, OR, NOT);
+    TokenSet ARITHMETIC_OPS = TokenSet.create(MINUS, PLUS, DIV, EXP, MOD);
 
     TokenSet TABLE_ACCESS = TokenSet.create(DOT, COLON, LBRACK);
 
@@ -189,4 +193,6 @@ public interface LuaTokenTypes extends LuaDocElementTypes {
     TokenSet IDENTIFIERS_SET = TokenSet.create(NAME);
 
     TokenSet WHITE_SPACES_OR_COMMENTS = TokenSet.orSet(WHITE_SPACES_SET, COMMENT_SET);
+
+    TokenSet OPERATORS_SET = TokenSet.orSet(BINARY_OP_SET, UNARY_OP_SET);
 }

@@ -16,13 +16,14 @@
 
 package com.sylvanaar.idea.Lua.lang.psi.stubs.impl;
 
-import com.intellij.psi.stubs.StubBase;
+import com.intellij.psi.stubs.NamedStubBase;
 import com.intellij.psi.stubs.StubElement;
 import com.intellij.util.io.StringRef;
 import com.sylvanaar.idea.Lua.lang.parser.LuaElementTypes;
 import com.sylvanaar.idea.Lua.lang.psi.stubs.api.LuaCompoundIdentifierStub;
 import com.sylvanaar.idea.Lua.lang.psi.symbols.LuaCompoundIdentifier;
 import com.sylvanaar.idea.Lua.lang.psi.symbols.LuaGlobal;
+import org.apache.commons.lang.SerializationUtils;
 
 /**
  * Created by IntelliJ IDEA.
@@ -30,36 +31,36 @@ import com.sylvanaar.idea.Lua.lang.psi.symbols.LuaGlobal;
  * Date: 2/21/11
  * Time: 7:33 PM
  */
-public class LuaCompoundIdentifierStubImpl extends StubBase<LuaCompoundIdentifier>
+public class LuaCompoundIdentifierStubImpl extends NamedStubBase<LuaCompoundIdentifier>
         implements LuaCompoundIdentifierStub {
 
-    private final StringRef myName;
+    private static final byte[] EMPTY_TYPE = new byte[0];
     private final boolean isGlobalDeclaration;
+    private byte[] myType = EMPTY_TYPE;
 
-    public LuaCompoundIdentifierStubImpl(LuaCompoundIdentifier e) {
-        this(null, e);
-    }
-
-    public LuaCompoundIdentifierStubImpl(StubElement parent, StringRef name, boolean isDeclaration) {
-        super(parent, LuaElementTypes.GETTABLE);
-        myName = name;
+    public LuaCompoundIdentifierStubImpl(StubElement parent, StringRef name, boolean isDeclaration, byte[] type) {
+        super(parent, LuaElementTypes.GETTABLE, name);
         this.isGlobalDeclaration = isDeclaration;
+        myType = type;
     }
 
     public LuaCompoundIdentifierStubImpl(StubElement parentStub, LuaCompoundIdentifier psi) {
-        super(parentStub, LuaElementTypes.GETTABLE);
+        super(parentStub, LuaElementTypes.GETTABLE, StringRef.fromString(psi.getName()));
 
-        myName = StringRef.fromString(psi.getName());
+        if (psi.getStub() != null)
+        myType = SerializationUtils.serialize(psi.getLuaType());
         isGlobalDeclaration = psi.isCompoundDeclaration() && psi.getScopeIdentifier() instanceof LuaGlobal;
-    }
-
-    @Override
-    public String getName() {
-        return myName.getString();  
     }
 
     @Override
     public boolean isGlobalDeclaration() {
         return isGlobalDeclaration;
     }
+
+    @Override
+    public byte[] getEncodedType() {
+        return myType;
+    }
+
+
 }

@@ -20,7 +20,6 @@ import com.intellij.lang.ASTNode;
 import com.intellij.navigation.ItemPresentation;
 import com.intellij.openapi.editor.colors.TextAttributesKey;
 import com.intellij.psi.PsiElement;
-import com.intellij.psi.PsiFile;
 import com.intellij.psi.impl.source.tree.SharedImplUtil;
 import com.intellij.psi.stubs.IStubElementType;
 import com.intellij.psi.stubs.StubElement;
@@ -47,7 +46,9 @@ public abstract class LuaStubElementBase<T extends StubElement> extends StubBase
   }
 
   @Override
-  public abstract PsiElement getParent();
+  public PsiElement getParent() {
+      return getParentByStub();
+  }
 
   public void accept(LuaElementVisitor visitor) {
     visitor.visitElement(this);
@@ -67,7 +68,7 @@ public abstract class LuaStubElementBase<T extends StubElement> extends StubBase
   }
 
 
-  protected String getPresentationText() {
+  public String getPresentationText() {
     return getText();
   }
 

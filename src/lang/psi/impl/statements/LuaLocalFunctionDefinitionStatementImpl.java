@@ -20,10 +20,15 @@ import com.intellij.lang.ASTNode;
 import com.intellij.psi.PsiElement;
 import com.intellij.psi.ResolveState;
 import com.intellij.psi.scope.PsiScopeProcessor;
+import com.sylvanaar.idea.Lua.lang.InferenceCapable;
 import com.sylvanaar.idea.Lua.lang.psi.LuaPsiFile;
-import com.sylvanaar.idea.Lua.lang.psi.expressions.LuaDeclarationExpression;
+import com.sylvanaar.idea.Lua.lang.psi.expressions.Assignable;
+import com.sylvanaar.idea.Lua.lang.psi.statements.LuaFunctionDefinitionStatement;
 import com.sylvanaar.idea.Lua.lang.psi.symbols.LuaParameter;
 import com.sylvanaar.idea.Lua.lang.psi.symbols.LuaSymbol;
+import com.sylvanaar.idea.Lua.lang.psi.types.LuaFunction;
+import com.sylvanaar.idea.Lua.lang.psi.types.LuaType;
+import com.sylvanaar.idea.Lua.lang.psi.util.LuaPsiUtils;
 import org.jetbrains.annotations.NotNull;
 
 /**
@@ -32,7 +37,7 @@ import org.jetbrains.annotations.NotNull;
  * Date: 10/22/10
  * Time: 1:41 AM
  */
-public class LuaLocalFunctionDefinitionStatementImpl extends LuaFunctionDefinitionStatementImpl {
+public class LuaLocalFunctionDefinitionStatementImpl extends LuaFunctionDefinitionStatementImpl implements LuaFunctionDefinitionStatement, InferenceCapable  {
     public LuaLocalFunctionDefinitionStatementImpl(ASTNode node) {
         super(node);
     }
@@ -42,12 +47,23 @@ public class LuaLocalFunctionDefinitionStatementImpl extends LuaFunctionDefiniti
         return getIdentifier().getName();
     }
 
+    @NotNull
     public LuaSymbol getIdentifier() {
         return findChildByClass(LuaSymbol.class);
     }
 
-    public LuaDeclarationExpression getDeclaration() {
-        return (LuaDeclarationExpression) getIdentifier();
+    final LuaFunction type = new LuaFunction();
+    LuaPsiUtils.LuaBlockReturnVisitor returnVisitor = new LuaPsiUtils.LuaBlockReturnVisitor(type);
+
+    public LuaType calculateType() {
+        type.reset();
+        getBlock().accept(returnVisitor);
+        getIdentifier().setLuaType(type);
+        return type;
+    }
+
+    public Assignable getDeclaration() {
+        return (Assignable) getIdentifier();
     }
 
     public boolean processDeclarations(@NotNull PsiScopeProcessor processor, @NotNull ResolveState resolveState,

@@ -16,8 +16,7 @@
 
 package com.sylvanaar.idea.Lua.lang.psi.symbols;
 
-import com.intellij.psi.PsiElement;
-import org.jetbrains.annotations.Nullable;
+import com.sylvanaar.idea.Lua.lang.psi.expressions.Assignable;
 
 /**
  * Created by IntelliJ IDEA.
@@ -25,7 +24,6 @@ import org.jetbrains.annotations.Nullable;
  * Date: 2/4/11
  * Time: 5:52 PM
  */
-public interface LuaLocal extends LuaIdentifier {
-    @Nullable
-    PsiElement getAliasElement();
+public interface LuaLocal extends LuaIdentifier, Assignable {
+
 }

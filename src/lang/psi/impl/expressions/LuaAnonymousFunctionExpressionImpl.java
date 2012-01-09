@@ -17,21 +17,30 @@
 package com.sylvanaar.idea.Lua.lang.psi.impl.expressions;
 
 import com.intellij.lang.ASTNode;
+import com.intellij.navigation.ItemPresentation;
+import com.intellij.openapi.util.TextRange;
 import com.intellij.psi.PsiElement;
 import com.intellij.psi.PsiElementVisitor;
 import com.intellij.psi.ResolveState;
 import com.intellij.psi.scope.PsiScopeProcessor;
 import com.intellij.psi.util.PsiTreeUtil;
+import com.sylvanaar.idea.Lua.LuaIcons;
+import com.sylvanaar.idea.Lua.lang.parser.LuaElementTypes;
 import com.sylvanaar.idea.Lua.lang.psi.expressions.LuaAnonymousFunctionExpression;
-import com.sylvanaar.idea.Lua.lang.psi.expressions.LuaExpressionList;
-import com.sylvanaar.idea.Lua.lang.psi.expressions.LuaIdentifierList;
-import com.sylvanaar.idea.Lua.lang.psi.expressions.LuaParameterList;
+import com.sylvanaar.idea.Lua.lang.psi.lists.LuaExpressionList;
+import com.sylvanaar.idea.Lua.lang.psi.lists.LuaIdentifierList;
+import com.sylvanaar.idea.Lua.lang.psi.lists.LuaParameterList;
 import com.sylvanaar.idea.Lua.lang.psi.statements.LuaAssignmentStatement;
 import com.sylvanaar.idea.Lua.lang.psi.statements.LuaBlock;
 import com.sylvanaar.idea.Lua.lang.psi.statements.LuaLocalDefinitionStatement;
 import com.sylvanaar.idea.Lua.lang.psi.symbols.LuaParameter;
+import com.sylvanaar.idea.Lua.lang.psi.symbols.LuaSymbol;
+import com.sylvanaar.idea.Lua.lang.psi.types.LuaFunction;
+import com.sylvanaar.idea.Lua.lang.psi.util.LuaPsiUtils;
 import com.sylvanaar.idea.Lua.lang.psi.visitor.LuaElementVisitor;
 import org.jetbrains.annotations.NotNull;
+
+import javax.swing.*;
 
 import static com.sylvanaar.idea.Lua.lang.parser.LuaElementTypes.BLOCK;
 import static com.sylvanaar.idea.Lua.lang.parser.LuaElementTypes.PARAMETER_LIST;
@@ -45,6 +54,8 @@ import static com.sylvanaar.idea.Lua.lang.parser.LuaElementTypes.PARAMETER_LIST;
 public class LuaAnonymousFunctionExpressionImpl extends LuaExpressionImpl implements LuaAnonymousFunctionExpression {
     public LuaAnonymousFunctionExpressionImpl(ASTNode node) {
         super(node);
+
+        setLuaType(new LuaFunction());
     }
 
     @Override
@@ -71,6 +82,38 @@ public class LuaAnonymousFunctionExpressionImpl extends LuaExpressionImpl implem
         return (LuaBlock) findChildByType(BLOCK);
     }
 
+    @Override
+    public TextRange getRangeEnclosingBlock() {
+        final PsiElement rparen = findChildByType(LuaElementTypes.RPAREN);
+        if (rparen == null) return getTextRange();
+        return TextRange.create(rparen.getTextOffset()+1, getTextRange().getEndOffset());
+    }
+
+    @Override
+    public ItemPresentation getPresentation() {
+        return LuaPsiUtils.getFunctionPresentation(this);
+    }
+
+    @Override
+    public String getPresentableText() {
+        LuaSymbol id = getIdentifier();
+
+        return id != null ? id.getText() : null;
+    }
+
+    @Override
+    public String getLocationString() {
+        return null;  //To change body of implemented methods use File | Settings | File Templates.
+    }
+
+    @Override
+    public Icon getIcon(boolean open) {
+        return LuaIcons.LUA_FUNCTION;
+    }
+    @Override
+    public String getPresentationText() {
+        return getPresentableText();
+    }
     public boolean processDeclarations(@NotNull PsiScopeProcessor processor,
                                        @NotNull ResolveState resolveState,
                                        PsiElement lastParent,
@@ -86,9 +129,28 @@ public class LuaAnonymousFunctionExpressionImpl extends LuaExpressionImpl implem
         return true;
     }
 
+    LuaFunction myType = new LuaFunction();
+    LuaPsiUtils.LuaBlockReturnVisitor returnVisitor = new LuaPsiUtils.LuaBlockReturnVisitor(myType);
+
+    @NotNull
+    @Override
+    public LuaFunction getLuaType() {
+
+        myType.reset();
+        acceptLuaChildren(this, returnVisitor);
+
+        return myType;
+    }
 
     @Override
     public String getName() {
+        LuaSymbol id = getIdentifier();
+
+        return id != null ? id.getName() : null;
+    }
+
+    @Override
+    public LuaSymbol getIdentifier() {
         LuaExpressionList exprlist = PsiTreeUtil.getParentOfType(this, LuaExpressionList.class);
         if (exprlist == null) return null;
 
@@ -105,7 +167,7 @@ public class LuaAnonymousFunctionExpressionImpl extends LuaExpressionImpl implem
             idlist = ((LuaLocalDefinitionStatement) assignment).getLeftExprs();
 
         if (idlist != null && idlist.count() > idx)
-            return idlist.getSymbols()[idx].getName();
+            return idlist.getSymbols()[idx];
 
         return null;
     }

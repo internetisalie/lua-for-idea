@@ -20,10 +20,14 @@ import com.intellij.lang.documentation.DocumentationProvider;
 import com.intellij.openapi.diagnostic.Logger;
 import com.intellij.openapi.vfs.*;
 import com.intellij.psi.PsiElement;
+import com.intellij.psi.PsiFile;
 import com.intellij.psi.PsiManager;
-import com.intellij.psi.PsiNamedElement;
 import com.intellij.util.PathUtil;
+import com.sylvanaar.idea.Lua.lang.psi.LuaNamedElement;
 import com.sylvanaar.idea.Lua.lang.psi.LuaPsiFile;
+import com.sylvanaar.idea.Lua.lang.psi.LuaReferenceElement;
+import com.sylvanaar.idea.Lua.lang.psi.symbols.LuaAlias;
+import com.sylvanaar.idea.Lua.lang.psi.symbols.LuaGlobal;
 import com.sylvanaar.idea.Lua.util.UrlUtil;
 import org.jetbrains.annotations.Nullable;
 import se.krka.kahlua.converter.KahluaConverterManager;
@@ -108,15 +112,15 @@ public class KahluaPluginDocumentationProvider implements DocumentationProvider 
 
     @Override
     public String getQuickNavigateInfo(PsiElement element, PsiElement originalElement) {
-        if (element instanceof PsiNamedElement)
-            return runLuaQuickNavigateDocGenerator(getVirtualFileForElement(element), ((PsiNamedElement) element).getName());
+        if (element instanceof LuaNamedElement)
+            return runLuaQuickNavigateDocGenerator(getVirtualFileForElement(element), getElementName(element));
 
         return null;
     }
 
     @Override
     public List<String> getUrlFor(PsiElement element, PsiElement originalElement) {
-       String s =  runLuaDocumentationUrlGenerator(getVirtualFileForElement(element), element.getText());
+       String s =  runLuaDocumentationUrlGenerator(getVirtualFileForElement(element), getElementName(element));
 
        if (s == null) return null;
 
@@ -128,8 +132,40 @@ public class KahluaPluginDocumentationProvider implements DocumentationProvider 
 
     @Override
     public String generateDoc(PsiElement element, PsiElement originalElement) {
+        log.debug("element = " + element);
+        log.debug("originalElement = " + originalElement);
 
-        return runLuaDocumentationGenerator(getVirtualFileForElement(element), element.getText());
+        element = resolveReferencesAndAliases(element);
+
+        log.debug("element = " + element);
+        return runLuaDocumentationGenerator(getVirtualFileForElement(element), getElementName(element));
+    }
+
+    private PsiElement resolveReferencesAndAliases(PsiElement element) {
+        List<PsiElement> processed = new ArrayList<PsiElement>();
+
+        while (!processed.contains(element)) {
+           processed.add(element);
+           if (element instanceof LuaAlias) {
+               PsiElement alias = ((LuaAlias) element).getAliasElement();
+               if (alias == null) break;
+               element = alias;
+           }
+
+           if (element instanceof LuaReferenceElement) {
+               PsiElement result = ((LuaReferenceElement) element).resolve();
+               if (result == null) break;
+               element = result;
+           }
+       }
+        return element;
+    }
+
+    private String getElementName(PsiElement element) {
+        if (element instanceof LuaGlobal)
+            return ((LuaGlobal) element).getGlobalEnvironmentName();
+
+        return element.getText();
     }
 
     @Override
@@ -144,7 +180,7 @@ public class KahluaPluginDocumentationProvider implements DocumentationProvider 
 
     @Nullable
     private VirtualFile getVirtualFileForElement(PsiElement e) {
-        PsiElement r = e;
+//        PsiElement r = e;
 
 //        if (e instanceof LuaDeclarationExpression) {
 //            r = e;
@@ -171,17 +207,34 @@ public class KahluaPluginDocumentationProvider implements DocumentationProvider 
 //            }
 //        }
 
-        if (r != null) {
-            VirtualFile vf = r.getContainingFile().getVirtualFile();
-            String docFileName = null;
+        if (e != null) {
+            final PsiFile containingFile = e.getContainingFile();
+            if (containingFile == null) return null;
+
+            VirtualFile vf = containingFile.getVirtualFile();
+
             if (vf != null) {
-                docFileName = vf.getNameWithoutExtension() + DOC_FILE_SUFFIX;
-                return vf.getParent().findChild(docFileName);
+                return findDocLuaFile(vf);
             }
         }
 
 
         return null;
+    }
+
+    private VirtualFile findDocLuaFile(VirtualFile vf) {
+        String docFileName = vf.getNameWithoutExtension() + DOC_FILE_SUFFIX;
+
+        log.debug("trying file " + docFileName);
+        VirtualFile result = vf.getParent().findChild(docFileName);
+        if (result != null) return result;
+
+        docFileName = vf.getParent().getNameWithoutExtension() + DOC_FILE_SUFFIX;
+
+        log.debug("trying file " + docFileName);
+        result = vf.getParent().findChild(docFileName);
+
+        return result;
     }
 
 

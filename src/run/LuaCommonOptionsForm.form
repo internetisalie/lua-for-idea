@@ -70,22 +70,28 @@
         <properties/>
         <border type="none"/>
         <children>
-          <component id="ffb80" class="javax.swing.JCheckBox" binding="kahluaCheckBox" default-binding="true">
-            <constraints>
-              <grid row="0" column="1" row-span="1" col-span="1" vsize-policy="0" hsize-policy="3" anchor="8" fill="0" indent="0" use-parent-layout="false"/>
-            </constraints>
-            <properties>
-              <text value="Kahlua"/>
-            </properties>
-          </component>
           <component id="43da4" class="com.intellij.openapi.ui.TextFieldWithBrowseButton" binding="luaInterpreterEdit">
             <constraints>
-              <grid row="0" column="0" row-span="1" col-span="1" vsize-policy="3" hsize-policy="7" anchor="0" fill="1" indent="0" use-parent-layout="false"/>
+              <grid row="0" column="1" row-span="1" col-span="1" vsize-policy="3" hsize-policy="7" anchor="0" fill="1" indent="0" use-parent-layout="false"/>
             </constraints>
             <properties/>
+          </component>
+          <component id="d88d1" class="javax.swing.JCheckBox" binding="useSDKCheckbox" default-binding="true">
+            <constraints>
+              <grid row="0" column="0" row-span="1" col-span="1" vsize-policy="0" hsize-policy="3" anchor="8" fill="0" indent="0" use-parent-layout="false"/>
+            </constraints>
+            <properties>
+              <text value="Use Module SDK"/>
+            </properties>
           </component>
         </children>
       </grid>
     </children>
   </grid>
+  <buttonGroups>
+    <group name="javaSdks">
+      <member id="51235"/>
+      <member id="f82c7"/>
+    </group>
+  </buttonGroups>
 </form>

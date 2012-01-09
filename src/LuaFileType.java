@@ -17,16 +17,11 @@
 package com.sylvanaar.idea.Lua;
 
 import com.intellij.lang.Language;
-import com.intellij.openapi.editor.colors.EditorColorsScheme;
-import com.intellij.openapi.editor.highlighter.EditorHighlighter;
+import com.intellij.openapi.extensions.PluginId;
 import com.intellij.openapi.fileTypes.LanguageFileType;
-import com.intellij.openapi.project.Project;
-import com.intellij.openapi.vfs.VirtualFile;
-import com.sylvanaar.idea.Lua.editor.highlighter.LuaEditorHighlighter;
 import com.sylvanaar.idea.Lua.lang.LuaLanguage;
 import org.jetbrains.annotations.NonNls;
 import org.jetbrains.annotations.NotNull;
-import org.jetbrains.annotations.Nullable;
 
 import javax.swing.*;
 
@@ -58,10 +53,6 @@ public class LuaFileType extends LanguageFileType {
         super(language);
     }
 
-    public EditorHighlighter getEditorHighlighter(@Nullable Project project, @Nullable VirtualFile virtualFile, @NotNull EditorColorsScheme colors) {
-        return new LuaEditorHighlighter(colors, project, virtualFile);
-    }
-
     @NotNull
     public String getName() {
         return LUA;
@@ -69,7 +60,7 @@ public class LuaFileType extends LanguageFileType {
 
     @NotNull
     public String getDescription() {
-        return "Lua source file";
+        return LuaBundle.message("lua.filetype");
     }
 
     @NotNull

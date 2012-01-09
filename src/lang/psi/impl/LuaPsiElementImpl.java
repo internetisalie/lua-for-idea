@@ -26,7 +26,7 @@ import com.intellij.psi.impl.source.SourceTreeToPsiMap;
 import com.intellij.psi.impl.source.tree.ChangeUtil;
 import com.intellij.psi.impl.source.tree.CompositeElement;
 import com.intellij.psi.impl.source.tree.TreeElement;
-import com.intellij.psi.search.GlobalSearchScope;
+import com.intellij.psi.search.ProjectAndLibrariesScope;
 import com.intellij.psi.search.SearchScope;
 import com.intellij.util.IncorrectOperationException;
 import com.sylvanaar.idea.Lua.LuaFileType;
@@ -56,6 +56,11 @@ public class LuaPsiElementImpl extends ASTWrapperPsiElement implements LuaPsiEle
     }
 
     @Override
+    public String getPresentationText() {
+        return null;
+    }
+
+    @Override
     public void accept(@NotNull PsiElementVisitor visitor) {
         if (visitor instanceof LuaElementVisitor) {
             ((LuaElementVisitor) visitor).visitElement(this);
@@ -76,7 +81,7 @@ public class LuaPsiElementImpl extends ASTWrapperPsiElement implements LuaPsiEle
     @NotNull
     public SearchScope getUseScope() {
         //This is true as long as we have no inter-file references
-        return GlobalSearchScope.allScope(getProject());
+        return new ProjectAndLibrariesScope(getProject());
     }
 
 //    @Override
@@ -109,4 +114,6 @@ public class LuaPsiElementImpl extends ASTWrapperPsiElement implements LuaPsiEle
             child = child.getNextSibling();
         }
     }
+    
+    
 }

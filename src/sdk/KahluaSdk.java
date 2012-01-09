@@ -24,6 +24,7 @@ import com.intellij.openapi.roots.OrderRootType;
 import com.intellij.openapi.roots.RootProvider;
 import com.intellij.openapi.util.Key;
 import com.intellij.openapi.vfs.VirtualFile;
+import com.sylvanaar.idea.Lua.LuaBundle;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 
@@ -44,11 +45,13 @@ public class KahluaSdk implements Sdk, ApplicationComponent {
         return ApplicationManager.getApplication().getComponent(KahluaSdk.class);
     }
 
+    @NotNull
     @Override
     public SdkType getSdkType() {
         return LuaSdkType.getInstance();
     }
 
+    @NotNull
     @Override
     public String getName() {
         return "Kahlua";
@@ -64,6 +67,7 @@ public class KahluaSdk implements Sdk, ApplicationComponent {
         return "";
     }
 
+    @NotNull
     @Override
     public RootProvider getRootProvider() {
         return mySdk.getRootProvider();
@@ -74,6 +78,7 @@ public class KahluaSdk implements Sdk, ApplicationComponent {
         return null;
     }
 
+    @NotNull
     @Override
     public SdkModificator getSdkModificator() {
         return mySdk.getSdkModificator();
@@ -84,6 +89,7 @@ public class KahluaSdk implements Sdk, ApplicationComponent {
         return mySdk.getHomeDirectory();
     }
 
+    @NotNull
     @Override
     public Object clone() throws CloneNotSupportedException {
         throw new CloneNotSupportedException();
@@ -92,7 +98,7 @@ public class KahluaSdk implements Sdk, ApplicationComponent {
     @NotNull
     @Override
     public String getComponentName() {
-        return "Kahlua Virtual SDK";
+        return LuaBundle.message("kahlua.componentname");
     }
 
     @Override
@@ -131,6 +137,8 @@ public class KahluaSdk implements Sdk, ApplicationComponent {
                     for(VirtualFile file : files)
                         if (file.equals(stdRoot)) {
                             found = true;
+                        } else if (file.getName().contains(stdRoot.getName())) {
+                            sdkModificator.removeRoot(file, OrderRootType.CLASSES);
                         }
 
                     if (!found)

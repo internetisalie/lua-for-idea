@@ -17,6 +17,8 @@
 package com.sylvanaar.idea.Lua.lang.psi.util;
 
 import com.intellij.lang.ASTNode;
+import com.intellij.navigation.ItemPresentation;
+import com.intellij.openapi.editor.colors.TextAttributesKey;
 import com.intellij.openapi.util.TextRange;
 import com.intellij.psi.FileViewProvider;
 import com.intellij.psi.PsiElement;
@@ -24,16 +26,24 @@ import com.intellij.psi.ResolveState;
 import com.intellij.psi.scope.PsiScopeProcessor;
 import com.intellij.psi.tree.IElementType;
 import com.intellij.util.IncorrectOperationException;
+import com.sylvanaar.idea.Lua.LuaIcons;
 import com.sylvanaar.idea.Lua.lang.luadoc.psi.api.LuaDocPsiElement;
 import com.sylvanaar.idea.Lua.lang.psi.LuaPsiElement;
-import com.sylvanaar.idea.Lua.lang.psi.LuaPsiFile;
 import com.sylvanaar.idea.Lua.lang.psi.LuaReferenceElement;
-import com.sylvanaar.idea.Lua.lang.psi.expressions.LuaIdentifierList;
+import com.sylvanaar.idea.Lua.lang.psi.expressions.LuaAnonymousFunctionExpression;
+import com.sylvanaar.idea.Lua.lang.psi.expressions.LuaExpression;
+import com.sylvanaar.idea.Lua.lang.psi.lists.LuaExpressionList;
+import com.sylvanaar.idea.Lua.lang.psi.lists.LuaIdentifierList;
 import com.sylvanaar.idea.Lua.lang.psi.statements.LuaBlock;
+import com.sylvanaar.idea.Lua.lang.psi.statements.LuaFunctionDefinitionStatement;
+import com.sylvanaar.idea.Lua.lang.psi.statements.LuaReturnStatement;
 import com.sylvanaar.idea.Lua.lang.psi.symbols.LuaSymbol;
+import com.sylvanaar.idea.Lua.lang.psi.types.LuaFunction;
+import com.sylvanaar.idea.Lua.lang.psi.visitor.LuaRecursiveElementVisitor;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 
+import javax.swing.*;
 import java.util.Collection;
 
 /**
@@ -42,6 +52,29 @@ import java.util.Collection;
  * Time: 21:45:47
  */
 public class LuaPsiUtils {
+    public static ItemPresentation getFunctionPresentation(final LuaPsiElement e) { return new ItemPresentation() {
+          public String getPresentableText() {
+            return e.getPresentationText();
+          }
+
+          @Nullable
+          public String getLocationString() {
+            String name = e.getContainingFile().getName();
+            return "(in " + name + ")";
+          }
+
+          @Nullable
+          public Icon getIcon(boolean open) {
+            return LuaIcons.LUA_FUNCTION;
+          }
+
+          @Nullable
+          public TextAttributesKey getTextAttributesKey() {
+            return null;
+          }
+        }; }
+
+
     /**
      * Returns the depth in the tree this element has.
      *
@@ -121,7 +154,7 @@ public class LuaPsiUtils {
     }
 
     private static boolean isValidContainer(PsiElement element) {
-        return element instanceof LuaBlock || element instanceof LuaPsiFile;
+        return element instanceof LuaBlock;
     }
 
     public static boolean processChildDeclarationsS(PsiElement parentContainer, PsiScopeProcessor processor,
@@ -289,4 +322,26 @@ public class LuaPsiUtils {
     return collection.toArray(new PsiElement[collection.size()]);
   }
 
+    public static class LuaBlockReturnVisitor extends LuaRecursiveElementVisitor {
+        public LuaFunction myType;
+
+        public LuaBlockReturnVisitor(LuaFunction type) {
+            myType = type;
+        }
+
+        @Override
+        public void visitReturnStatement(LuaReturnStatement stat) {
+            LuaExpression ret = stat.getReturnValue();
+            if (ret != null && ret instanceof LuaExpressionList)
+                myType.addPossibleReturn(ret.getLuaType());
+        }
+
+        @Override
+        public void visitAnonymousFunction(LuaAnonymousFunctionExpression e) {
+        }
+
+        @Override
+        public void visitFunctionDef(LuaFunctionDefinitionStatement e) {
+        }
+    }
 }
