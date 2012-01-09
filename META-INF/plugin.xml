@@ -297,20 +297,13 @@
     <application-components>
         <component>
             <implementation-class>com.sylvanaar.idea.Lua.sdk.KahluaSdk</implementation-class>
-            <interface-class>com.intellij.openapi.projectRoots.Sdk</interface-class>
         </component>
-        <component>
-            <implementation-class>com.sylvanaar.idea.Lua.options.LuaOptionsPanel</implementation-class>
-        </component>
-        <component>
-            <implementation-class>com.sylvanaar.idea.Lua.editor.inspections.InspectionProvider</implementation-class>
-        </component>
+        <!--<component>-->
+            <!--<implementation-class>com.sylvanaar.idea.Lua.sdk.LuaJSdk</implementation-class>-->
+        <!--</component>-->
     </application-components>
 
     <project-components>
-    <!--<component>-->
-      <!--<implementation-class>com.sylvanaar.idea.Lua.lang.psi.impl.LuaPsiManager</implementation-class>-->
-    <!--</component>-->
     </project-components>
 
     <actions>
@@ -345,9 +338,10 @@
 
         <!-- Repl Window -->
         <toolWindow id="Kahlua" anchor="right" icon="/icons/Lua.png"
-                    factoryClass="com.sylvanaar.idea.Lua.KahLuaInterpreterWindowFactory"/>
+                    factoryClass="com.sylvanaar.idea.Lua.kahlua.KahLuaInterpreterWindowFactory"/>
 
         <!-- Application Configuration -->
+        <applicationConfigurable instance="com.sylvanaar.idea.Lua.options.LuaOptionsPanel" />
         <applicationService serviceImplementation="com.sylvanaar.idea.Lua.options.LuaApplicationSettings" />
 
         <!-- Project Configuration -->
@@ -394,7 +388,8 @@
 
         <!--Completion-->
         <completion.contributor language="Lua" implementationClass="com.sylvanaar.idea.Lua.editor.completion.LuaCompletionContributor" />
-
+        <completion.confidence language="Lua" implementationClass="com.sylvanaar.idea.Lua.editor.completion.LuaCompletionConfidence" />
+        <weigher implementationClass="com.sylvanaar.idea.Lua.editor.completion.LuaCompletionWeigher" key="completion" order="first" />
 
         <lookup.charFilter implementation="com.sylvanaar.idea.Lua.editor.completion.LuaCharFilter" />
 
@@ -425,9 +420,13 @@
         <lang.psiStructureViewFactory language="Lua"
                                       implementationClass="com.sylvanaar.idea.Lua.lang.structure.LuaStructureViewFactory"/>
 
+        <treeStructureProvider implementation="com.sylvanaar.idea.Lua.projectView.LuaProjectTreeSubElementProvider" />
         <lang.refactoringSupport language="Lua" implementationClass="com.sylvanaar.idea.Lua.refactoring.LuaRefactoringSupportProvider" />
 
+        <!--Find Usages-->
         <lang.findUsagesProvider language="Lua" implementationClass="com.sylvanaar.idea.Lua.findUsages.LuaFindUsagesProvider" />
+        <usageTypeProvider implementation="com.sylvanaar.idea.Lua.findUsages.LuaUsageTypeProvider"/>
+        <referencesSearch implementation="com.sylvanaar.idea.Lua.findUsages.LuaAliasedElementSearcher"/>
 
         <lang.namesValidator language="Lua" implementationClass="com.sylvanaar.idea.Lua.lang.LuaNamesValidation" />
 

@@ -17,15 +17,19 @@
 package com.sylvanaar.idea.Lua.lang.psi.impl.symbols;
 
 import com.intellij.lang.ASTNode;
+import com.intellij.openapi.util.TextRange;
+import com.intellij.openapi.util.text.StringUtil;
 import com.intellij.psi.PsiElement;
 import com.intellij.psi.PsiElementVisitor;
 import com.intellij.psi.PsiReference;
-import com.intellij.psi.ResolveState;
-import com.intellij.psi.scope.PsiScopeProcessor;
+import com.intellij.psi.PsiReferenceBase;
+import com.sylvanaar.idea.Lua.lang.parser.LuaElementTypes;
 import com.sylvanaar.idea.Lua.lang.psi.LuaReferenceElement;
+import com.sylvanaar.idea.Lua.lang.psi.expressions.LuaExpression;
+import com.sylvanaar.idea.Lua.lang.psi.impl.expressions.LuaStringLiteralExpressionImpl;
 import com.sylvanaar.idea.Lua.lang.psi.symbols.LuaCompoundIdentifier;
+import com.sylvanaar.idea.Lua.lang.psi.symbols.LuaGlobal;
 import com.sylvanaar.idea.Lua.lang.psi.symbols.LuaSymbol;
-import com.sylvanaar.idea.Lua.lang.psi.util.LuaPsiUtils;
 import com.sylvanaar.idea.Lua.lang.psi.visitor.LuaElementVisitor;
 import org.jetbrains.annotations.NotNull;
 
@@ -35,10 +39,13 @@ import org.jetbrains.annotations.NotNull;
  * Date: 2/5/11
  * Time: 12:35 PM
  */
-public class LuaCompoundReferenceElementImpl extends LuaReferenceElementImpl implements LuaReferenceElement {
+public class LuaCompoundReferenceElementImpl extends LuaReferenceElementImpl implements LuaReferenceElement, LuaExpression {
 
     public LuaCompoundReferenceElementImpl(ASTNode node) {
         super(node);
+
+
+
     }
 
     @Override
@@ -61,20 +68,59 @@ public class LuaCompoundReferenceElementImpl extends LuaReferenceElementImpl imp
     }
 
     public PsiElement getElement() {
-        return findChildByClass(LuaCompoundIdentifier.class);
+        return findChildByType(LuaElementTypes.GETTABLE);
     }
 
     public PsiReference getReference() {
         return this;
     }
 
+    @NotNull
     @Override
-    public String toString() {
-        return "Compound Reference: " + getName();
+    public PsiReference[] getReferences() {
+
+        final LuaExpression rightSymbol = ((LuaCompoundIdentifier) getElement()).getRightSymbol();
+        if (rightSymbol instanceof LuaStringLiteralExpressionImpl)
+            return new PsiReference[]{this, new PsiReferenceBase.Immediate<PsiElement>(rightSymbol,
+                    ((LuaStringLiteralExpressionImpl) rightSymbol).getStringContentTextRange().shiftRight(getTextOffset()), rightSymbol)};
+
+        return super.getReferences();
+    }
+
+    public TextRange getRangeInElement() {
+        final PsiElement nameElement = ((LuaCompoundIdentifier)getElement()).getRightSymbol();
+        int nameLen = nameElement != null ? nameElement.getTextLength() : 0;
+
+        final int textOffset = nameElement != null ? nameElement.getTextOffset() : 0;
+        return new TextRange(textOffset - getTextOffset(), textOffset - getTextOffset() + nameLen);
     }
 
     @Override
-    public boolean processDeclarations(@NotNull PsiScopeProcessor processor, @NotNull ResolveState state, PsiElement lastParent, @NotNull PsiElement place) {
-        return LuaPsiUtils.processChildDeclarations(this, processor, state, lastParent, place);
+    public String toString() {
+        return "Compound Reference: " + getText();
     }
+
+//    @Override
+//    public boolean processDeclarations(@NotNull PsiScopeProcessor processor, @NotNull ResolveState state,
+//                                       PsiElement lastParent, @NotNull PsiElement place) {
+//        return LuaPsiUtils.processChildDeclarations(this, processor, state, lastParent, place);
+//    }
+
+    @NotNull
+    public String getCanonicalText() {
+        LuaCompoundIdentifier element = (LuaCompoundIdentifier) getElement();
+
+
+        final PsiElement scopeIdentifier = element.getScopeIdentifier();
+        
+        if (scopeIdentifier instanceof LuaGlobal) {
+            final String moduleName = ((LuaGlobal) scopeIdentifier).getModuleName();
+            if (StringUtil.isNotEmpty(moduleName))
+                return moduleName + "." + element.getDefinedName();
+        }
+
+        return element.getDefinedName();
+    }
+
+
 }

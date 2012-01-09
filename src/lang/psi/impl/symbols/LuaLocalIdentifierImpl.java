@@ -21,9 +21,12 @@ import com.intellij.psi.PsiElement;
 import com.intellij.psi.PsiReference;
 import com.intellij.psi.search.GlobalSearchScope;
 import com.intellij.util.IncorrectOperationException;
+import com.sylvanaar.idea.Lua.lang.psi.expressions.LuaExpression;
 import com.sylvanaar.idea.Lua.lang.psi.impl.LuaPsiElementFactoryImpl;
 import com.sylvanaar.idea.Lua.lang.psi.symbols.*;
 import org.jetbrains.annotations.NotNull;
+
+import java.lang.ref.SoftReference;
 
 /**
  * Created by IntelliJ IDEA.
@@ -40,6 +43,9 @@ public class LuaLocalIdentifierImpl extends LuaIdentifierImpl implements LuaLoca
     public PsiElement setName(@NotNull String s) throws IncorrectOperationException {
         LuaIdentifier node = LuaPsiElementFactoryImpl.getInstance(getProject()).createLocalNameIdentifier(s);
         replace(node);
+
+        final PsiReference reference = node.getReference();
+        if (reference != null) reference.resolve();
 
         return this;
     }
@@ -60,21 +66,42 @@ public class LuaLocalIdentifierImpl extends LuaIdentifierImpl implements LuaLoca
         return GlobalSearchScope.fileScope(this.getContainingFile());
     }
 
+    @Override
+    public PsiReference getReference() {
+        if (getParent() instanceof PsiReference && ((PsiReference) getParent()).getElement().equals(this))
+            return (PsiReference) getParent();
+
+        return super.getReference();
+    }
+
 
     @Override
     public String toString() {
         return "Local: " + getText();
     }
 
+//    @Override
+//    public PsiElement getAliasElement() {
+//        PsiReference ref = (PsiReference) getParent();
+//        if (ref == null) return null;
+//        PsiElement def = ref.resolve();
+//        if (def == null) return null;
+//
+//        assert def instanceof LuaLocalDeclaration;
+//
+//        return ((LuaLocalDeclaration) def).getAliasElement();
+//    }
+
+    /** Defined Value Implementation **/
+    SoftReference<LuaExpression> definedValue = null;
     @Override
-    public PsiElement getAliasElement() {
-        PsiReference ref = (PsiReference) getParent();
-        if (ref == null) return null;
-        PsiElement def = ref.resolve();
-        if (def == null) return null;
-
-        assert def instanceof LuaLocalDeclaration;
-
-        return ((LuaLocalDeclaration) def).getAliasElement();
+    public LuaExpression getAssignedValue() {
+        return definedValue == null ? null : definedValue.get();
     }
+
+    @Override
+    public void setAssignedValue(LuaExpression value) {
+        definedValue = new SoftReference<LuaExpression>(value);
+    }
+    /** Defined Value Implementation **/
 }

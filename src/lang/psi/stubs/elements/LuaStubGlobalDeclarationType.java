@@ -17,6 +17,7 @@
 package com.sylvanaar.idea.Lua.lang.psi.stubs.elements;
 
 import com.intellij.lang.ASTNode;
+import com.intellij.openapi.diagnostic.Logger;
 import com.intellij.psi.PsiElement;
 import com.intellij.psi.stubs.IndexSink;
 import com.intellij.psi.stubs.StubElement;
@@ -30,6 +31,7 @@ import com.sylvanaar.idea.Lua.lang.psi.stubs.api.LuaGlobalDeclarationStub;
 import com.sylvanaar.idea.Lua.lang.psi.stubs.impl.LuaGlobalDeclarationStubImpl;
 import com.sylvanaar.idea.Lua.lang.psi.stubs.index.LuaGlobalDeclarationIndex;
 import com.sylvanaar.idea.Lua.lang.psi.symbols.LuaGlobalDeclaration;
+import org.apache.commons.lang.SerializationUtils;
 
 import java.io.IOException;
 
@@ -40,9 +42,18 @@ import java.io.IOException;
  * Time: 8:01 PM
  */
 public class LuaStubGlobalDeclarationType extends LuaStubElementType<LuaGlobalDeclarationStub, LuaGlobalDeclaration> {
-
+    private static final Logger log = Logger.getInstance("Lua.StubGlobal");
     public LuaStubGlobalDeclarationType() {
-        super("global stub name");
+        this("global stub name");
+    }
+
+    @Override
+    public PsiElement createElement(ASTNode node) {
+        return new LuaGlobalDeclarationImpl(node);
+    }
+
+    public LuaStubGlobalDeclarationType(String s) {
+        super(s);
     }
 
     @Override
@@ -53,12 +64,15 @@ public class LuaStubGlobalDeclarationType extends LuaStubElementType<LuaGlobalDe
     @Override
     public LuaGlobalDeclarationStub createStub(LuaGlobalDeclaration psi, StubElement parentStub) {
         return new LuaGlobalDeclarationStubImpl(parentStub, StringRef.fromString(psi.getName()),
-                StringRef.fromString(psi.getModuleName()));
+                psi.getModuleName(),
+                SerializationUtils.serialize(psi.getLuaType()));
     }
 
     @Override
     public void serialize(LuaGlobalDeclarationStub stub, StubOutputStream dataStream) throws IOException {
         dataStream.writeName(stub.getName());
+        dataStream.writeShort(stub.getEncodedType().length);
+        dataStream.write(stub.getEncodedType());
         LuaStubUtils.writeNullableString(dataStream, stub.getModule());
 
     }
@@ -67,10 +81,16 @@ public class LuaStubGlobalDeclarationType extends LuaStubElementType<LuaGlobalDe
     public LuaGlobalDeclarationStub deserialize(StubInputStream dataStream, StubElement parentStub) throws
             IOException {
         StringRef ref = dataStream.readName();
-        
+
+        assert ref != null : "Null name in stub stream";
+
+        int len = dataStream.readShort();
+        byte[] typedata = new byte[len];
+        dataStream.read(typedata, 0, len);
+
         String module = LuaStubUtils.readNullableString(dataStream);
 
-        return new LuaGlobalDeclarationStubImpl(parentStub, ref, StringRef.fromString(module));
+        return new LuaGlobalDeclarationStubImpl(parentStub, ref, module, typedata);
     }
 
     @Override
@@ -80,15 +100,14 @@ public class LuaStubGlobalDeclarationType extends LuaStubElementType<LuaGlobalDe
 
     @Override
     public void indexStub(LuaGlobalDeclarationStub stub, IndexSink sink) {
-        String name = stub.getName();
+        String module = stub.getModule();
+        String name = module == null ? stub.getName() : module + "." + stub.getName();
 
         if (name != null) {
+            log.debug("sink: " + name);
             sink.occurrence(LuaGlobalDeclarationIndex.KEY, name);
         }
     }
 
-    @Override
-    public PsiElement createElement(ASTNode node) {
-        return new LuaGlobalDeclarationImpl(node);
-    }
+
 }

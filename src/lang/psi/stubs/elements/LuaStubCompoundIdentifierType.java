@@ -46,7 +46,7 @@ public class LuaStubCompoundIdentifierType
 
     @Override
     public PsiElement createElement(ASTNode node) {
-        return null;  //To change body of implemented methods use File | Settings | File Templates.
+        return new LuaCompoundIdentifierImpl(node);
     }
 
     @Override
@@ -67,14 +67,21 @@ public class LuaStubCompoundIdentifierType
     @Override
     public void serialize(LuaCompoundIdentifierStub stub, StubOutputStream dataStream) throws IOException {
         dataStream.writeName(stub.getName());
+        dataStream.writeShort(stub.getEncodedType().length);
+        dataStream.write(stub.getEncodedType());
         dataStream.writeBoolean(stub.isGlobalDeclaration());
     }
 
     @Override
     public LuaCompoundIdentifierStub deserialize(StubInputStream dataStream, StubElement parentStub) throws IOException {
         StringRef ref = dataStream.readName();
+
+        int len = dataStream.readShort();
+        byte[] typedata = new byte[len];
+        dataStream.read(typedata, 0, len);
+
         boolean isDeclaration = dataStream.readBoolean();
-        return new LuaCompoundIdentifierStubImpl(parentStub, ref, isDeclaration);
+        return new LuaCompoundIdentifierStubImpl(parentStub, ref, isDeclaration, typedata);
     }
 
     @Override

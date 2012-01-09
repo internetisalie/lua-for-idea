@@ -17,12 +17,15 @@
 package com.sylvanaar.idea.Lua.lang.psi.util;
 
 import com.intellij.openapi.util.NotNullLazyValue;
+import com.sylvanaar.idea.Lua.lang.psi.expressions.Assignable;
 import com.sylvanaar.idea.Lua.lang.psi.expressions.LuaExpression;
-import com.sylvanaar.idea.Lua.lang.psi.expressions.LuaExpressionList;
-import com.sylvanaar.idea.Lua.lang.psi.expressions.LuaIdentifierList;
 import com.sylvanaar.idea.Lua.lang.psi.impl.statements.LuaAssignmentStatementImpl;
+import com.sylvanaar.idea.Lua.lang.psi.lists.LuaExpressionList;
+import com.sylvanaar.idea.Lua.lang.psi.lists.LuaIdentifierList;
 import com.sylvanaar.idea.Lua.lang.psi.statements.LuaAssignmentStatement;
+import com.sylvanaar.idea.Lua.lang.psi.symbols.LuaAlias;
 import com.sylvanaar.idea.Lua.lang.psi.symbols.LuaSymbol;
+import com.sylvanaar.idea.Lua.lang.psi.types.LuaType;
 import org.jetbrains.annotations.NotNull;
 
 import java.util.List;
@@ -68,6 +71,26 @@ public class LuaAssignmentUtil {
         List<LuaExpression> vals = exprs.getLuaExpressions();
 
         return vals.toArray(new LuaExpression[vals.size()]);
+    }
+
+    public static void transferTypes(LuaAssignmentStatement statement) {
+        for (LuaAssignment a : statement.getAssignments()) {
+            final LuaSymbol symbol = a.getSymbol();
+            final LuaType lType = symbol.getLuaType();
+            final LuaType rType = a.getValue().getLuaType();
+
+            transferSingleType(a.getValue(), symbol, lType, rType);
+        }
+    }
+
+    public static void transferSingleType(LuaExpression value, LuaSymbol symbol, LuaType lType, LuaType rType) {
+        if (symbol instanceof Assignable)
+            symbol.setLuaType(rType);
+        else
+            symbol.setLuaType(LuaType.combineTypes(lType, rType));
+
+        if (symbol instanceof LuaAlias)
+            ((LuaAlias) symbol).setAliasElement(value);
     }
 
     public static class Assignments extends NotNullLazyValue<LuaAssignment[]> {

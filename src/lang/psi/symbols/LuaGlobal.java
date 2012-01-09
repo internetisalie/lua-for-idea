@@ -27,4 +27,7 @@ import org.jetbrains.annotations.Nullable;
 public interface LuaGlobal extends LuaIdentifier {
     @Nullable
     String getModuleName();
+
+    @Nullable
+    String getGlobalEnvironmentName();
 }

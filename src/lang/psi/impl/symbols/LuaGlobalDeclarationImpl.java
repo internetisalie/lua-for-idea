@@ -19,26 +19,35 @@ package com.sylvanaar.idea.Lua.lang.psi.impl.symbols;
 import com.intellij.lang.ASTNode;
 import com.intellij.psi.PsiElement;
 import com.intellij.psi.PsiElementVisitor;
+import com.intellij.psi.PsiReference;
 import com.intellij.psi.ResolveState;
 import com.intellij.psi.scope.PsiScopeProcessor;
 import com.intellij.psi.stubs.IStubElementType;
 import com.intellij.util.IncorrectOperationException;
 import com.sylvanaar.idea.Lua.lang.parser.LuaElementTypes;
 import com.sylvanaar.idea.Lua.lang.psi.LuaPsiFile;
+import com.sylvanaar.idea.Lua.lang.psi.LuaReferenceElement;
 import com.sylvanaar.idea.Lua.lang.psi.expressions.LuaDeclarationExpression;
 import com.sylvanaar.idea.Lua.lang.psi.expressions.LuaExpression;
+import com.sylvanaar.idea.Lua.lang.psi.expressions.LuaModuleExpression;
 import com.sylvanaar.idea.Lua.lang.psi.impl.LuaPsiElementFactoryImpl;
 import com.sylvanaar.idea.Lua.lang.psi.impl.LuaStubElementBase;
 import com.sylvanaar.idea.Lua.lang.psi.stubs.api.LuaGlobalDeclarationStub;
+import com.sylvanaar.idea.Lua.lang.psi.symbols.LuaAlias;
 import com.sylvanaar.idea.Lua.lang.psi.symbols.LuaGlobalDeclaration;
 import com.sylvanaar.idea.Lua.lang.psi.symbols.LuaGlobalIdentifier;
 import com.sylvanaar.idea.Lua.lang.psi.symbols.LuaSymbol;
+import com.sylvanaar.idea.Lua.lang.psi.types.LuaTable;
 import com.sylvanaar.idea.Lua.lang.psi.types.LuaType;
+import com.sylvanaar.idea.Lua.lang.psi.types.StubType;
 import com.sylvanaar.idea.Lua.lang.psi.util.LuaPsiUtils;
+import com.sylvanaar.idea.Lua.lang.psi.util.SymbolUtil;
 import com.sylvanaar.idea.Lua.lang.psi.visitor.LuaElementVisitor;
 import org.jetbrains.annotations.NonNls;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
+
+import java.lang.ref.SoftReference;
 
 /**
  * Created by IntelliJ IDEA.
@@ -59,24 +68,40 @@ public class LuaGlobalDeclarationImpl extends LuaStubElementBase<LuaGlobalDeclar
 
     public LuaGlobalDeclarationImpl(LuaGlobalDeclarationStub stub) {
         super(stub, LuaElementTypes.GLOBAL_NAME_DECL);
+        type = new StubType(stub.getEncodedType());
     }
 
     @Override
     public String toString() {
-        return "Global Decl: " + getName();
+        return "Global Decl: " + getGlobalEnvironmentName();
     }
 
     @Override
     public String getDefinedName() {
-        return getText();
+        return getGlobalEnvironmentName();
     }
+
+    /** Defined Value Implementation **/
+    SoftReference<LuaExpression> definedValue = null;
+    @Override
+    public LuaExpression getAssignedValue() {
+        return definedValue == null ? null : definedValue.get();
+    }
+
+    @Override
+    public void setAssignedValue(LuaExpression value) {
+        definedValue = new SoftReference<LuaExpression>(value);
+
+        setLuaType(value.getLuaType());
+    }
+    /** Defined Value Implementation **/
 
     @Override @Nullable
     public String getModuleName() {
-//        final LuaGlobalDeclarationStub stub = getStub();
-//        if (stub != null) {
-//            return stub.getModule();
-//        }
+        final LuaGlobalDeclarationStub stub = getStub();
+        if (stub != null) {
+            return stub.getModule();
+        }
         if (!isValid()) return null;
         
         LuaPsiFile file = (LuaPsiFile) getContainingFile();
@@ -88,10 +113,16 @@ public class LuaGlobalDeclarationImpl extends LuaStubElementBase<LuaGlobalDeclar
 
 
     @Override
+    public String getGlobalEnvironmentName() {
+        return SymbolUtil.getGlobalEnvironmentName(this);
+    }
+
+
+    @Override
     public boolean processDeclarations(@NotNull PsiScopeProcessor processor,
                                        @NotNull ResolveState state, PsiElement lastParent,
                                        @NotNull PsiElement place) {
-        return processor.execute(this, state);
+        return !(processor.execute(this, state));
     }
 
 
@@ -102,13 +133,13 @@ public class LuaGlobalDeclarationImpl extends LuaStubElementBase<LuaGlobalDeclar
             return stub.getName();
         }
 
-        String module = getModuleName();
-        if (module != null)
-            return module + "." + super.getText();
-        
         return super.getText();  
     }
 
+    @Override
+    public Object evaluate() {
+        return null;  //To change body of implemented methods use File | Settings | File Templates.
+    }
 
     @Override
     public void accept(LuaElementVisitor visitor) {
@@ -144,7 +175,7 @@ public class LuaGlobalDeclarationImpl extends LuaStubElementBase<LuaGlobalDeclar
 
     @Override
     public boolean isSameKind(LuaSymbol symbol) {
-        return symbol instanceof LuaGlobalIdentifier;
+        return symbol instanceof LuaGlobalIdentifier || symbol instanceof LuaCompoundIdentifierImpl;
     }
 
     @Override
@@ -152,13 +183,60 @@ public class LuaGlobalDeclarationImpl extends LuaStubElementBase<LuaGlobalDeclar
         return true;  //To change body of implemented methods use File | Settings | File Templates.
     }
 
+    private LuaType type = LuaType.ANY;
+
+    @NotNull
     @Override
     public LuaType getLuaType() {
-        return LuaType.ANY;
+        if (type instanceof StubType) {
+            type = ((StubType) type).get();
+            LuaModuleExpression module = SymbolUtil.getModule(this);
+            if (module != null)
+                ((LuaTable)module.getLuaType()).addPossibleElement(getName(), type);
+        }
+
+        return type;
+    }
+
+    @Override
+    public void setLuaType(LuaType type) {
+        this.type = LuaType.combineTypes(this.type, type);
+
+        if (getStub() != null) {
+            LuaModuleExpression module = SymbolUtil.getModule(this);
+            if (module != null)
+                ((LuaTable)module.getLuaType()).addPossibleElement(getName(), this.type);
+        }
     }
 
 
-    public PsiElement getNameIdentifier() {
-        return this;
+    @Override
+    public PsiReference getReference() {
+        if (getParent() instanceof PsiReference && ((PsiReference) getParent()).getElement().equals(this))
+            return (PsiReference) getParent();
+
+        return super.getReference();
+    }
+
+ @Override
+    public boolean isEquivalentTo(PsiElement another) {
+        if (this == another)
+            return true;
+
+        if (another instanceof LuaReferenceElement)
+            another = ((LuaReferenceElement) another).getElement();
+
+        if (another instanceof LuaAlias) {
+            final PsiElement aliasElement = ((LuaAlias) another).getAliasElement();
+            if (aliasElement instanceof LuaSymbol) if (isEquivalentTo(aliasElement)) return true;
+        }
+
+        if (another instanceof LuaSymbol) {
+            String myName = getName();
+            if (myName == null) return false;
+            return myName.equals(((LuaSymbol) another).getName()) && ((LuaSymbol) another).isSameKind(this);
+        }
+
+        return false;
     }
 }

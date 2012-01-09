@@ -18,7 +18,9 @@ package com.sylvanaar.idea.Lua.lang.psi.impl.expressions;
 
 import com.intellij.lang.ASTNode;
 import com.intellij.openapi.util.TextRange;
+import com.sylvanaar.idea.Lua.lang.psi.expressions.LuaLiteralExpression;
 import com.sylvanaar.idea.Lua.lang.psi.types.LuaType;
+import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 
 /**
@@ -27,7 +29,7 @@ import org.jetbrains.annotations.Nullable;
  * Date: 3/7/11
  * Time: 12:18 PM
  */
-public class LuaStringLiteralExpressionImpl extends LuaLiteralExpressionImpl {
+public class LuaStringLiteralExpressionImpl extends LuaLiteralExpressionImpl implements LuaLiteralExpression {
     public LuaStringLiteralExpressionImpl(ASTNode node) {
         super(node);
     }
@@ -50,9 +52,10 @@ public class LuaStringLiteralExpressionImpl extends LuaLiteralExpressionImpl {
             return null;
         
         return  new TextRange(getTextRange().getStartOffset() + openQuote.length() - getTextOffset(),
-                getTextRange().getEndOffset() - openQuote.length()  - getTextOffset());
+                getTextRange().getEndOffset() - openQuote.length()  - getTextOffset() - 1);
     }
 
+    @NotNull
     @Override
     public LuaType getLuaType() {
         return LuaType.STRING;

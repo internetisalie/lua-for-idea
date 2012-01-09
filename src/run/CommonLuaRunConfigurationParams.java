@@ -35,9 +35,8 @@ public interface CommonLuaRunConfigurationParams {
 
     public void setInterpreterPath(String path);
 
+    void setOverrideSDKInterpreter(boolean b);
 
-    boolean isUsingInternalInterpreter();
-
-    void setUsingInternalInterpreter(boolean b);
+    boolean isOverrideSDKInterpreter();
 }
 

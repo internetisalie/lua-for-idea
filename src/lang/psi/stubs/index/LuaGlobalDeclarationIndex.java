@@ -16,29 +16,38 @@
 
 package com.sylvanaar.idea.Lua.lang.psi.stubs.index;
 
+import com.intellij.openapi.project.Project;
+import com.intellij.psi.search.GlobalSearchScope;
 import com.intellij.psi.stubs.StringStubIndexExtension;
 import com.intellij.psi.stubs.StubIndexKey;
 import com.sylvanaar.idea.Lua.lang.psi.expressions.LuaDeclarationExpression;
+import com.sylvanaar.idea.Lua.lang.psi.search.LuaSourceFilterScope;
+import org.jetbrains.annotations.NotNull;
+
+import java.util.Collection;
 
 /**
-* Created by IntelliJ IDEA.
-* User: Jon S Akhtar
-* Date: 1/23/11
-* Time: 8:27 PM
-*/
+ * Created by IntelliJ IDEA.
+ * User: Jon S Akhtar
+ * Date: 1/23/11
+ * Time: 8:27 PM
+ */
 public class LuaGlobalDeclarationIndex extends StringStubIndexExtension<LuaDeclarationExpression> {
-  public static final StubIndexKey<String, LuaDeclarationExpression> KEY =
-          StubIndexKey.createIndexKey("lua.global.name");
+    public static final StubIndexKey<String, LuaDeclarationExpression> KEY =
+            StubIndexKey.createIndexKey("lua.global.name");
 
-  private static final LuaGlobalDeclarationIndex ourInstance = new LuaGlobalDeclarationIndex();
+    private static final LuaGlobalDeclarationIndex ourInstance = new LuaGlobalDeclarationIndex();
 
-  public static LuaGlobalDeclarationIndex getInstance()
-  {
-    return ourInstance;
-  }
+    public static LuaGlobalDeclarationIndex getInstance() {
+        return ourInstance;
+    }
 
+    @Override
+    public Collection<LuaDeclarationExpression> get(final String s, final Project project, @NotNull final GlobalSearchScope scope) {
+      return super.get(s, project, new LuaSourceFilterScope(scope, project));
+    }
 
-  public StubIndexKey<String, LuaDeclarationExpression> getKey() {
-    return KEY;
-  }
+    public StubIndexKey<String, LuaDeclarationExpression> getKey() {
+        return KEY;
+    }
 }

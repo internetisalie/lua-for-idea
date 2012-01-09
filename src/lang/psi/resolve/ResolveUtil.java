@@ -22,10 +22,14 @@ import com.intellij.psi.ResolveState;
 import com.intellij.psi.scope.PsiScopeProcessor;
 import com.intellij.psi.search.GlobalSearchScope;
 import com.intellij.psi.util.PsiTreeUtil;
+import com.sylvanaar.idea.Lua.lang.psi.LuaReferenceElement;
 import com.sylvanaar.idea.Lua.lang.psi.expressions.LuaDeclarationExpression;
+import com.sylvanaar.idea.Lua.lang.psi.resolve.completion.CompletionProcessor;
 import com.sylvanaar.idea.Lua.lang.psi.stubs.index.LuaGlobalDeclarationIndex;
+import org.jetbrains.annotations.NotNull;
 
 import java.util.Collection;
+import java.util.HashSet;
 import java.util.LinkedList;
 
 /**
@@ -56,6 +60,21 @@ public abstract class ResolveUtil {
     return true;
   }
 
+    @NotNull
+    public static Object[] getVariants(LuaReferenceElement e) {
+//        return new Object[0];
+        CompletionProcessor variantsProcessor = new CompletionProcessor(e);
+        ResolveUtil.treeWalkUp(e, variantsProcessor);
+//
+//        Collection<Object> names = new LinkedList<Object>();
+//
+//        names.addAll(LuaPsiManager.getInstance(e.getProject()).getFilteredGlobalsCache());
+//        names.addAll(variantsProcessor.getResultCollection());
+//
+        return variantsProcessor.getResultElements();
+    }
+
+
 //  public static boolean processElement(PsiScopeProcessor processor, PsiNamedElement namedElement) {
 //    if (namedElement == null) return true;
 //    NameHint nameHint = processor.getHint(NameHint.KEY);
@@ -76,18 +95,22 @@ public abstract class ResolveUtil {
   }
 
 
-    public static Collection<String> getFilteredGlobals(Project project, GlobalSearchScope scope) {
+    public static Collection<LuaDeclarationExpression> getFilteredGlobals(Project project, GlobalSearchScope scope) {
         LuaGlobalDeclarationIndex index = LuaGlobalDeclarationIndex.getInstance();
-        Collection<String> names = index.getAllKeys(project);
-        Collection<String> rejects = new LinkedList<String>();
+        HashSet<String> names = new HashSet<String>(index.getAllKeys(project));
+
+//        Collection<String> rejects = new LinkedList<String>();
+        Collection<LuaDeclarationExpression> exprs = new LinkedList<LuaDeclarationExpression>();
         for (String name : names) {
             Collection<LuaDeclarationExpression> elems = index.get(name, project, scope);
-            if (elems.size() == 0)
-                rejects.add(name);
+//            if (elems.size() == 0)
+//                rejects.add(name);
+//            else
+                exprs.addAll(elems);
         }
 
-        names.removeAll(rejects);
-        return names;
+//        names.removeAll(rejects);
+        return exprs;
     }
 
 }

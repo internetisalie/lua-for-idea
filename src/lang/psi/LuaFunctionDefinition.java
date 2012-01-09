@@ -16,8 +16,14 @@
 
 package com.sylvanaar.idea.Lua.lang.psi;
 
-import com.sylvanaar.idea.Lua.lang.psi.expressions.LuaParameterList;
-import com.sylvanaar.idea.Lua.lang.psi.statements.LuaBlock;
+import com.intellij.navigation.ItemPresentation;
+import com.intellij.openapi.util.TextRange;
+import com.sylvanaar.idea.Lua.lang.psi.expressions.LuaExpression;
+import com.sylvanaar.idea.Lua.lang.psi.lists.LuaParameterList;
+import com.sylvanaar.idea.Lua.lang.psi.statements.LuaBlockStatement;
+import com.sylvanaar.idea.Lua.lang.psi.symbols.LuaSymbol;
+import com.sylvanaar.idea.Lua.lang.psi.types.LuaFunction;
+import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 
 /**
@@ -26,11 +32,16 @@ import org.jetbrains.annotations.Nullable;
  * Date: Sep 11, 2010
  * Time: 3:32:19 PM
  */
-public interface LuaFunctionDefinition extends LuaPsiElement {
+public interface LuaFunctionDefinition extends LuaPsiElement, LuaBlockStatement, ItemPresentation, LuaExpression {
     @Nullable
     String getName();
+    @Nullable
+    LuaSymbol getIdentifier();
 
     LuaParameterList getParameters();
 
-    LuaBlock getBlock();
+    TextRange getRangeEnclosingBlock();
+
+    @NotNull
+    LuaFunction getLuaType();
 }

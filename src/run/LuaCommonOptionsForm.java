@@ -22,8 +22,8 @@ import com.intellij.openapi.ui.TextFieldWithBrowseButton;
 import com.intellij.ui.RawCommandLineEditor;
 
 import javax.swing.*;
-import java.beans.PropertyChangeEvent;
-import java.beans.PropertyChangeListener;
+import java.awt.event.ActionEvent;
+import java.awt.event.ActionListener;
 import java.util.Map;
 
 /**
@@ -37,21 +37,24 @@ public class LuaCommonOptionsForm implements CommonLuaRunConfigurationParams {
     private EnvironmentVariablesComponent environmentVariablesEdit;
     private TextFieldWithBrowseButton luaInterpreterEdit;
     private TextFieldWithBrowseButton workingDirEdit;
-    private JCheckBox kahluaCheckBox;
-
-    private LuaRunConfiguration luaRunConfiguration;
+    private JRadioButton kahluaRadioButton;
+    private JRadioButton luajRadioButton;
+    private JCheckBox useSDKCheckbox;
 
     public LuaCommonOptionsForm(LuaRunConfiguration luaRunConfiguration) {
-        this.luaRunConfiguration = luaRunConfiguration;
         luaInterpreterEdit.addBrowseFolderListener("Select Lua Interpreter", "", luaRunConfiguration.getProject(), BrowseFilesListener.SINGLE_FILE_DESCRIPTOR);
         workingDirEdit.addBrowseFolderListener("Select Working Directory", "", luaRunConfiguration.getProject(), BrowseFilesListener.SINGLE_DIRECTORY_DESCRIPTOR);
 
-        kahluaCheckBox.addPropertyChangeListener(new PropertyChangeListener() {
+        useSDKCheckbox.addActionListener(new ActionListener() {
             @Override
-            public void propertyChange(PropertyChangeEvent evt) {
-                luaInterpreterEdit.setEnabled(!kahluaCheckBox.isSelected());
+            public void actionPerformed(ActionEvent e) {
+                updateInterpreterOptionsWidgets();
             }
         });
+    }
+
+    private void updateInterpreterOptionsWidgets() {
+        luaInterpreterEdit.setEnabled(!useSDKCheckbox.isSelected());
     }
 
     @Override
@@ -95,13 +98,14 @@ public class LuaCommonOptionsForm implements CommonLuaRunConfigurationParams {
     }
 
     @Override
-    public boolean isUsingInternalInterpreter() {
-        return kahluaCheckBox.isSelected();
+    public boolean isOverrideSDKInterpreter() {
+        return !useSDKCheckbox.isSelected();
     }
 
     @Override
-    public void setUsingInternalInterpreter(boolean b) {
-        kahluaCheckBox.setSelected(b);
+    public void setOverrideSDKInterpreter(boolean b) {
+        useSDKCheckbox.setSelected(!b);
+        updateInterpreterOptionsWidgets();
     }
 
     public JComponent getRootPanel() {

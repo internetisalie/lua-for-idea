@@ -836,6 +836,9 @@ public class KahluaParser implements PsiParser, LuaElementTypes {
         PsiBuilder.Marker mark = builder.mark();
 
         FuncState fs = this.fs;
+        
+        String startName = builder.text();
+
         this.prefixexp(v, statementType);
         for (; ;) {
             if (this.t == DOT) { /* field */
@@ -885,7 +888,11 @@ public class KahluaParser implements PsiParser, LuaElementTypes {
                 fs.exp2nextreg(v);
 
                 this.funcargs(v);
-                mark.done(FUNCTION_CALL_EXPR);
+                
+                if (startName != null && startName.equals("module"))
+                    mark.done(MODULE_NAME_DECL);
+                else
+                    mark.done(FUNCTION_CALL_EXPR);
                 mark = mark.precede();
 
            		//break;
@@ -893,6 +900,8 @@ public class KahluaParser implements PsiParser, LuaElementTypes {
                     mark.drop();
                 return;
             }
+
+            startName = null;
         }
     }
 
@@ -1879,14 +1888,14 @@ short primaryexp_org(ExpDesc v) {
             funcstate.f.name = name;
 
 
+            psiBuilder.mark().done(LuaElementTypes.MAIN_CHUNK_VARARGS);
+
             lexstate.builder = psiBuilder;
             lexstate.t = psiBuilder.getTokenType();
             //    lexstate.builder.debug();
 //            if (lexstate.t == null) // Try to kludge in handling of partial parses
 //                lexstate.next(); /* read first token */
             lexstate.chunk();
-//        if (psiBuilder.isError() || closingBlock)
-//            cleanAfterError(psiBuilder);
 
             int pos = psiBuilder.getCurrentOffset();
             PsiBuilder.Marker mark  = psiBuilder.mark();

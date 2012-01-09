@@ -19,6 +19,7 @@ import com.intellij.openapi.project.Project;
 import com.intellij.psi.PsiComment;
 import com.intellij.psi.PsiElement;
 import com.intellij.psi.PsiFileFactory;
+import com.intellij.psi.util.PsiTreeUtil;
 import com.sylvanaar.idea.Lua.LuaFileType;
 import com.sylvanaar.idea.Lua.debugger.LuaCodeFragment;
 import com.sylvanaar.idea.Lua.lang.luadoc.psi.api.LuaDocComment;
@@ -28,11 +29,13 @@ import com.sylvanaar.idea.Lua.lang.luadoc.psi.api.LuaDocTag;
 import com.sylvanaar.idea.Lua.lang.psi.*;
 import com.sylvanaar.idea.Lua.lang.psi.expressions.LuaDeclarationExpression;
 import com.sylvanaar.idea.Lua.lang.psi.expressions.LuaExpression;
-import com.sylvanaar.idea.Lua.lang.psi.expressions.LuaExpressionList;
+import com.sylvanaar.idea.Lua.lang.psi.lists.LuaExpressionList;
+import com.sylvanaar.idea.Lua.lang.psi.lists.LuaIdentifierList;
 import com.sylvanaar.idea.Lua.lang.psi.statements.*;
 import com.sylvanaar.idea.Lua.lang.psi.symbols.LuaCompoundIdentifier;
 import com.sylvanaar.idea.Lua.lang.psi.symbols.LuaIdentifier;
 import com.sylvanaar.idea.Lua.lang.psi.symbols.LuaSymbol;
+import com.sylvanaar.idea.Lua.lang.psi.visitor.LuaElementVisitor;
 import org.jetbrains.annotations.Nullable;
 
 
@@ -53,9 +56,9 @@ public class LuaPsiElementFactoryImpl extends LuaPsiElementFactory {
     public LuaExpression createExpressionFromText(String newExpression) {
         LuaPsiFile file = createDummyFile("return " + newExpression);
 
-        LuaReturnStatement ret = (LuaReturnStatement) file.getStatements()[0];
+        LuaReturnStatement ret = (LuaReturnStatement)  getChildOfFirstStatement(file);
 
-        LuaExpressionList exprs = (LuaExpressionList) ret.getReturnValue();
+        LuaExpressionList exprs = ret.getReturnValue();
 
         return exprs.getLuaExpressions().get(0);
     }
@@ -108,14 +111,17 @@ public class LuaPsiElementFactoryImpl extends LuaPsiElementFactory {
     public LuaSymbol createReferenceNameFromText(String newElementName) {
         LuaPsiFile file = createDummyFile(newElementName + " = nil");
 
-        if (! (file.getFirstChild() instanceof LuaAssignmentStatement) ) return null;
+        if (PsiTreeUtil.hasErrorElements(file)) return null;
 
-        LuaAssignmentStatement assign = (LuaAssignmentStatement) file.getFirstChild();
+        if (! (getChildOfFirstStatement(file) instanceof LuaAssignmentStatement) ) return null;
+
+        LuaAssignmentStatement assign = (LuaAssignmentStatement) getChildOfFirstStatement(file);
 
         assert assign != null;
-        if (assign.getLeftExprs().count()!=1) return null;
+        final LuaIdentifierList leftExprs = assign.getLeftExprs();
+        if (leftExprs.count() == 0) return null;
 
-        LuaSymbol e = assign.getLeftExprs().getSymbols()[0];
+        LuaSymbol e = leftExprs.getSymbols()[0];
 
         if (e.getText().equals(newElementName))
             return e;
@@ -128,12 +134,16 @@ public class LuaPsiElementFactoryImpl extends LuaPsiElementFactory {
 
     @Override
     public LuaDeclarationExpression createLocalNameIdentifierDecl(String name) {
-        LuaPsiFile file = createDummyFile("local " + name);
+        LuaPsiFile file = createDummyFile("local " + name + " = 1");
+        final LuaDeclarationExpression[] declaration = new LuaDeclarationExpression[1];
 
-        final LuaLocalDefinitionStatement expressionStatement = (LuaLocalDefinitionStatement) file.getFirstChild();
-        final LuaDeclarationExpression declaration = expressionStatement.getDeclarations()[0];
-
-        return declaration;
+        file.acceptChildren(new LuaElementVisitor() {
+            @Override
+            public void visitDeclarationStatement(LuaDeclarationStatement e) {
+                declaration[0] = (LuaDeclarationExpression) e.getDefinedSymbols()[0];
+            }
+        });
+        return declaration[0];
     }
 
     public LuaIdentifier createLocalNameIdentifier(String name) {
@@ -142,17 +152,22 @@ public class LuaPsiElementFactoryImpl extends LuaPsiElementFactory {
         LuaPsiFile file = createDummyFile("local " + prefix + "; " + name +
                 " = nil");
 
-        final LuaAssignmentStatement expressionStatement = (LuaAssignmentStatement) file.getStatements()[1];
-        final LuaReferenceElement ref = (LuaReferenceElement) expressionStatement.getLeftExprs().getFirstChild();
+        final LuaIdentifier[] declaration = new LuaIdentifier[1];
 
-        return (LuaIdentifier) ref.getElement();
+        file.acceptChildren(new LuaElementVisitor() {
+            @Override
+            public void visitAssignment(LuaAssignmentStatement e) {
+                declaration[0] = (LuaIdentifier) e.getAssignments()[0].getSymbol();
+            }
+        });
+        return declaration[0];
     }
 
 
     public LuaDeclarationExpression createGlobalNameIdentifierDecl(String name) {
         LuaPsiFile file = createDummyFile(name + "=true");
 
-        final LuaAssignmentStatement expressionStatement = (LuaAssignmentStatement) file.getFirstChild();
+        final LuaAssignmentStatement expressionStatement = (LuaAssignmentStatement) getChildOfFirstStatement(file);
         final LuaDeclarationExpression declaration =
                 (LuaDeclarationExpression) expressionStatement.getLeftExprs().getFirstChild().getFirstChild();
 
@@ -163,7 +178,7 @@ public class LuaPsiElementFactoryImpl extends LuaPsiElementFactory {
     public LuaDeclarationExpression createParameterNameIdentifier(String name) {
         LuaPsiFile file = createDummyFile("function a("+name+") end");
 
-        final LuaFunctionDefinitionStatement functionDef = (LuaFunctionDefinitionStatement) file.getFirstChild();
+        final LuaFunctionDefinitionStatement functionDef = (LuaFunctionDefinitionStatement) getChildOfFirstStatement(file);
 
         assert functionDef != null;
 
@@ -182,7 +197,7 @@ public class LuaPsiElementFactoryImpl extends LuaPsiElementFactory {
     public LuaDocComment createDocCommentFromText(String s) {
         LuaPsiFile file = createDummyFile(s);
 
-        PsiElement e = file.getFirstChild();
+        PsiElement e = getChildOfFirstStatement(file);
 
         assert e instanceof LuaDocComment;
 
@@ -193,7 +208,7 @@ public class LuaPsiElementFactoryImpl extends LuaPsiElementFactory {
     public LuaDocReferenceElement createDocFieldReferenceNameFromText(String elementName) {
         LuaPsiFile file = createDummyFile("--- @field " + elementName + "\nlocal a={" + elementName + "=true}");
 
-        LuaDocComment comment = (LuaDocComment) file.getFirstChild();
+        LuaDocComment comment = (LuaDocComment) getChildOfFirstStatement(file);
 
         assert comment != null;
         LuaDocTag tag = comment.getTags()[0];
@@ -205,7 +220,7 @@ public class LuaPsiElementFactoryImpl extends LuaPsiElementFactory {
     public LuaDocParameterReference createParameterDocMemberReferenceNameFromText(String elementName) {
         LuaPsiFile file = createDummyFile("--- @param " + elementName + "\nfunction(" + elementName + ")");
 
-        LuaDocComment comment = (LuaDocComment) file.getFirstChild();
+        LuaDocComment comment = (LuaDocComment) getChildOfFirstStatement(file);
 
         assert comment != null;
         LuaDocTag tag = comment.getTags()[0];
@@ -213,10 +228,27 @@ public class LuaPsiElementFactoryImpl extends LuaPsiElementFactory {
         return tag.getDocParameterReference();
     }
 
+
+
+
+    @Override
+    public LuaIdentifier createIdentifier(String name) {
+        LuaPsiFile file = createDummyFile(name + "=true");
+        final LuaIdentifier[] declaration = new LuaIdentifier[1];
+
+        file.accept(new LuaElementVisitor() {
+            @Override
+            public void visitAssignment(LuaAssignmentStatement e) {
+                declaration[0] = (LuaIdentifier) e.getAssignments()[0].getSymbol();
+            }
+        });
+        return declaration[0];
+    }
+
     public LuaIdentifier createGlobalNameIdentifier(String name) {
         LuaPsiFile file = createDummyFile(name + "=true; nop=" + name);
 
-        final LuaAssignmentStatement expressionStatement = (LuaAssignmentStatement) file.getStatements()[1];
+        final LuaAssignmentStatement expressionStatement = (LuaAssignmentStatement)  getChildOfFirstStatement(file);
         final LuaReferenceElement ref = (LuaReferenceElement) expressionStatement.getRightExprs().getFirstChild();
 
         return (LuaIdentifier) ref.getElement();
@@ -226,12 +258,16 @@ public class LuaPsiElementFactoryImpl extends LuaPsiElementFactory {
     public LuaIdentifier createFieldNameIdentifier(String name) {
         LuaPsiFile file = createDummyFile("a."+name+"=nil");
 
-        LuaAssignmentStatement assign = (LuaAssignmentStatement) file.getFirstChild();
+        LuaAssignmentStatement assign = (LuaAssignmentStatement) getChildOfFirstStatement(file);
 
         assert assign != null;
         LuaReferenceElement element = assign.getLeftExprs().getReferenceExprs()[0];
         LuaCompoundIdentifier id = (LuaCompoundIdentifier) element.getElement();
 
         return (LuaIdentifier) id.getRightSymbol();
+    }
+
+    private PsiElement getChildOfFirstStatement(LuaPsiFile file) {
+        return file.getFirstChild().getNextSibling();
     }
 }

@@ -16,7 +16,8 @@
 
 package com.sylvanaar.idea.Lua.lang.psi.stubs.impl;
 
-import com.intellij.psi.stubs.StubBase;
+import com.intellij.psi.stubs.IStubElementType;
+import com.intellij.psi.stubs.NamedStubBase;
 import com.intellij.psi.stubs.StubElement;
 import com.intellij.util.io.StringRef;
 import com.sylvanaar.idea.Lua.lang.parser.LuaElementTypes;
@@ -30,32 +31,34 @@ import org.jetbrains.annotations.Nullable;
  * Date: 1/23/11
  * Time: 8:10 PM
  */
-public class LuaGlobalDeclarationStubImpl extends StubBase<LuaGlobalDeclaration> implements LuaGlobalDeclarationStub {
+public class LuaGlobalDeclarationStubImpl extends NamedStubBase<LuaGlobalDeclaration> implements LuaGlobalDeclarationStub {
+    private String myModule;
+    private byte[] myType;
 
-    private final StringRef myName;
-    private       StringRef myModule;
+//    public LuaGlobalDeclarationStubImpl(LuaGlobalDeclaration e) {
+//        this(null, LuaElementTypes.GLOBAL_NAME_DECL,
+//                StringRef.fromString(e.getName()),
+//                StringRef.fromString(e.getModuleName()));
+//    }
 
-
-    public LuaGlobalDeclarationStubImpl(LuaGlobalDeclaration e) {
-        super(null, LuaElementTypes.GLOBAL_NAME_DECL);
-        myName = StringRef.fromString(e.getName());
-        myModule = StringRef.fromString(e.getModuleName());
-    }
-
-    @Override
-    public @Nullable String getModule() {
-        if (myModule == null) return null;
-        return myModule.getString();
-    }
-
-    public LuaGlobalDeclarationStubImpl(StubElement parent, StringRef name, StringRef module) {
-        super(parent, LuaElementTypes.GLOBAL_NAME_DECL);
-        myName = name;
+    public LuaGlobalDeclarationStubImpl(@Nullable StubElement parent, IStubElementType elementType, StringRef name, String module, byte[] type) {
+        super(parent, elementType, name);
         myModule = module;
+        myType = type;
+    }
+
+    public LuaGlobalDeclarationStubImpl(StubElement parent, StringRef name, String module, byte[] type) {
+        this(parent, LuaElementTypes.GLOBAL_NAME_DECL, name, module, type);
     }
 
     @Override
-    public String getName() {
-        return myName.getString();
+    @Nullable
+    public String getModule() {
+        if (myModule == null) return null;
+        return myModule;
+    }
+
+    public byte[] getEncodedType() {
+        return myType;
     }
 }

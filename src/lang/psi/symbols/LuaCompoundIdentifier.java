@@ -21,7 +21,6 @@ import com.intellij.psi.PsiElement;
 import com.intellij.psi.StubBasedPsiElement;
 import com.sylvanaar.idea.Lua.lang.psi.expressions.LuaDeclarationExpression;
 import com.sylvanaar.idea.Lua.lang.psi.expressions.LuaExpression;
-import com.sylvanaar.idea.Lua.lang.psi.expressions.LuaFieldIdentifier;
 import com.sylvanaar.idea.Lua.lang.psi.stubs.api.LuaCompoundIdentifierStub;
 
 /**
@@ -30,12 +29,11 @@ import com.sylvanaar.idea.Lua.lang.psi.stubs.api.LuaCompoundIdentifierStub;
  * Date: 1/30/11
  * Time: 10:31 PM
  */
-public interface LuaCompoundIdentifier extends LuaIdentifier, LuaDeclarationExpression, NavigationItem, StubBasedPsiElement<LuaCompoundIdentifierStub> {
+public interface LuaCompoundIdentifier extends LuaIdentifier, LuaDeclarationExpression, NavigationItem,
+        StubBasedPsiElement<LuaCompoundIdentifierStub> {
     LuaCompoundIdentifier getEnclosingIdentifier();
 
     PsiElement getScopeIdentifier();
-
-    LuaFieldIdentifier getLeftMostField();
 
     LuaExpression getLeftSymbol();
 
