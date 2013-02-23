@@ -19,7 +19,7 @@
     <id>Lua</id>
     <version>1.0a51</version>
     <!--##teamcity[buildNumber '1.0a51']-->
-    <idea-version since-build="123.4" until-build="123.9999"/>
+    <idea-version since-build="126.330" until-build="126.9999"/>
     <category>Custom Languages</category>
     <vendor url="https://www.ohloh.net/accounts/sylvanaar" email="sylvanaar@mindspring.com">sylvanaar</vendor>
 
@@ -196,6 +196,9 @@
                                        implementationClass="com.sylvanaar.idea.Lua.editor.highlighter.LuaSyntaxHighlighterFactory"/>
 
         <colorSettingsPage implementation="com.sylvanaar.idea.Lua.editor.highlighter.LuaColorsPage"/>
+
+        <additionalTextAttributes scheme="Default" file="colorSchemes/LuaLangDefault.xml"/>
+
 
         <readWriteAccessDetector implementation="com.sylvanaar.idea.Lua.editor.highlighter.LuaReadWriteAccessDetector"/>
 
