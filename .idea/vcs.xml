@@ -15,7 +15,6 @@
     </option>
   </component>
   <component name="VcsDirectoryMappings">
-    <mapping directory="" vcs="hg4idea" />
+    <mapping directory="" vcs="Git" />
   </component>
 </project>
-

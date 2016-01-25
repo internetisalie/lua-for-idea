@@ -6,3 +6,6 @@ glob:IDLua.zip
 glob:luac.out
 glob:help/IDLuaHelp.jar
 .*\.log(\..*)?$
+.idea/.gitignore
+.gitignore
+help/.gitignore
