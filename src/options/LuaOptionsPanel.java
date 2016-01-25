@@ -17,8 +17,10 @@
 package com.sylvanaar.idea.Lua.options;
 
 import com.intellij.codeInsight.daemon.*;
+import com.intellij.ide.util.BrowseFilesListener;
 import com.intellij.openapi.options.*;
 import com.intellij.openapi.project.*;
+import com.intellij.openapi.ui.TextFieldWithBrowseButton;
 import com.intellij.psi.*;
 import com.sylvanaar.idea.Lua.*;
 import org.apache.log4j.*;
@@ -55,6 +57,17 @@ public class LuaOptionsPanel extends BaseConfigurable implements Configurable {
                 setModified(isModified(LuaApplicationSettings.getInstance()));
             }
         });
+        interpreterExecutable.addActionListener(new ActionListener() {
+            @Override
+            public void actionPerformed(ActionEvent actionEvent) {
+                setModified(isModified(LuaApplicationSettings.getInstance()));
+            }
+        });
+        interpreterExecutable.addBrowseFolderListener(
+                "Select Lua Interpreter", "",
+                null,
+                BrowseFilesListener.SINGLE_FILE_DESCRIPTOR
+        );
     }
 
     JPanel getMainPanel() {
@@ -65,6 +78,7 @@ public class LuaOptionsPanel extends BaseConfigurable implements Configurable {
     private JCheckBox addAdditionalCompletionsCheckBox;
     private JCheckBox enableTypeInference;
     private JCheckBox checkBoxTailCalls;
+    private TextFieldWithBrowseButton interpreterExecutable;
 
     @Override
     public JComponent createComponent() {
@@ -101,14 +115,15 @@ public class LuaOptionsPanel extends BaseConfigurable implements Configurable {
         addAdditionalCompletionsCheckBox.setSelected(data.INCLUDE_ALL_FIELDS_IN_COMPLETIONS);
         enableTypeInference.setSelected(data.ENABLE_TYPE_INFERENCE);
         checkBoxTailCalls.setSelected(data.SHOW_TAIL_CALLS_IN_GUTTER);
+        interpreterExecutable.setText(data.DEFAULT_INTERPRETER_EXECUTABLE);
     }
 
     public void getData(LuaApplicationSettings data) {
         if (checkBoxTailCalls.isSelected() != data.SHOW_TAIL_CALLS_IN_GUTTER) {
             data.SHOW_TAIL_CALLS_IN_GUTTER = checkBoxTailCalls.isSelected();
 
-            for(Project project : ProjectManager.getInstance().getOpenProjects())
-              DaemonCodeAnalyzer.getInstance(project).restart();
+            for (Project project : ProjectManager.getInstance().getOpenProjects())
+                DaemonCodeAnalyzer.getInstance(project).restart();
         }
 
         data.INCLUDE_ALL_FIELDS_IN_COMPLETIONS = addAdditionalCompletionsCheckBox.isSelected();
@@ -117,12 +132,15 @@ public class LuaOptionsPanel extends BaseConfigurable implements Configurable {
             for (Project project : ProjectManager.getInstance().getOpenProjects())
                 PsiManager.getInstance(project).dropResolveCaches();
         }
+
+        data.DEFAULT_INTERPRETER_EXECUTABLE = interpreterExecutable.getText();
     }
 
     public boolean isModified(LuaApplicationSettings data) {
         if (addAdditionalCompletionsCheckBox.isSelected() != data.INCLUDE_ALL_FIELDS_IN_COMPLETIONS) return true;
         if (enableTypeInference.isSelected() != data.ENABLE_TYPE_INFERENCE) return true;
         if (checkBoxTailCalls.isSelected() != data.SHOW_TAIL_CALLS_IN_GUTTER) return true;
+        if (!interpreterExecutable.getText().equals(data.DEFAULT_INTERPRETER_EXECUTABLE)) return true;
 
         return false;
     }

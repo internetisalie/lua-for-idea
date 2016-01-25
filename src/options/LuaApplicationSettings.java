@@ -40,6 +40,7 @@ public class LuaApplicationSettings implements PersistentStateComponent<LuaAppli
     public boolean INCLUDE_ALL_FIELDS_IN_COMPLETIONS = false;
     public boolean SHOW_TAIL_CALLS_IN_GUTTER = true;
     public boolean ENABLE_TYPE_INFERENCE = true;
+    public String  DEFAULT_INTERPRETER_EXECUTABLE = "";
 
     @Override
     public LuaApplicationSettings getState() {

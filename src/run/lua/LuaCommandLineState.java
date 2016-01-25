@@ -26,6 +26,7 @@ import com.intellij.execution.process.ProcessTerminatedListener;
 import com.intellij.execution.runners.ExecutionEnvironment;
 import com.intellij.openapi.projectRoots.Sdk;
 import com.intellij.openapi.util.text.StringUtil;
+import com.sylvanaar.idea.Lua.options.LuaApplicationSettings;
 import com.sylvanaar.idea.Lua.run.LuaRunConfiguration;
 import com.sylvanaar.idea.Lua.sdk.LuaSdkType;
 import org.jetbrains.annotations.NotNull;
@@ -68,7 +69,12 @@ public class LuaCommandLineState extends CommandLineState {
         } else {
             final Sdk sdk = cfg.getSdk();
 
-            if (sdk != null && sdk.getSdkType() instanceof LuaSdkType) {
+            if (sdk == null) {
+                // Check the default from LuaApplicationSettings
+                LuaApplicationSettings settings = LuaApplicationSettings.getInstance();
+                if (!StringUtil.isEmptyOrSpaces(settings.DEFAULT_INTERPRETER_EXECUTABLE))
+                    commandLine.setExePath(settings.DEFAULT_INTERPRETER_EXECUTABLE);
+            } else if (sdk.getSdkType() instanceof LuaSdkType) {
                 commandLine
                         .setExePath(getTopLevelExecutable(StringUtil.notNullize(sdk.getHomePath())).getAbsolutePath());
             }
