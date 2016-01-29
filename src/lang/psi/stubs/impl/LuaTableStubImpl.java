@@ -29,7 +29,7 @@ import com.sylvanaar.idea.Lua.lang.psi.stubs.api.*;
  */
 public class LuaTableStubImpl extends StubBase<LuaTableConstructor> implements LuaTableStub {
     public LuaTableStubImpl(StubElement parent) {
-        super(parent, LuaElementTypes.TABLE_CONSTUCTOR);
+        super(parent, LuaElementTypes.TABLE_CONSTRUCTOR);
     }
 
     private byte[] myType;

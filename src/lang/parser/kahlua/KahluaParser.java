@@ -74,7 +74,7 @@ public class KahluaParser implements PsiParser, LuaElementTypes {
     private static final int MAX_INT = Integer.MAX_VALUE - 2;
     //private static final int UCHAR_MAX = 255; // TO DO, convert to unicode CHAR_MAX?
     private static final int LUAI_MAXCCALLS = 200;
-    private LuaPsiBuilder builder = null;
+    LuaPsiBuilder builder = null;
     boolean checkAmbiguituy = true;
 
 
@@ -158,8 +158,6 @@ public class KahluaParser implements PsiParser, LuaElementTypes {
 
     public KahluaParser() {
     }
-
-    ;
 
     void nextChar() {
         try {
@@ -596,7 +594,7 @@ public class KahluaParser implements PsiParser, LuaElementTypes {
         FuncState.SETARG_B(i, luaO_int2fb(cc.na)); /* set initial array size */
         FuncState.SETARG_C(i, luaO_int2fb(cc.nh));  /* set initial table size */
 
-        mark.done(TABLE_CONSTUCTOR);
+        mark.done(TABLE_CONSTRUCTOR);
     }
 
     /*
@@ -783,7 +781,7 @@ public class KahluaParser implements PsiParser, LuaElementTypes {
             this.next();
             this.expr(v);
             this.check_match(RPAREN, LPAREN, line);
-            mark.done(PARENTHEICAL_EXPRESSION);
+            mark.done(PARENTHETICAL_EXPRESSION);
             fs.dischargevars(v);
             return;
         } else if (this.t == NAME) {
@@ -1870,6 +1868,17 @@ public class KahluaParser implements PsiParser, LuaElementTypes {
 //        }
 //    }
 
+    public static KahluaParser standardParser(PsiBuilder builder) {
+        final LuaPsiBuilder psiBuilder = new LuaPsiBuilder(builder);
+        final PsiFile psiFile = psiBuilder.getFile();
+        final VirtualFile virtualFile = psiFile != null ? psiFile.getVirtualFile() : null;
+        final String name = virtualFile != null ? virtualFile.getName() : "chunk";
+        KahluaParser parser = new KahluaParser(null, 0, name);
+        parser.checkAmbiguituy = false;
+        parser.builder = psiBuilder;
+        psiBuilder.setWhitespaceSkippedCallback(parser.new ParserWhitespaceSkippedCallback());
+        return parser;
+    }
 
     /* }====================================================================== */
 
@@ -1877,33 +1886,19 @@ public class KahluaParser implements PsiParser, LuaElementTypes {
     @NotNull
     @Override
     public ASTNode parse(IElementType root, PsiBuilder builder) {
-
-        final LuaPsiBuilder psiBuilder = new LuaPsiBuilder(builder);
+        final KahluaParser lexstate = standardParser(builder);
+        final LuaPsiBuilder psiBuilder = lexstate.builder;
+        final PsiBuilder.Marker rootMarker = psiBuilder.mark();
 
         try {
-            final PsiBuilder.Marker rootMarker = psiBuilder.mark();
-
-            final PsiFile psiFile = psiBuilder.getFile();
-            final VirtualFile virtualFile = psiFile != null ? psiFile.getVirtualFile() : null;
-            final String name = virtualFile != null ? virtualFile.getName() : "chunk";
-            source = name;
-            KahluaParser lexstate = new KahluaParser(z, 0, source);
-
-            lexstate.checkAmbiguituy = false;
-            lexstate.builder = psiBuilder;
-//            psiBuilder.debug();
-            psiBuilder.setWhitespaceSkippedCallback(lexstate.new ParserWhitespaceSkippedCallback());
-
             FuncState funcstate = new FuncState(lexstate);
             // lexstate.buff = buff;
 
             /* main func. is always vararg */
             funcstate.isVararg = FuncState.VARARG_ISVARARG;
-            funcstate.f.name = name;
-
+            funcstate.f.name = lexstate.source;
 
             psiBuilder.mark().done(LuaElementTypes.MAIN_CHUNK_VARARGS);
-
 
             lexstate.t = psiBuilder.getTokenType();
 
@@ -1943,7 +1938,7 @@ public class KahluaParser implements PsiParser, LuaElementTypes {
         return builder.getTreeBuilt();
     }
 
-    private class ParserWhitespaceSkippedCallback implements WhitespaceSkippedCallback {
+    class ParserWhitespaceSkippedCallback implements WhitespaceSkippedCallback {
         @Override
         public void onSkip(IElementType iElementType, int i, int i1) {
 

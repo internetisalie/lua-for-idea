@@ -16,12 +16,21 @@
 
 package com.sylvanaar.idea.Lua.lang.parser;
 
+import com.intellij.lang.*;
+import com.intellij.lang.impl.PsiBuilderImpl;
+import com.intellij.openapi.project.Project;
+import com.intellij.psi.PsiElement;
 import com.intellij.psi.tree.IElementType;
 import com.intellij.psi.tree.TokenSet;
 import com.sylvanaar.idea.Lua.lang.lexer.LuaElementType;
+import com.sylvanaar.idea.Lua.lang.lexer.LuaLexer;
+import com.sylvanaar.idea.Lua.lang.lexer.LuaReparseableElementType;
 import com.sylvanaar.idea.Lua.lang.lexer.LuaTokenTypes;
 import com.sylvanaar.idea.Lua.lang.luadoc.parser.LuaDocElementTypes;
+import com.sylvanaar.idea.Lua.lang.parser.kahlua.LuaFunctionParser;
+import com.sylvanaar.idea.Lua.lang.psi.impl.statements.LuaFunctionDefinitionStatementImpl;
 import com.sylvanaar.idea.Lua.lang.psi.stubs.elements.*;
+import org.jetbrains.annotations.Nullable;
 
 /**
  * Created by IntelliJ IDEA.
@@ -32,21 +41,20 @@ import com.sylvanaar.idea.Lua.lang.psi.stubs.elements.*;
 public interface LuaElementTypes extends LuaTokenTypes, LuaDocElementTypes {
     IElementType EMPTY_INPUT = new LuaElementType("empty input");
 
-
-    IElementType FUNCTION_DEFINITION = new LuaElementType("Function Definition");
+    IElementType FUNCTION_DEFINITION = new LuaReparseableElementType("Function Definition");
 
     IElementType LOCAL_NAME = new LuaElementType("local name");
     IElementType LOCAL_NAME_DECL = new LuaElementType("local name declaration");
 
     IElementType GLOBAL_NAME = new LuaElementType("global name");
-    //  IElementType GLOBAL_NAME_DECL = new LuaElementType("global name declaration");
+    // IElementType GLOBAL_NAME_DECL = new LuaElementType("global name declaration");
     // IElementType GETTABLE = new LuaElementType("get table");
-//IElementType GETSELF = new LuaElementType("get self");
+    // IElementType GETSELF = new LuaElementType("get self");
     LuaStubGlobalDeclarationType GLOBAL_NAME_DECL = new LuaStubGlobalDeclarationType();
     LuaStubModuleDeclarationType MODULE_NAME_DECL = new LuaStubModuleDeclarationType();
     LuaStubCompoundIdentifierType GETTABLE = new LuaStubCompoundIdentifierType();
-    //LuaStubElementType<LuaCompoundIdentifierStub, LuaCompoundIdentifier> GETSELF = new
-    // LuaStubCompoundIdentifierType();
+    // LuaStubElementType<LuaCompoundIdentifierStub, LuaCompoundIdentifier> GETSELF =
+    //      new LuaStubCompoundIdentifierType();
 
     LuaFieldStubType FIELD_NAME = new LuaFieldStubType();
 
@@ -61,15 +69,15 @@ public interface LuaElementTypes extends LuaTokenTypes, LuaDocElementTypes {
     IElementType COMPOUND_REFERENCE = new LuaElementType("Compound Reference");
     IElementType IDENTIFIER_LIST = new LuaElementType("Identifier List");
 
-    IElementType STATEMENT = new LuaElementType("Statment");
+    IElementType STATEMENT = new LuaElementType("Statement");
     IElementType LAST_STATEMENT = new LuaElementType("LastStatement");
     IElementType EXPR = new LuaElementType("Expression");
     IElementType EXPR_LIST = new LuaElementType("Expression List");
 
     IElementType LITERAL_EXPRESSION = new LuaElementType("Literal Expression");
-    IElementType PARENTHEICAL_EXPRESSION = new LuaElementType("Parentheical Expression");
+    IElementType PARENTHETICAL_EXPRESSION = new LuaElementType("Parenthetical Expression");
 
-    LuaTableStubType TABLE_CONSTUCTOR = new LuaTableStubType();
+    LuaTableStubType TABLE_CONSTRUCTOR = new LuaTableStubType();
     IElementType FUNCTION_CALL_ARGS = new LuaElementType("Function Call Args");
     IElementType FUNCTION_CALL = new LuaElementType("Function Call Statement");
     IElementType FUNCTION_CALL_EXPR = new LuaElementType("Function Call Expression");
@@ -101,11 +109,11 @@ public interface LuaElementTypes extends LuaTokenTypes, LuaDocElementTypes {
     IElementType NUMERIC_FOR_BLOCK = new LuaElementType("Numeric For Block");
 
     TokenSet EXPRESSION_SET = TokenSet.create(LITERAL_EXPRESSION, BINARY_EXP,
-            UNARY_EXP, EXPR, ANONYMOUS_FUNCTION_EXPRESSION, FUNCTION_CALL_EXPR, PARENTHEICAL_EXPRESSION);
+            UNARY_EXP, EXPR, ANONYMOUS_FUNCTION_EXPRESSION, FUNCTION_CALL_EXPR, PARENTHETICAL_EXPRESSION);
     IElementType RETURN_STATEMENT = new LuaElementType("Return statement");
     IElementType RETURN_STATEMENT_WITH_TAIL_CALL = new LuaElementType("Tailcall Return statement");
 
-    IElementType LOCAL_FUNCTION = new LuaElementType("local function def");
+    IElementType LOCAL_FUNCTION = new LuaReparseableElementType("local function def");
 
     TokenSet BLOCK_SET = TokenSet.create(FUNCTION_DEFINITION, LOCAL_FUNCTION, ANONYMOUS_FUNCTION_EXPRESSION,
             WHILE_BLOCK,

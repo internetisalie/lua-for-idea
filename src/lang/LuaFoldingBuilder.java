@@ -122,7 +122,7 @@ public class LuaFoldingBuilder extends CustomFoldingBuilder implements DumbAware
         return elementType == FUNCTION_DEFINITION ||
                 elementType == LOCAL_FUNCTION ||
                 elementType == ANONYMOUS_FUNCTION_EXPRESSION ||
-                elementType == TABLE_CONSTUCTOR ||
+                elementType == TABLE_CONSTRUCTOR ||
                 elementType == LUADOC_COMMENT;
     }
 

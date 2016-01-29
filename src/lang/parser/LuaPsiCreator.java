@@ -78,7 +78,7 @@ public class LuaPsiCreator {
         if (elem == COMPOUND_REFERENCE)
             return new LuaCompoundReferenceElementImpl(node);
 
-        if (elem == TABLE_CONSTUCTOR)
+        if (elem == TABLE_CONSTRUCTOR)
             return new LuaTableConstructorImpl(node);
 
         if (elem == IDX_ASSIGNMENT)
@@ -131,7 +131,7 @@ public class LuaPsiCreator {
         if (elem == NUMERIC_FOR_BLOCK)
             return new LuaNumericForStatementImpl(node);
 
-        if (elem == PARENTHEICAL_EXPRESSION)
+        if (elem == PARENTHETICAL_EXPRESSION)
             return new LuaParenthesizedExpressionImpl(node);
 
         if (elem == GENERIC_FOR_BLOCK)

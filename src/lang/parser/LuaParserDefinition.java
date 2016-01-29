@@ -46,7 +46,7 @@ public class LuaParserDefinition implements ParserDefinition {
     }
 
     public PsiParser createParser(Project project) {
-        return new KahluaParser();
+        return new LuaFileParser();
     }
 
     public IFileElementType getFileNodeType() {
