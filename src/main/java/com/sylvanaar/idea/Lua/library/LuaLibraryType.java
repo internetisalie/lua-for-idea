@@ -53,7 +53,7 @@ public class LuaLibraryType extends LibraryType<LuaLibraryProperties> implements
     @NotNull
     @Override
     public String getCreateActionName() {
-        return "New Lua Library";
+        return "Lua Library";
     }
 
     @Override
@@ -88,6 +88,7 @@ public class LuaLibraryType extends LibraryType<LuaLibraryProperties> implements
     public Icon getIcon(@Nullable LuaLibraryProperties luaLibraryProperties) {
         return LuaIcons.LUA_ICON;
     }
+    
 //    @Override
 //    public LibraryRootsComponentDescriptor createLibraryRootsComponentDescriptor() {
 //        return new LuaLibraryRootsComponentDescriptor();
